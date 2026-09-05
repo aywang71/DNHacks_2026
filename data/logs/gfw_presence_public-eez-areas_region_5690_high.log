@@ -1,0 +1,12 @@
+2026-09-05T16:34:57.4937980-04:00 started start=2021-09-05 end_exclusive=2026-09-05 region_id=5690 region_dataset=public-eez-areas spatial_resolution=HIGH already_complete=1 dry_run=True
+2026-09-05T16:34:57.5074183-04:00 would_load day=2021-09-05 retrieval_id=presence_public-eez-areas_region_5690_high__20260905T163457Z
+2026-09-05T16:34:57.5094180-04:00 would_load day=2021-09-06 retrieval_id=presence_public-eez-areas_region_5690_high__20260905T163457Z
+2026-09-05T16:34:57.5284358-04:00 stopped_at_max_days loaded_days_this_process=0 skipped_complete_days_this_process=0
+2026-09-05T16:35:16.1357244-04:00 started start=2021-09-05 end_exclusive=2026-09-05 region_id=5690 region_dataset=public-eez-areas spatial_resolution=HIGH already_complete=1 dry_run=True
+2026-09-05T16:35:16.1485528-04:00 would_load day=2021-09-05 retrieval_id=presence_public-eez-areas_region_5690_high_20210905_20260905T163516Z
+2026-09-05T16:35:16.1565545-04:00 stopped_at_max_days loaded_days_this_process=0 skipped_complete_days_this_process=0
+2026-09-05T16:35:52.7606532-04:00 started start=2026-08-01 end_exclusive=2026-08-02 region_id=5690 region_dataset=public-eez-areas spatial_resolution=HIGH already_complete=1 dry_run=True
+2026-09-05T16:35:52.7706581-04:00 skipped_complete day=2026-08-01
+2026-09-05T16:35:52.7862946-04:00 complete loaded_days_this_process=0 skipped_complete_days_this_process=1
+2026-09-05T16:44:56.8953200-04:00 started start=2021-09-05 end_exclusive=2026-09-05 region_id=5690 region_dataset=public-eez-areas spatial_resolution=HIGH already_complete=1 dry_run=False
+2026-09-05T16:44:56.9059367-04:00 loading day=2021-09-05 retrieval_id=presence_public-eez-areas_region_5690_high_20210905_20260905T164456Z
