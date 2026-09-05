@@ -1,6 +1,6 @@
 # GapPair — proposal and plan of action
 
-**Prepared:** Sat 5 Sep 2026, 14:00 EDT. Submission Sun 12:00. ~22 hours.
+**Prepared:** Sat 5 Sep 2026, 14:00 EDT.
 **Status:** proposal only. Nothing beyond data download and a partial loader has been built.
 **Positioning in one line:** Skylight detects rendezvous when two vessels broadcast (Standard) or one does (Dark). GapPair is the missing third tier: **neither broadcasts**. We pair the absences, score them with the Oxford dark-shipping algorithm, and corroborate them with Skylight's own open-source night-lights detector.
 
@@ -52,8 +52,7 @@ Appendix A gives four algorithms. Our corpus has only gap endpoints (no headings
 | Speed-coloured tracks with chevrons | **Drop.** | No tracks. Replace with dashed red "dark window" projections and solid short stubs. |
 | "Night Lights" event type and glow icon | **Reuse.** | VIIRS detections render as glowing dots, like Skylight's Night Lights illustration (`04`). |
 | **`allenai/vessel-detection-viirs`** Docker, CPU | **Run it.** | Stretch but high-value: run Skylight's own detector on the archival VIIRS DNB granule over the showcase pair's night. "Skylight's model sees a lit vessel where AIS is silent" is the line. |
-| Light basemap (pale cyan water, grey land) | **Reuse the look** via CARTO Positron (free, no key). | A dark basemap reads as "hacker"; Skylight's light one reads as "analyst tool". Decide in §8. |
-| Wordmark, logo, "product of Ai2", exact copy | **Do not touch.** | Cite as prior art in the drawer and deck. |
+| Light basemap (pale cyan water, grey land) | **Reuse the look** via CARTO Positron (free, no key). | A dark basemap reads as "hacker"; Skylight's light one reads as "analyst tool". Decide in §7. |
 
 ---
 
@@ -148,28 +147,7 @@ Also: a **Challenge panel** tab ("what would make this innocent?") and a **Metho
 
 ---
 
-## 7. Workstreams and schedule (two people + Sonnet agents)
-
-| When | Workstream | Who | Output |
-|---|---|---|---|
-| Sat 14:30 | Register GFW token, EOG account, Earthdata login; install Docker on the Mac | Human (10 min each) | `.env` |
-| Sat 14:30–16:00 | Finish pipeline: run `pair.py`, write nulls, features (density, components, Oxford A.2 + A.1, gap unusualness), export `candidates.json` | Sonnet agent | numbers frozen; demo pair confirmed |
-| Sat 15:00–17:00 | VBD download + bbox filter for the demo pair's nights; first VIIRS dots | Human A | `viirs_demo.json` |
-| Sat 16:00–19:00 | Single-HTML UI: map, Fig. 1c drawing, queue, card, scrubber | Human B + Sonnet agent | opens a real candidate |
-| Sat 17:00–19:00 | GFW context events for top 30 (cached JSON) | Sonnet agent | vicinity + trip context |
-| Sat 19:00–22:00 | Score bars, challenge panel, methods drawer, illustrations for the three tiers | Human B | |
-| Sat 20:00–23:00 | Optional: AI2 VIIRS detector in Docker on the demo night | Human A | second VIIRS layer |
-| Sat 22:00–Sun 01:00 | Narration agent + span verifier + adversarial mode | Sonnet agent | live button works |
-| Sun 01:00–06:00 | Polish, precompute narrations for top 20, record fallback video | both | |
-| Sun 06:00–09:00 | Deck (update `ideas/martime_deck.md` numbers), README, submission text | Human A | |
-| Sun 09:00–11:00 | Rehearse 60-second core three ways (Navy CTO / Aslan / OpenAI); screen recording | both | |
-| Sun 12:00 | Submit | | |
-
-Checkpoints: **16:00** numbers frozen · **19:00** a real candidate on the map · **01:00** verifier catches a corruption · **08:00** feature freeze.
-
----
-
-## 8. Decisions needed from the team
+## 7. Decisions needed from the team
 
 1. Light basemap (Skylight look, CARTO Positron) or dark (CARTO Dark Matter)? Recommendation: light.
 2. Single-HTML or Vite + React? Recommendation: single-HTML unless the UI owner is a React dev.
@@ -177,13 +155,3 @@ Checkpoints: **16:00** numbers frozen · **19:00** a real candidate on the map �
 4. Who owns UI, who owns corroboration data? Docker available on the Mac?
 5. Track: Defense (verifier as the agent-trust answer) unless a partner prompt released on-site fits better.
 
----
-
-## 9. Claims discipline (paste into README, drawer, deck)
-
-- Candidates for analyst review. Never "confirmed transfer", never "illegal".
-- Fishing vessels, 2017–2019. The method is the Oxford paper's; the tanker evidence is theirs, not ours.
-- No coordinate-level ground truth exists. WCPFC: 78% of AIS-only transshipment candidates were unsubstantiated. We show that number.
-- The meeting point is a heuristic square, never a track, never a location.
-- VIIRS "no detection" is reported as clear-sky-no-lights or no-coverage, never as absence.
-- Skylight, GFW, AI2, the Oxford authors, and NOAA EOG are prior art and data providers, credited in the drawer. No affiliation implied.
