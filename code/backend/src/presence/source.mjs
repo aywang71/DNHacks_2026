@@ -64,9 +64,11 @@ function readRows(payload, expectedDataset) {
     assert(entry && typeof entry === 'object' && !Array.isArray(entry), 'Invalid dataset envelope')
     assert(Object.keys(entry).length > 0, 'Empty dataset envelope')
     for (const [datasetVersion, values] of Object.entries(entry)) {
-      assert(datasetVersion.startsWith('public-global-presence:') && Array.isArray(values), 'Unsupported presence dataset envelope')
+      assert(datasetVersion.startsWith('public-global-presence:') && (values === null || Array.isArray(values)), 'Unsupported presence dataset envelope')
       assert(datasetVersion === expectedDataset, 'Dataset version differs from manifest')
-      for (const row of values) { assert(row && typeof row === 'object' && !Array.isArray(row), 'Invalid observation row'); rows.push({ datasetVersion, row }) }
+      // GFW represents some successfully queried empty days as a null dataset
+      // value and others as an empty array. Both mean covered with zero rows.
+      for (const row of values ?? []) { assert(row && typeof row === 'object' && !Array.isArray(row), 'Invalid observation row'); rows.push({ datasetVersion, row }) }
     }
   }
   return rows

@@ -55,7 +55,7 @@ Generated assets remain ignored at `code/frontend/public/data/presence/` and are
 
 ## Import rules and observation meaning
 
-Reports contain `entries: [{ "public-global-presence:v4.0": [rows] }]`. In the current reports `total: 1` counts the dataset envelope, not its thousands of observations. The importer requires matching envelope totals when supplied, `nextOffset: null` or absent, and an initial/null offset. An empty dataset array is valid; an empty envelope object is not.
+Reports contain `entries: [{ "public-global-presence:v4.0": [rows] }]`. GFW also represents a successfully queried day with no observations as a `null` dataset value. In the current reports `total: 1` counts the dataset envelope, not its thousands of observations. The importer requires matching envelope totals when supplied, `nextOffset: null` or absent, and an initial/null offset. Empty arrays and null dataset values are valid covered-empty results; an empty envelope object is not.
 
 Each report requires a sibling manifest with `created_at`, `dataset_version`, `row_count`, and a `request` describing an hourly, unaggregated, vessel-grouped report, its region, spatial resolution, and half-open UTC date range. Supported spatial resolutions are HIGH (0.01°) and LOW (0.1°). Embedded paths may contain Windows separators; discovery uses actual sibling files instead.
 
@@ -133,8 +133,10 @@ Snapshot verified from the repository's presence files on September 5, 2026:
 | --- | ---: | ---: | ---: |
 | Jan 1, 2022, 00:00 UTC | 1,975 | 1,975 | 1 |
 | Aug 1, 2026, 00:00–23:00 UTC | 31,477 | 1,973 | 24 |
+| Aug 5–Sep 1, 2026, available daily reports | 874,704 | varies by day | 672 |
+| Sep 2–4, 2026, covered-empty reports | 0 | 0 | 72 |
 
-Three reports contain two distinct payloads. Export totals are **33,452 observations and 25 covered hours**; there are 3,340 distinct vessels across the two dates. The August first frame contains 1,184 positions; the last contains 1,280. Do not interpret the years between these dates as continuous imported coverage.
+The export currently contains **1,019,256 observations across 817 covered hours on 35 UTC dates**. It includes two September 2021 days, the one-hour January 2022 report, and daily reports from August 1 plus August 5 through September 4, 2026. September 2–4 are covered-empty responses. The August 1 first frame contains 1,184 positions; the last contains 1,280. Dates missing from that sequence are not imported coverage.
 
 Run both independent Node test suites and the frontend build from the repository root:
 
