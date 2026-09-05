@@ -1,2 +1,0 @@
-[console_scripts]
-dark-rendezvous = dark_rendezvous.cli:main

@@ -18,7 +18,7 @@ vessel's hidden route or call a gap intentional disabling.
     dark-rendezvous ingest-noaa --date 2024-01-01
 
 The command downloads the requested public NOAA daily GeoParquet object to a
-Git-ignored bronze directory, writes normalized positions to silver Parquet,
+bronze directory, writes normalized positions to silver Parquet,
 and records a SHA-256 manifest. NOAA is U.S. terrestrial AIS for development
 and validation, not high-seas claims.
 
@@ -38,4 +38,7 @@ token:
 
 See [AIS ingestion architecture](docs/ais-ingestion.md) for source boundaries,
 the schema, and commands; see the [Bronze backfill runbook](docs/bronze-backfill-runbook.md)
-for a separate-agent ingestion handoff.
+for a separate-agent ingestion handoff. The [targeted raw-AIS plan](docs/targeted-raw-ais-plan.md)
+defines the candidate-driven minute-level acquisition workflow and the
+synthetic-data boundary. [REPO_MAP.md](REPO_MAP.md) is the authoritative
+navigator for code, data locations, lineage, and legacy directories.

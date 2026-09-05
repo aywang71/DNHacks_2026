@@ -235,27 +235,36 @@ class GfwClient:
         *,
         start: str,
         end: str,
-        region_id: int,
+        region_id: int | None = None,
         region_dataset: str = "public-eez-areas",
         spatial_resolution: str = "HIGH",
         temporal_resolution: str = "HOURLY",
+        geojson: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
         """Fetch one GFW 4Wings AIS-Presence report for a bounded region/time.
 
         The API serializes reports per user. This method intentionally makes a
         single request, rather than hiding a broad global backfill behind a
-        retry loop.
+        retry loop. Existing GFW context-layer regions use GET; a custom
+        GeoJSON geometry must use POST, per the provider's API contract.
         """
+        if (region_id is None) == (geojson is None):
+            raise ValueError("Specify exactly one of region_id or geojson for a GFW Presence report.")
+        params = {
+            "datasets[0]": self.presence_dataset,
+            "date-range": f"{start},{end}",
+            "format": "JSON",
+            "group-by": "VESSEL_ID",
+            "temporal-resolution": temporal_resolution,
+            "spatial-resolution": spatial_resolution,
+            "spatial-aggregation": "false",
+        }
+        if geojson is not None:
+            return self._post("/4wings/report", params=params, body={"geojson": geojson})
         return self._get(
             "/4wings/report",
             {
-                "datasets[0]": self.presence_dataset,
-                "date-range": f"{start},{end}",
-                "format": "JSON",
-                "group-by": "VESSEL_ID",
-                "temporal-resolution": temporal_resolution,
-                "spatial-resolution": spatial_resolution,
-                "spatial-aggregation": "false",
+                **params,
                 "region-id": region_id,
                 "region-dataset": region_dataset,
             },
