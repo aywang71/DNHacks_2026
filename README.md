@@ -32,6 +32,7 @@ token:
     $env:GFW_API_TOKEN = "<token kept outside the repository>"
     dark-rendezvous gfw-gaps --start-date 2024-01-01 --end-date 2024-01-31
     dark-rendezvous gfw-gaps-pull --start-date 2017-01-01 --end-date 2017-02-01
+    dark-rendezvous gfw-presence --start 2022-01-01T00:00:00Z --end 2022-01-01T01:00:00Z --region-id 5690
     dark-rendezvous gfw-track --vessel-id <gfw-vessel-id> --start-date 2017-01-01 --end-date 2017-02-01
     dark-rendezvous gfw-identity --query 9175717
 
