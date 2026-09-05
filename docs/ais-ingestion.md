@@ -126,6 +126,32 @@ They are an append-only snapshot, so deduplicate a later analysis view by
 source snapshots. Use `--max-pages` only for a bounded probe: its run manifest
 will explicitly record `complete: false` when pagination stops early.
 
+Pass `--bronze-only` for an independent long-running acquisition job. It saves
+the response and page manifest but does not write or overwrite any Silver
+artifacts. The operational handoff is in
+[the Bronze backfill runbook](bronze-backfill-runbook.md).
+
+### GFW per-vessel track points
+
+`gfw-track` calls GFW's documented per-vessel `/tracks` route for a selected
+GFW vessel ID and time range. It requests JSON line segments with `LONLAT`,
+`TIMESTAMP`, `SPEED`, and `COURSE`, without server-side thinning. The connector
+retains the raw response, expands each returned coordinate into the canonical
+point schema, and writes a distinct `gfw_track_points` table:
+
+    dark-rendezvous gfw-track --vessel-id <gfw-vessel-id> \
+        --start-date 2017-01-01 --end-date 2017-02-01
+
+    data/bronze/gfw_tracks/gfw_vessel_id=<id>/start=YYYY-MM-DD/end=YYYY-MM-DD/track.lines.json
+    data/silver/gfw_track_points/gfw_vessel_id=<id>/start=YYYY-MM-DD/end=YYYY-MM-DD/points.parquet
+
+These are labelled `position_semantics=gfw_derived_track`; they must not be
+called raw AIS. The track API does not document an hourly sampling parameter,
+so preserve native returned points and construct a separate hourly display view
+only after retrieval. A frontend should draw returned pre/post-gap points as a
+visible path and render the intervening AIS-off interval as uncertainty, never
+as interpolated observed motion.
+
 GFW's AIS-disabling repository provides useful gap/reception methodology and a
 final event dataset, but its raw AIS message tables are license-restricted. It
 is a validation and method reference, not a raw-AIS provider.

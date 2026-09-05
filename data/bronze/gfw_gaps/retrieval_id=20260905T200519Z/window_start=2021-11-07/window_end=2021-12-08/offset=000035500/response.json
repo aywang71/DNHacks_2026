@@ -1,0 +1,687 @@
+{
+  "entries": [
+    {
+      "boundingBox": [
+        -29.475895,
+        -17.058755,
+        -26.010081666666668,
+        -16.034055
+      ],
+      "distances": {
+        "endDistanceFromPortKm": 975.811312,
+        "endDistanceFromShoreKm": 493,
+        "startDistanceFromPortKm": 1331.012,
+        "startDistanceFromShoreKm": 516
+      },
+      "end": "2021-12-09T03:42:12.000Z",
+      "gap": {
+        "distanceKm": "386.58473875592955",
+        "durationHours": 27.85,
+        "impliedSpeedKnots": "7.495118843928822",
+        "intentionalDisabling": true,
+        "offPosition": {
+          "lat": -17.058755,
+          "lon": -26.010081666666668
+        },
+        "onPosition": {
+          "lat": "-16.034055",
+          "lon": "-29.475895"
+        },
+        "positions12HoursBeforeSat": "32",
+        "positionsPerDaySatReception": 47.45514357356706
+      },
+      "id": "aaba69915ea83399bc6ae073f460e9bd",
+      "position": {
+        "lat": -16.5536,
+        "lon": -27.7476
+      },
+      "regions": {
+        "eez": [],
+        "eez12Nm": [],
+        "fao": [
+          "41",
+          "41.1.4",
+          "41.1"
+        ],
+        "highSeas": [],
+        "majorFao": [
+          "41"
+        ],
+        "mpa": [],
+        "mpaNoTake": [],
+        "mpaNoTakePartial": [],
+        "rfmo": [
+          "ICCAT",
+          "ACAP",
+          "IWC"
+        ]
+      },
+      "start": "2021-12-07T23:50:24.000Z",
+      "type": "gap",
+      "vessel": {
+        "flag": "CHN",
+        "id": "c234ddc25-5ca9-80bb-f54d-0274472f6492",
+        "name": "LX622 #023 88%",
+        "nextPort": null,
+        "ssvid": "412201809",
+        "type": "fishing"
+      }
+    },
+    {
+      "boundingBox": [
+        -105.55329833333333,
+        -16.408858333333335,
+        -105.54391833333334,
+        -16.386066666666668
+      ],
+      "distances": {
+        "endDistanceFromPortKm": 1249.837125,
+        "endDistanceFromShoreKm": 1246,
+        "startDistanceFromPortKm": 1247.39525,
+        "startDistanceFromShoreKm": 1243
+      },
+      "end": "2021-12-08T12:19:09.000Z",
+      "gap": {
+        "distanceKm": "2.7246946662324985",
+        "durationHours": 12.45,
+        "impliedSpeedKnots": "0.11817007408608511",
+        "intentionalDisabling": true,
+        "offPosition": {
+          "lat": -16.408858333333335,
+          "lon": -105.55329833333333
+        },
+        "onPosition": {
+          "lat": "-16.386066666666668",
+          "lon": "-105.54391833333334"
+        },
+        "positions12HoursBeforeSat": "60",
+        "positionsPerDaySatReception": 147.9341204354748
+      },
+      "id": "5ba4e263b793bec21159a93179b16458",
+      "position": {
+        "lat": -16.3975,
+        "lon": -105.5486
+      },
+      "regions": {
+        "eez": [],
+        "eez12Nm": [],
+        "fao": [
+          "87",
+          "87.1",
+          "87.1.4"
+        ],
+        "highSeas": [],
+        "majorFao": [
+          "87"
+        ],
+        "mpa": [],
+        "mpaNoTake": [],
+        "mpaNoTakePartial": [],
+        "rfmo": [
+          "ACAP",
+          "SPRFMO",
+          "IWC",
+          "IATTC"
+        ]
+      },
+      "start": "2021-12-07T23:51:12.000Z",
+      "type": "gap",
+      "vessel": {
+        "flag": null,
+        "id": "a6f9d205b-b2b5-4f6a-39da-e8db85891062",
+        "name": "BUOY-05  100%",
+        "nextPort": null,
+        "ssvid": "168804091",
+        "type": "gear"
+      }
+    },
+    {
+      "boundingBox": [
+        -88.60489,
+        5.489568333333334,
+        -88.52888,
+        5.505748333333333
+      ],
+      "distances": {
+        "endDistanceFromPortKm": 165.046984,
+        "endDistanceFromShoreKm": 158,
+        "startDistanceFromPortKm": 172.713984,
+        "startDistanceFromShoreKm": 166
+      },
+      "end": "2021-12-08T13:39:14.000Z",
+      "gap": {
+        "distanceKm": "8.60328422078709",
+        "durationHours": 13.783333333333333,
+        "impliedSpeedKnots": "0.33703036375409406",
+        "intentionalDisabling": true,
+        "offPosition": {
+          "lat": 5.505748333333333,
+          "lon": -88.60489
+        },
+        "onPosition": {
+          "lat": "5.489568333333334",
+          "lon": "-88.52888"
+        },
+        "positions12HoursBeforeSat": "37",
+        "positionsPerDaySatReception": 24.451489424483903
+      },
+      "id": "31341f9e2c927f9e526db7fd89be8534",
+      "position": {
+        "lat": 5.4977,
+        "lon": -88.5669
+      },
+      "regions": {
+        "eez": [
+          "8424"
+        ],
+        "eez12Nm": [],
+        "fao": [
+          "77"
+        ],
+        "highSeas": [],
+        "majorFao": [
+          "77"
+        ],
+        "mpa": [],
+        "mpaNoTake": [],
+        "mpaNoTakePartial": [],
+        "rfmo": [
+          "ACAP",
+          "IATTC",
+          "IWC"
+        ]
+      },
+      "start": "2021-12-07T23:52:07.000Z",
+      "type": "gap",
+      "vessel": {
+        "flag": null,
+        "id": "6eaf6bee6-6c00-5738-1844-77425f3d49c2",
+        "name": "CIMAR RESEARCH-2",
+        "nextPort": null,
+        "ssvid": "877227085",
+        "type": "other"
+      }
+    },
+    {
+      "boundingBox": [
+        -148.89283833333334,
+        35.106156666666664,
+        -148.15425666666667,
+        35.84438
+      ],
+      "distances": {
+        "endDistanceFromPortKm": 1847.99225,
+        "endDistanceFromShoreKm": 1828,
+        "startDistanceFromPortKm": 1744.99025,
+        "startDistanceFromShoreKm": 1724
+      },
+      "end": "2021-12-08T16:47:39.000Z",
+      "gap": {
+        "distanceKm": "105.88276385113399",
+        "durationHours": 16.916666666666668,
+        "impliedSpeedKnots": "3.3796326331102784",
+        "intentionalDisabling": true,
+        "offPosition": {
+          "lat": 35.106156666666664,
+          "lon": -148.89283833333334
+        },
+        "onPosition": {
+          "lat": "35.84438",
+          "lon": "-148.15425666666667"
+        },
+        "positions12HoursBeforeSat": "53",
+        "positionsPerDaySatReception": 90.60432431324963
+      },
+      "id": "bf7d1aa5931341b2fd59556096b2a2fa",
+      "position": {
+        "lat": 35.4758,
+        "lon": -148.5252
+      },
+      "regions": {
+        "eez": [],
+        "eez12Nm": [],
+        "fao": [
+          "77"
+        ],
+        "highSeas": [],
+        "majorFao": [
+          "77"
+        ],
+        "mpa": [],
+        "mpaNoTake": [],
+        "mpaNoTakePartial": [],
+        "rfmo": [
+          "ACAP",
+          "IATTC",
+          "NPFC",
+          "IWC",
+          "NPAFC"
+        ]
+      },
+      "start": "2021-12-07T23:52:17.000Z",
+      "type": "gap",
+      "vessel": {
+        "flag": null,
+        "id": "03abf3c93-313f-7059-8d9b-95eadb8ea097",
+        "name": "994030463         8V",
+        "nextPort": null,
+        "ssvid": "994030463",
+        "type": "gear"
+      }
+    },
+    {
+      "boundingBox": [
+        -133.83434833333334,
+        -11.914895,
+        -133.3997883333,
+        -11.9005066667
+      ],
+      "distances": {
+        "endDistanceFromPortKm": 596.735812,
+        "endDistanceFromShoreKm": 590,
+        "startDistanceFromPortKm": 552.011,
+        "startDistanceFromShoreKm": 545
+      },
+      "end": "2021-12-08T15:25:02.000Z",
+      "gap": {
+        "distanceKm": "47.30819385472622",
+        "durationHours": 15.533333333333333,
+        "impliedSpeedKnots": "1.6444880556477472",
+        "intentionalDisabling": true,
+        "offPosition": {
+          "lat": -11.914895,
+          "lon": -133.83434833333334
+        },
+        "onPosition": {
+          "lat": "-11.9005066667",
+          "lon": "-133.3997883333"
+        },
+        "positions12HoursBeforeSat": "119",
+        "positionsPerDaySatReception": 148.42290095719122
+      },
+      "id": "4d3167f13d3b9e811ec6ac111dacb63d",
+      "position": {
+        "lat": -11.9078,
+        "lon": -133.6171
+      },
+      "regions": {
+        "eez": [],
+        "eez12Nm": [],
+        "fao": [
+          "77"
+        ],
+        "highSeas": [],
+        "majorFao": [
+          "77"
+        ],
+        "mpa": [],
+        "mpaNoTake": [],
+        "mpaNoTakePartial": [],
+        "rfmo": [
+          "ACAP",
+          "SPRFMO",
+          "WCPFC",
+          "IATTC",
+          "IWC"
+        ]
+      },
+      "start": "2021-12-07T23:52:33.000Z",
+      "type": "gap",
+      "vessel": {
+        "flag": null,
+        "id": "daaebcc7d-da04-7e96-2baa-cf5f2124684e",
+        "name": null,
+        "nextPort": null,
+        "ssvid": "890903004",
+        "type": "gear"
+      }
+    },
+    {
+      "boundingBox": [
+        -117.18880166666666,
+        -19.861121666666666,
+        -117.090935,
+        -19.834948333333333
+      ],
+      "distances": {
+        "endDistanceFromPortKm": 1126.028375,
+        "endDistanceFromShoreKm": 956,
+        "startDistanceFromPortKm": 1130.650875,
+        "startDistanceFromShoreKm": 946
+      },
+      "end": "2021-12-08T16:57:59.000Z",
+      "gap": {
+        "distanceKm": "10.6415541746276",
+        "durationHours": 17.066666666666666,
+        "impliedSpeedKnots": "0.33667849077731427",
+        "intentionalDisabling": true,
+        "offPosition": {
+          "lat": -19.861121666666666,
+          "lon": -117.18880166666666
+        },
+        "onPosition": {
+          "lat": "-19.834948333333333",
+          "lon": "-117.090935"
+        },
+        "positions12HoursBeforeSat": "109",
+        "positionsPerDaySatReception": 185.15400002380304
+      },
+      "id": "ed3759a2273cecb10507c83d5d07dd45",
+      "position": {
+        "lat": -19.848,
+        "lon": -117.1399
+      },
+      "regions": {
+        "eez": [],
+        "eez12Nm": [],
+        "fao": [
+          "87",
+          "87.2.6",
+          "87.2"
+        ],
+        "highSeas": [],
+        "majorFao": [
+          "87"
+        ],
+        "mpa": [],
+        "mpaNoTake": [],
+        "mpaNoTakePartial": [],
+        "rfmo": [
+          "ACAP",
+          "SPRFMO",
+          "IATTC",
+          "IWC"
+        ]
+      },
+      "start": "2021-12-07T23:53:41.000Z",
+      "type": "gap",
+      "vessel": {
+        "flag": null,
+        "id": "6b9cf73a0-04be-83bf-6e2e-b5eb13eb0f8b",
+        "name": "XINLONG8-002 82%",
+        "nextPort": null,
+        "ssvid": "590602532",
+        "type": "gear"
+      }
+    },
+    {
+      "boundingBox": [
+        -129.17721333333333,
+        -12.196086666666666,
+        -129.148715,
+        -11.817975
+      ],
+      "distances": {
+        "endDistanceFromPortKm": 1046.272125,
+        "endDistanceFromShoreKm": 1041,
+        "startDistanceFromPortKm": 1055.735625,
+        "startDistanceFromShoreKm": 1041
+      },
+      "end": "2021-12-10T19:30:04.000Z",
+      "gap": {
+        "distanceKm": "42.15826091175428",
+        "durationHours": 67.58333333333333,
+        "impliedSpeedKnots": "0.3368232769592585",
+        "intentionalDisabling": true,
+        "offPosition": {
+          "lat": -12.196086666666666,
+          "lon": -129.148715
+        },
+        "onPosition": {
+          "lat": "-11.817975",
+          "lon": "-129.17721333333333"
+        },
+        "positions12HoursBeforeSat": "112",
+        "positionsPerDaySatReception": 160.641165421352
+      },
+      "id": "8eb5f262cebaec0e4ff58c84704c1d94",
+      "position": {
+        "lat": -12.007,
+        "lon": -129.163
+      },
+      "regions": {
+        "eez": [],
+        "eez12Nm": [],
+        "fao": [
+          "77"
+        ],
+        "highSeas": [],
+        "majorFao": [
+          "77"
+        ],
+        "mpa": [],
+        "mpaNoTake": [],
+        "mpaNoTakePartial": [],
+        "rfmo": [
+          "ACAP",
+          "SPRFMO",
+          "IATTC",
+          "IWC"
+        ]
+      },
+      "start": "2021-12-07T23:54:29.000Z",
+      "type": "gap",
+      "vessel": {
+        "flag": null,
+        "id": "45c6ee48c-c5ac-feda-b2ec-1861a82076b0",
+        "name": "BUOY-07           9V",
+        "nextPort": null,
+        "ssvid": "994008227",
+        "type": "gear"
+      }
+    },
+    {
+      "boundingBox": [
+        179.18542,
+        33.9965,
+        179.283465,
+        34.11743833333333
+      ],
+      "distances": {
+        "endDistanceFromPortKm": 2013.907625,
+        "endDistanceFromShoreKm": 665,
+        "startDistanceFromPortKm": 1999.51325,
+        "startDistanceFromShoreKm": 674
+      },
+      "end": "2021-12-08T17:40:05.000Z",
+      "gap": {
+        "distanceKm": "16.19946350522029",
+        "durationHours": 17.733333333333334,
+        "impliedSpeedKnots": "0.4932524736076916",
+        "intentionalDisabling": true,
+        "offPosition": {
+          "lat": 34.11743833333333,
+          "lon": 179.283465
+        },
+        "onPosition": {
+          "lat": "33.9965",
+          "lon": "179.18542"
+        },
+        "positions12HoursBeforeSat": "26",
+        "positionsPerDaySatReception": 136.7996315793269
+      },
+      "id": "2d0c726864f0ee2e7c21faef795481b5",
+      "position": {
+        "lat": 34.057,
+        "lon": 179.2344
+      },
+      "regions": {
+        "eez": [],
+        "eez12Nm": [],
+        "fao": [
+          "61"
+        ],
+        "highSeas": [],
+        "majorFao": [
+          "61"
+        ],
+        "mpa": [],
+        "mpaNoTake": [],
+        "mpaNoTakePartial": [],
+        "rfmo": [
+          "ACAP",
+          "PICES",
+          "WCPFC",
+          "NPFC",
+          "IWC",
+          "NPAFC"
+        ]
+      },
+      "start": "2021-12-07T23:55:18.000Z",
+      "type": "gap",
+      "vessel": {
+        "flag": null,
+        "id": "b6bb89a56-6f8b-dab0-937c-baac08b55715",
+        "name": "BUOY101-13  100%",
+        "nextPort": null,
+        "ssvid": "168803860",
+        "type": "gear"
+      }
+    },
+    {
+      "boundingBox": [
+        68.00351833333333,
+        -3.1780033333333333,
+        69.50028333333333,
+        1.9430666666666667
+      ],
+      "distances": {
+        "endDistanceFromPortKm": 667.125875,
+        "endDistanceFromShoreKm": 475,
+        "startDistanceFromPortKm": 456.79175,
+        "startDistanceFromShoreKm": 383
+      },
+      "end": "2022-01-15T04:44:10.000Z",
+      "gap": {
+        "distanceKm": "593.2434371524733",
+        "durationHours": 916.8,
+        "impliedSpeedKnots": "0.34939553882628266",
+        "intentionalDisabling": true,
+        "offPosition": {
+          "lat": 1.9430666666666667,
+          "lon": 69.50028333333333
+        },
+        "onPosition": {
+          "lat": "-3.1780033333333333",
+          "lon": "68.00351833333333"
+        },
+        "positions12HoursBeforeSat": "34",
+        "positionsPerDaySatReception": 13.962258132485962
+      },
+      "id": "a6896dbaf3d5d6dc220dc89d564377b6",
+      "position": {
+        "lat": -0.6175,
+        "lon": 68.7523
+      },
+      "regions": {
+        "eez": [],
+        "eez12Nm": [],
+        "fao": [
+          "51",
+          "51.4"
+        ],
+        "highSeas": [],
+        "majorFao": [
+          "51"
+        ],
+        "mpa": [],
+        "mpaNoTake": [],
+        "mpaNoTakePartial": [],
+        "rfmo": [
+          "ACAP",
+          "IOTC",
+          "IWC"
+        ]
+      },
+      "start": "2021-12-07T23:55:28.000Z",
+      "type": "gap",
+      "vessel": {
+        "flag": null,
+        "id": "dabff9046-62b9-23a4-13e9-abbe539efa30",
+        "name": "IMULA-0923 CHW BU A",
+        "nextPort": null,
+        "ssvid": "994177171",
+        "type": "gear"
+      }
+    },
+    {
+      "boundingBox": [
+        -150.41946,
+        -2.9376116666666667,
+        -150.3313983333,
+        -1.3786616667
+      ],
+      "distances": {
+        "endDistanceFromPortKm": 878.407312,
+        "endDistanceFromShoreKm": 585,
+        "startDistanceFromPortKm": 956.28125,
+        "startDistanceFromShoreKm": 512
+      },
+      "end": "2021-12-09T14:56:43.000Z",
+      "gap": {
+        "distanceKm": "173.62353908578908",
+        "durationHours": 38.95,
+        "impliedSpeedKnots": "2.4069117116670746",
+        "intentionalDisabling": true,
+        "offPosition": {
+          "lat": -2.9376116666666667,
+          "lon": -150.41946
+        },
+        "onPosition": {
+          "lat": "-1.3786616667",
+          "lon": "-150.3313983333"
+        },
+        "positions12HoursBeforeSat": "67",
+        "positionsPerDaySatReception": 163.61507979043213
+      },
+      "id": "6aca60b689b442eb7d73cb4bb2d2d0fb",
+      "position": {
+        "lat": -2.1581,
+        "lon": -150.3754
+      },
+      "regions": {
+        "eez": [],
+        "eez12Nm": [],
+        "fao": [
+          "77"
+        ],
+        "highSeas": [],
+        "majorFao": [
+          "77"
+        ],
+        "mpa": [],
+        "mpaNoTake": [],
+        "mpaNoTakePartial": [],
+        "rfmo": [
+          "ACAP",
+          "SPRFMO",
+          "WCPFC",
+          "IWC"
+        ]
+      },
+      "start": "2021-12-07T23:59:00.000Z",
+      "type": "gap",
+      "vessel": {
+        "flag": null,
+        "id": "ef0ba6bea-a0c2-b80f-bb05-5348f59df290",
+        "name": "LQ22006",
+        "nextPort": null,
+        "ssvid": "111111513",
+        "type": "gear"
+      }
+    }
+  ],
+  "limit": 500,
+  "metadata": {
+    "datasets": [
+      "public-global-gaps-events:v4.0"
+    ],
+    "dateRange": {
+      "from": "2021-11-07",
+      "to": "2021-12-08"
+    }
+  },
+  "nextOffset": null,
+  "offset": 35500,
+  "total": 35510
+}

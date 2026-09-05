@@ -128,6 +128,8 @@ class GfwClient:
     base_url = "https://gateway.api.globalfishingwatch.org/v3"
     identity_dataset = "public-global-vessel-identity:latest"
     gaps_dataset = "public-global-gaps-events:latest"
+    tracks_dataset = "public-global-fishing-tracks:latest"
+    presence_dataset = "public-global-presence:latest"
 
     def __init__(self, token: str, *, timeout_seconds: float = 30.0) -> None:
         if not token:
@@ -136,11 +138,14 @@ class GfwClient:
         self._timeout_seconds = timeout_seconds
         self.last_dataset_version: str | None = None
 
-    def _get(self, path: str, params: dict[str, Any]) -> dict[str, Any]:
+    def _get(self, path: str, params: Any, *, extra_headers: dict[str, str] | None = None) -> Any:
+        headers = {"Authorization": f"Bearer {self._token}"}
+        if extra_headers:
+            headers.update(extra_headers)
         response = httpx.get(
             f"{self.base_url}{path}",
             params=params,
-            headers={"Authorization": f"Bearer {self._token}"},
+            headers=headers,
             timeout=self._timeout_seconds,
         )
         response.raise_for_status()
@@ -197,3 +202,66 @@ class GfwClient:
             params={"offset": offset, "limit": limit},
             body=body,
         )
+
+    def track_lines(
+        self,
+        *,
+        vessel_id: str,
+        start_date: str,
+        end_date: str,
+    ) -> dict[str, Any]:
+        """Fetch GFW's JSON, non-binary vessel-track representation.
+
+        This is a provider-derived track representation, not an AIS-message
+        endpoint. Deliberately omit server-side thinning so the API returns its
+        greatest available native detail; a separate view can downsample it to
+        hourly points for frontend use.
+        """
+        params: list[tuple[str, str]] = [
+            ("dataset", self.tracks_dataset),
+            ("start-date", start_date),
+            ("end-date", end_date),
+            ("format", "LINES"),
+            ("binary", "false"),
+            ("fields[0]", "LONLAT"),
+            ("fields[1]", "TIMESTAMP"),
+            ("fields[2]", "SPEED"),
+            ("fields[3]", "COURSE"),
+        ]
+        return self._get(f"/vessels/{vessel_id}/tracks", params)
+
+    def presence_report(
+        self,
+        *,
+        start: str,
+        end: str,
+        region_id: int,
+        region_dataset: str = "public-eez-areas",
+        spatial_resolution: str = "HIGH",
+        temporal_resolution: str = "HOURLY",
+    ) -> dict[str, Any]:
+        """Fetch one GFW 4Wings AIS-Presence report for a bounded region/time.
+
+        The API serializes reports per user. This method intentionally makes a
+        single request, rather than hiding a broad global backfill behind a
+        retry loop.
+        """
+        return self._get(
+            "/4wings/report",
+            {
+                "datasets[0]": self.presence_dataset,
+                "date-range": f"{start},{end}",
+                "format": "JSON",
+                "group-by": "VESSEL_ID",
+                "temporal-resolution": temporal_resolution,
+                "spatial-resolution": spatial_resolution,
+                "spatial-aggregation": "false",
+                "region-id": region_id,
+                "region-dataset": region_dataset,
+            },
+            extra_headers={"Content-Language": "en-EN"},
+        )
+
+    def last_presence_report(self) -> dict[str, Any]:
+        """Return this account's last generated 4Wings report for explicit recovery."""
+        return self._get("/4wings/last-report", {})

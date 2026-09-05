@@ -32,7 +32,9 @@ token:
     $env:GFW_API_TOKEN = "<token kept outside the repository>"
     dark-rendezvous gfw-gaps --start-date 2024-01-01 --end-date 2024-01-31
     dark-rendezvous gfw-gaps-pull --start-date 2017-01-01 --end-date 2017-02-01
+    dark-rendezvous gfw-track --vessel-id <gfw-vessel-id> --start-date 2017-01-01 --end-date 2017-02-01
     dark-rendezvous gfw-identity --query 9175717
 
 See [AIS ingestion architecture](docs/ais-ingestion.md) for source boundaries,
-the schema, and commands.
+the schema, and commands; see the [Bronze backfill runbook](docs/bronze-backfill-runbook.md)
+for a separate-agent ingestion handoff.

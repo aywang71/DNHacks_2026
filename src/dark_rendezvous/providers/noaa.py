@@ -69,5 +69,5 @@ class NoaaMarineCadastreProvider:
             raw_payload_hash=raw.sha256,
             dataset_version=raw.path.parent.name,
             collection_mode="terrestrial",
+            position_semantics="terrestrial_ais_minute_downsampled",
         )
-

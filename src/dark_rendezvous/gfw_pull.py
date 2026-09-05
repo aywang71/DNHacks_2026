@@ -30,7 +30,8 @@ class GapPullSummary:
     complete: bool
     next_window_start: str | None
     next_offset: int | None
-    output_root: str
+    bronze_output_root: str
+    silver_output_root: str | None
 
     def to_dict(self) -> dict[str, object]:
         return asdict(self)
@@ -65,6 +66,7 @@ def pull_gap_windows(
     intentional_disabling: bool | None = True,
     max_pages: int | None = None,
     retrieval_id: str | None = None,
+    write_silver: bool = True,
 ) -> GapPullSummary:
     """Fetch GAP pages by event-start window and store immutable page artifacts.
 
@@ -84,7 +86,12 @@ def pull_gap_windows(
     complete = True
     next_window_start: str | None = None
     next_offset: int | None = None
-    run_root = silver_root / "gfw_gap_endpoints" / f"retrieval_id={run_id}"
+    bronze_run_root = bronze_root / "gfw_gaps" / f"retrieval_id={run_id}"
+    silver_run_root = (
+        silver_root / "gfw_gap_endpoints" / f"retrieval_id={run_id}"
+        if write_silver
+        else None
+    )
 
     for window_start, window_end in date_windows(start, end, window_days):
         offset = 0
@@ -116,21 +123,23 @@ def pull_gap_windows(
             write_json(raw_path, response)
 
             dataset_version = client.last_dataset_version or client.gaps_dataset
-            endpoints = normalize_gap_endpoints(
-                response,
-                source_uri=SOURCE_URI,
-                raw_payload_hash=payload_hash,
-                dataset_version=dataset_version,
-            )
-            endpoints = endpoints.sort_values(["vessel_id", "ts", "endpoint_role"], na_position="last")
-            normalized_path = (
-                run_root
-                / f"window_start={window_start.isoformat()}"
-                / f"window_end={window_end.isoformat()}"
-                / f"offset={offset:09d}"
-                / "endpoints.parquet"
-            )
-            write_parquet(endpoints, normalized_path)
+            endpoints = None
+            normalized_path = None
+            if silver_run_root is not None:
+                endpoints = normalize_gap_endpoints(
+                    response,
+                    source_uri=SOURCE_URI,
+                    raw_payload_hash=payload_hash,
+                    dataset_version=dataset_version,
+                ).sort_values(["vessel_id", "ts", "endpoint_role"], na_position="last")
+                normalized_path = (
+                    silver_run_root
+                    / f"window_start={window_start.isoformat()}"
+                    / f"window_end={window_end.isoformat()}"
+                    / f"offset={offset:09d}"
+                    / "endpoints.parquet"
+                )
+                write_parquet(endpoints, normalized_path)
             page_manifest = {
                 "source": "global_fishing_watch_events",
                 "source_uri": SOURCE_URI,
@@ -147,19 +156,20 @@ def pull_gap_windows(
                 },
                 "raw_response_path": str(raw_path),
                 "raw_response_sha256": payload_hash,
-                "normalized_path": str(normalized_path),
+                "normalized_path": str(normalized_path) if normalized_path else None,
                 "event_count": len(response.get("entries", [])),
-                "endpoint_count": len(endpoints),
+                "endpoint_count": len(endpoints) if endpoints is not None else None,
                 "reported_total_for_window": response.get("total"),
                 "next_offset": response.get("nextOffset"),
                 "dataset_version": dataset_version,
             }
             write_manifest(page_root / "manifest.json", page_manifest)
-            write_manifest(normalized_path.with_name("manifest.json"), page_manifest)
+            if normalized_path is not None:
+                write_manifest(normalized_path.with_name("manifest.json"), page_manifest)
 
             pages_written += 1
             events_written += len(response.get("entries", []))
-            endpoints_written += len(endpoints)
+            endpoints_written += len(endpoints) if endpoints is not None else 0
             next_offset_from_api = response.get("nextOffset")
             if next_offset_from_api is None:
                 break
@@ -181,7 +191,10 @@ def pull_gap_windows(
         complete=complete,
         next_window_start=next_window_start,
         next_offset=next_offset,
-        output_root=str(run_root),
+        bronze_output_root=str(bronze_run_root),
+        silver_output_root=str(silver_run_root) if silver_run_root else None,
     )
-    write_manifest(run_root / "pull_manifest.json", summary.to_dict())
+    write_manifest(bronze_run_root / "pull_manifest.json", summary.to_dict())
+    if silver_run_root is not None:
+        write_manifest(silver_run_root / "pull_manifest.json", summary.to_dict())
     return summary
