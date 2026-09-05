@@ -123,7 +123,7 @@ def normalize_gap_endpoints(
 
 
 class GfwClient:
-    """Use official V3 endpoints. These endpoints do not expose raw AIS tracks."""
+    """Use GFW V3 derived-data endpoints, never as a raw-AIS message feed."""
 
     base_url = "https://gateway.api.globalfishingwatch.org/v3"
     identity_dataset = "public-global-vessel-identity:latest"
@@ -134,6 +134,7 @@ class GfwClient:
             raise ValueError("GFW API token is required.")
         self._token = token
         self._timeout_seconds = timeout_seconds
+        self.last_dataset_version: str | None = None
 
     def _get(self, path: str, params: dict[str, Any]) -> dict[str, Any]:
         response = httpx.get(
@@ -143,6 +144,7 @@ class GfwClient:
             timeout=self._timeout_seconds,
         )
         response.raise_for_status()
+        self.last_dataset_version = response.headers.get("x-datasets")
         return response.json()
 
     def _post(self, path: str, *, params: dict[str, Any], body: dict[str, Any]) -> dict[str, Any]:
@@ -154,6 +156,7 @@ class GfwClient:
             timeout=self._timeout_seconds,
         )
         response.raise_for_status()
+        self.last_dataset_version = response.headers.get("x-datasets")
         return response.json()
 
     def search_identity(self, query: str) -> dict[str, Any]:
@@ -176,15 +179,21 @@ class GfwClient:
         end_date: str,
         offset: int = 0,
         limit: int = 100,
+        time_filter_mode: str = "OVERLAP",
+        intentional_disabling: bool | None = None,
     ) -> dict[str, Any]:
         """Fetch one documented page of derived GFW GAP events."""
+        body: dict[str, Any] = {
+            "datasets": [self.gaps_dataset],
+            "types": ["GAP"],
+            "startDate": start_date,
+            "endDate": end_date,
+            "timeFilterMode": time_filter_mode,
+        }
+        if intentional_disabling is not None:
+            body["gapIntentionalDisabling"] = intentional_disabling
         return self._post(
             "/events",
             params={"offset": offset, "limit": limit},
-            body={
-                "datasets": [self.gaps_dataset],
-                "types": ["GAP"],
-                "startDate": start_date,
-                "endDate": end_date,
-            },
+            body=body,
         )

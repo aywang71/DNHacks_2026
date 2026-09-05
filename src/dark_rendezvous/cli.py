@@ -3,12 +3,12 @@
 from __future__ import annotations
 
 import argparse
-import hashlib
-import json
 import os
 from datetime import date
 from pathlib import Path
 
+from .cli_support import json_hash, write_json
+from .gfw_pull import pull_gap_windows
 from .ingest import ingest_noaa_day, normalize_file
 from .providers.gfw import GfwClient, normalize_gap_endpoints
 from .storage import write_manifest, write_parquet
@@ -29,16 +29,6 @@ def _parse_bbox(value: str) -> tuple[float, float, float, float]:
     if len(parsed) != 4:
         raise argparse.ArgumentTypeError("bbox must have four comma-separated numbers")
     return parsed  # type: ignore[return-value]
-
-
-def _write_json(path: Path, payload: object) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
-
-
-def _json_hash(payload: object) -> str:
-    encoded = json.dumps(payload, separators=(",", ":"), sort_keys=True).encode("utf-8")
-    return hashlib.sha256(encoded).hexdigest()
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -69,6 +59,20 @@ def build_parser() -> argparse.ArgumentParser:
         type=Path,
         default=Path("data/silver/gfw_gap_endpoints/endpoints.parquet"),
     )
+
+    pull = commands.add_parser("gfw-gaps-pull", help="Fetch and retain every GAP page in calendar windows")
+    pull.add_argument("--start-date", required=True, type=_parse_date)
+    pull.add_argument("--end-date", required=True, type=_parse_date)
+    pull.add_argument("--window-days", type=int, default=31)
+    pull.add_argument("--page-size", type=int, default=500)
+    pull.add_argument("--max-pages", type=int)
+    pull.add_argument(
+        "--all-gaps",
+        action="store_true",
+        help="Include GFW GAP events regardless of its intentional-disabling classification.",
+    )
+    pull.add_argument("--bronze-root", type=Path, default=Path("data/bronze"))
+    pull.add_argument("--silver-root", type=Path, default=Path("data/silver"))
 
     identity = commands.add_parser("gfw-identity", help="Fetch and save a GFW vessel-identity response")
     identity.add_argument("--query", required=True)
@@ -106,13 +110,14 @@ def main() -> None:
             offset=args.offset,
             limit=args.limit,
         )
-        _write_json(args.output, response)
-        response_hash = _json_hash(response)
+        write_json(args.output, response)
+        response_hash = json_hash(response)
+        dataset_version = client.last_dataset_version or client.gaps_dataset
         endpoints = normalize_gap_endpoints(
             response,
             source_uri="https://gateway.api.globalfishingwatch.org/v3/events",
             raw_payload_hash=response_hash,
-            dataset_version=client.gaps_dataset,
+            dataset_version=dataset_version,
         )
         write_parquet(endpoints, args.normalized_output)
         write_manifest(
@@ -126,13 +131,27 @@ def main() -> None:
                 "row_count": len(endpoints),
                 "event_count": len(response.get("entries", [])),
                 "next_offset": response.get("nextOffset"),
-                "dataset_version": client.gaps_dataset,
+                "dataset_version": dataset_version,
             },
         )
         print(args.normalized_output)
         return
+    if args.command == "gfw-gaps-pull":
+        summary = pull_gap_windows(
+            client,
+            start=args.start_date,
+            end=args.end_date,
+            bronze_root=args.bronze_root,
+            silver_root=args.silver_root,
+            window_days=args.window_days,
+            page_size=args.page_size,
+            intentional_disabling=None if args.all_gaps else True,
+            max_pages=args.max_pages,
+        )
+        print(summary.to_dict())
+        return
     if args.command == "gfw-identity":
-        _write_json(args.output, client.search_identity(args.query))
+        write_json(args.output, client.search_identity(args.query))
         print(args.output)
         return
     raise RuntimeError(f"Unhandled command: {args.command}")

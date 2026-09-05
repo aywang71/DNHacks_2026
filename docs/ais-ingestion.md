@@ -84,6 +84,48 @@ returned as ISO-8601 instants with millisecond notation; spatial coordinates
 are decimal-degree endpoint values. Do not write these rows to the raw
 ais_positions table: retain them as the distinct gfw_gap_endpoints source.
 
+The current API response exposes `gap.offPosition` and `gap.onPosition`, which
+the connector normalizes as the two endpoint rows. They are observed response
+fields rather than a documented raw-message contract: if either disappears,
+the row is retained with quality flags rather than fabricated coordinates. The
+manifest records the requested dataset alias and uses the concrete version
+from the API response header when GFW supplies it (otherwise it retains the
+requested alias). GFW's event date filter defaults to
+`OVERLAP`, so a requested month can include an event that began before or ends
+after that month; preserve start/end timestamps and apply your analytical
+window downstream.
+
+### Paginated, append-only GAP pulls
+
+Use `gfw-gaps-pull` for an inventory or corpus pull rather than the one-page
+`gfw-gaps` smoke-test command. It requests GAPs in `START-DATE` mode, so each
+event belongs to the calendar window containing its start timestamp, and
+follows the API's `nextOffset` until the window is exhausted. The default
+keeps only GAPs classified by GFW as intentional disabling; pass `--all-gaps`
+to retain the broader population.
+
+    dark-rendezvous gfw-gaps-pull --start-date 2017-01-01 --end-date 2017-02-01 \
+        --window-days 31 --page-size 500
+
+Every API page is retained independently, never overwritten:
+
+    data/bronze/gfw_gaps/retrieval_id=<UTC-run-id>/
+      window_start=YYYY-MM-DD/window_end=YYYY-MM-DD/offset=000000000/
+        response.json
+        manifest.json
+
+    data/silver/gfw_gap_endpoints/retrieval_id=<UTC-run-id>/
+      window_start=YYYY-MM-DD/window_end=YYYY-MM-DD/offset=000000000/
+        endpoints.parquet
+        manifest.json
+      pull_manifest.json
+
+The Silver page files are ordered by `vessel_id`, timestamp, and endpoint role.
+They are an append-only snapshot, so deduplicate a later analysis view by
+`event_id`, `endpoint_role`, and dataset version rather than deleting prior
+source snapshots. Use `--max-pages` only for a bounded probe: its run manifest
+will explicitly record `complete: false` when pagination stops early.
+
 GFW's AIS-disabling repository provides useful gap/reception methodology and a
 final event dataset, but its raw AIS message tables are license-restricted. It
 is a validation and method reference, not a raw-AIS provider.
@@ -123,6 +165,7 @@ insufficient_coverage_evidence, not intentional disabling.
     dark-rendezvous ingest-noaa --date 2024-01-01 --bbox -75,35,-74,36
     dark-rendezvous normalize-file --input C:\data\provider.csv --source provider_export
     dark-rendezvous gfw-gaps --start-date 2024-01-01 --end-date 2024-01-31
+    dark-rendezvous gfw-gaps-pull --start-date 2017-01-01 --end-date 2017-02-01 --page-size 500
     dark-rendezvous gfw-identity --query <IMO-or-MMSI-or-name>
 
 All data land under data/, which is Git-ignored. Every ingestion writes a JSON
