@@ -36,10 +36,17 @@ export function InvestigationPanel({
   vessels, selected, onSelect, caseRecord, onOpenCase, onSetNotes, watching, onWatch, isOpen, onClose, filter, onFilter,
 }: InvestigationPanelProps) {
   const notesId = useId()
+  const tabsId = useId()
   const [activeTab, setActiveTab] = useState<'evidence' | 'timeline'>('evidence')
   const [notice, setNotice] = useState('')
   const visibleVessels = filter === 'all' ? vessels : vessels.filter((vessel) => vessel.riskLevel === filter)
   const caseInfo = statusCopy[caseRecord.status]
+
+  const handleTabKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>, tab: 'evidence' | 'timeline') => {
+    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return
+    event.preventDefault()
+    setActiveTab(tab === 'evidence' ? 'timeline' : 'evidence')
+  }
 
   useEffect(() => { setNotice('') }, [selected.id])
 
@@ -94,10 +101,10 @@ export function InvestigationPanel({
         <div className="investigation-grid">
           <section className="evidence-section" aria-label="Evidence review">
             <div className="tab-row" role="tablist" aria-label="Investigation detail">
-              <button role="tab" aria-selected={activeTab === 'evidence'} className={activeTab === 'evidence' ? 'is-active' : ''} onClick={() => setActiveTab('evidence')}>Evidence ({selected.evidence.length})</button>
-              <button role="tab" aria-selected={activeTab === 'timeline'} className={activeTab === 'timeline' ? 'is-active' : ''} onClick={() => setActiveTab('timeline')}>Replay timeline</button>
+              <button id={`${tabsId}-evidence-tab`} role="tab" aria-controls={`${tabsId}-evidence-panel`} aria-selected={activeTab === 'evidence'} tabIndex={activeTab === 'evidence' ? 0 : -1} className={activeTab === 'evidence' ? 'is-active' : ''} onClick={() => setActiveTab('evidence')} onKeyDown={(event) => handleTabKeyDown(event, 'evidence')}>Evidence ({selected.evidence.length})</button>
+              <button id={`${tabsId}-timeline-tab`} role="tab" aria-controls={`${tabsId}-timeline-panel`} aria-selected={activeTab === 'timeline'} tabIndex={activeTab === 'timeline' ? 0 : -1} className={activeTab === 'timeline' ? 'is-active' : ''} onClick={() => setActiveTab('timeline')} onKeyDown={(event) => handleTabKeyDown(event, 'timeline')}>Replay timeline</button>
             </div>
-            <div className="tab-content" role="tabpanel">
+            <div className="tab-content" role="tabpanel" id={`${tabsId}-${activeTab}-panel`} aria-labelledby={`${tabsId}-${activeTab}-tab`}>
               {activeTab === 'evidence' ? <div className="evidence-list">
                 {selected.evidence.map((evidence) => <div className="evidence-row" key={evidence.id}>
                   <span className={`confidence confidence-${evidence.confidence}`}>{evidence.confidence}</span>
