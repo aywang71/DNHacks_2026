@@ -1,0 +1,12 @@
+{
+  "created_at": "2026-09-05T19:23:22.810308+00:00",
+  "dataset_version": "public-global-gaps-events:latest",
+  "event_count": 1,
+  "next_offset": 1,
+  "normalized_path": "data\\silver\\gfw_gap_endpoints\\endpoints.parquet",
+  "raw_response_path": "data\\bronze\\gfw_gaps\\response.json",
+  "raw_response_sha256": "8625e85224f6c9b2e605fb40d095c2e144ef181fd9217fa3fa4f7f517a9b0001",
+  "row_count": 2,
+  "source": "global_fishing_watch_events",
+  "source_uri": "https://gateway.api.globalfishingwatch.org/v3/events"
+}

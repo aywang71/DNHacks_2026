@@ -4,6 +4,11 @@ __pycache__/
 .env
 .DS_Store
 
+# Python tooling
+.venv*/
+*.py[cod]
+.pytest_cache/
+
 # data: commit the 4 MB zip, not the 12 MB CSV or derived parquet
 data/raw/*.csv
 data/derived/*.parquet
