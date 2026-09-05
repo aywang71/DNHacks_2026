@@ -1,221 +1,247 @@
-# GapPair — proposal and plan of action
+# GapPair — backend design
 
-**Prepared:** Sat 5 Sep 2026, 14:00 EDT.
-**Status:** proposal only. Nothing beyond data download and a partial loader has been built.
-**Positioning in one line:** Skylight detects rendezvous when two vessels broadcast (Standard) or one does (Dark). GapPair is the missing third tier: **neither broadcasts**. We pair the absences, score them with the Oxford dark-shipping algorithm, and corroborate them with Skylight's own open-source night-lights detector.
+**Scope:** detection, scoring, corroboration, and the data contract the frontend consumes. UI is owned separately (see `frontend-notes.md`). Research and references are in `research-notes.md`.
 
----
-
-## 1. What we verified today (facts that shape the plan)
-
-| Question | Finding | Source |
-|---|---|---|
-| Can we modify Skylight's Dark Rendezvous model? | No. It is proprietary. Only AI2's imagery detectors are open (`allenai/vessel-detection-viirs`, `allenai/vessel-detection-sentinels`). | GitHub allenai org |
-| Can we get a Skylight account or push events into its UI? | No. Org-level letter/MOU, no timeline, read-only API, public map excludes Dark Rendezvous and tracks. | skylight.global/api-policy, support docs |
-| What does Skylight's model do, in words? | "A single vessel transmitting AIS displays rendezvous-like behavior for at least 15 minutes (speed, course)... A second vessel not transmitting AIS may be present... but is not visible to Skylight." | support.skylight.global/en_US/dark-rendezvous |
-| Is the Oxford paper's code public? | No. "Available upon request." We re-implement from Appendix A pseudocode (A.1–A.4). | paper p.A-3 |
-| Is Skylight's VIIRS detector runnable on a laptop? | Yes. Docker image, CPU only, 4 GB RAM, "results in under a second". Pretrained weights included. | allenai/vessel-detection-viirs README |
-| Is there nightly boat-detection data for 2017 without running a model? | Yes. NOAA EOG VIIRS Boat Detection, global, nightly CSV, CC BY 4.0 for the FINAL tier. | eogdata.mines.edu/products/vbd |
-| Would SAR/optical imagery cover the showcase pair? | Almost certainly not. GFW: "Sentinel-1 SAR data does not sample most of the open ocean." | GFW data caveats |
-| GFW API token? | Free, self-service, immediate. Events API serves fishing / encounters / loitering / port visits from 2017. | globalfishingwatch.org/our-apis |
-| Data on disk? | Yes. 55,368 gaps, all 15 columns, 815 invalid MMSIs quarantined (matches the Aug 31 run exactly). | `data/raw`, `data/derived/exclusions.json` |
-| Local prior work? | `pipeline/load.py` done; `pipeline/pair.py` written, never run; nulls/features not written. Skylight UI screenshots saved to `tmp/skylight-ref/`. Paper Figure 1 at `tmp/pdfs/dark-page-11.png`. | this session |
-| Is there a fisheries analog to the paper's "sanctioned country" list? | Yes. The EU IUU carding list. Taiwan held a yellow card from Oct 2015 to 27 Jun 2019, spanning the whole corpus and the TWN vessel in the showcase pair. Vietnam carded 2017; Cambodia red. | ec.europa.eu/commission/presscorner/detail/en/ip_19_3397 |
-| Is the showcase water managed by an RFMO with a registry and IUU list? | Yes. 42.7°N 162°E is inside the North Pacific Fisheries Commission area, which manages neon flying squid, keeps a vessel registry, and has kept an IUU vessel list under CMM 2017-02. | npfc.int/npfc-iuu-vessel-list |
-| Does Skylight publish any of its AIS behaviour code? | Yes. `allenai/atlantes` (Apache-2.0, pushed Jul 2026) holds the ATLAS activity and vessel-type models with weights, the changepoint detector (2 h gap rule), and the one-sided-rendezvous label script. No rendezvous model or weights are public. Details in §4. | github.com/allenai/atlantes |
-
-The showcase pair is two **squid jiggers**. Squid jiggers fish under lights so bright they are the single most detectable vessel class in VIIRS night imagery. That is the luckiest fact in this project and the plan is built around it.
+**Claim we build toward:** GapPair turns AIS behaviour and AIS silence into a ranked, auditable queue of rendezvous candidates across three visibility tiers, with every score component shown and a calibrated chance baseline for the tiers where the meeting is inferred rather than observed. It never asserts that a transfer or a crime occurred.
 
 ---
 
-## 2. Reuse map — the Oxford paper
+## 1. Detection tiers: divide the cases by what AIS can see
 
-Appendix A gives four algorithms. Our corpus has only gap endpoints (no headings, speed, draft, or tracks), so each is either reused, adapted with a stated substitution, or dropped.
+A rendezvous involves two vessels. At the time of the meeting each is either broadcasting or dark, which gives three cases. Each case has a different observable signature, a different documented rule to cite, and a different meeting-point status.
 
-| Paper component | Verdict | How we use it |
-|---|---|---|
-| **Level 1 trip classification** (trip starts or ends at a port in a sanctioned country → suspicious before any gap analysis) | **Adapt as a "trip and identity context" block.** | No sanctions list for fishing, so four public risk lists play the same role: (1) flag-state risk from the EU IUU carding list, the fisheries analog of the paper's Paris MoU list; (2) RFMO authorization for the water where the vessel went dark, from GFW Vessels API public authorizations (NPFC registry for the showcase pair); (3) port country before and after the gap from GFW port-visit events, with non-parties to the FAO Port State Measures Agreement as risk ports; (4) the combined RFMO IUU vessel list. Together these are `context_risk`. |
-| **Fig. 1c geometry** (last signal → dashed projection → intersection point → first signal, two colours, "long data gap" brackets) | **Reuse as the per-candidate map drawing.** | Render exactly this from the four endpoints. Square marker labelled "feasible meeting point (heuristic)". |
-| **A.2 ship-to-ship suspicion score** (overlapping gaps → meeting time = overlap midpoint → required speed out and back → 1 − percentile of required speed) | **Adapt.** | Meeting point: no headings, so evaluate a small set of candidates (midpoint of starts, midpoint of ends, centroid, and a 5×5 grid around the centroid) and take the one minimising the larger vessel's required speed. Percentile reference: the corpus-wide distribution of implied gap speed (start→end distance / gap hours). Output: `sts_plausibility ∈ [0,1]`. |
-| **A.3 heading intersection** | **Drop, state why.** | Headings are not in the public corpus. Optional Sunday-morning add: the vessel's last GFW fishing event before the gap gives a coarse direction of travel. |
-| **A.1 port-based suspicion** (required speed to reach the nearest suspicious port and return during the gap; low required speed → high suspicion) | **Reuse with the paper's sign.** | Against the risk-port list from Level 1 (non-PSMA ports, ports in carded flag states) it is a positive feature `risk_port_reach`: a vessel dark offshore that could have reached a risk port and returned is the unreported-landing pattern. Against a generic port list (Natural Earth `ne_10m_ports`) the same geometry only yields the `possible-port-transit` label. 7% of gaps end inside 50 nm with a 66 h median, so this fires often enough to matter. |
-| **Long-gap definition** (per-vessel 99th percentile of inter-signal time) | **Reuse.** | GFW already applies ≥12 h. We add `gap_unusualness` = this gap's percentile within the vessel's own gap history. |
-| **A.4 vessel-level clustering** (trip score, idle ratio, age, operator fleet size, Paris MoU flag rank; 2-cluster k-means) | **Adapt, partially.** | Flag rank → EU carding status (and Tokyo MoU list for Asia-Pacific flags). Repeat-participation (MMSI 577101000 has 173 events, 7 of 27 cross-flag pairs) replaces "idle ratio". Owner/fleet size and build year via GFW Vessels API registry fields, token-gated. k-means kept as an optional "paper-style partition" toggle, not as the ranking. |
-| **Level 3 kinematics** (detour factor, speed std-dev, average speed per trip) | **Drop.** | Need tracks. The only proxy is `gap_unusualness` above. Say so in the methodology drawer. |
-| Sanctions/tanker figures (558 dark tankers/yr, 43% of seaborne crude) | **Borrow for context only.** | One slide: "the method is the paper's; the evidence here is fishing vessels; the paper shows the tanker scale." Label as the paper's model estimates. |
+| Tier | Visible | Signature | Documented rule we cite | Candidate source | Meeting point |
+|---|---|---|---|---|---|
+| **T2 Standard** | both | proximity, low speed, sustained duration | GFW encounter: 500 m, ≥2 h, median <2 kn, ≥10 km from anchorage (Miller et al. 2018). Skylight: 250 m, ≥30 min, <4 kn, >10 km from coast | GFW `ENCOUNTER` events; our own rule if raw tracks arrive | observed |
+| **T1 Dark, one-sided** | one | the visible vessel loiters as if meeting; another vessel has a gap whose reachable set covers that place and time | Skylight Dark Rendezvous: ≥15 min rendezvous-like behaviour, not within 100 km of shore. GFW loitering: <2 kn, ≥20 nm from shore | GFW `LOITERING` events joined to gap events by kinematic feasibility | observed (the loiterer's position) |
+| **T0 Paired dark** | neither | two gaps that start together and end together, with a joint reachable set | none published. Oxford Dark Shipping Alg. A.2 is the only precedent for two simultaneously dark vessels | gap × gap pairing | inferred (joint reachable set) |
+| T1u Unpaired loiter | one | loitering with no gap partner found | Skylight Dark Rendezvous | GFW `LOITERING` with no feasible gap join | observed, partner unknown |
 
----
+T2 is Skylight's Standard Rendezvous, T1 is its Dark Rendezvous, T0 is the row Skylight does not have. Skylight builds its one-sided model by taking two-sided events and hiding one vessel (the `create_osr_dataset.py` recipe in `allenai/atlantes`). We go one step further in the same direction and calibrate T0 against the same two-sided events. That lineage is the pitch.
 
-## 3. Reuse map — Skylight
-
-| Skylight asset | Verdict | How we use it |
-|---|---|---|
-| **Event taxonomy** Standard Rendezvous (2 of 2 on AIS) / Dark Rendezvous (1 of 2) | **Reuse as framing.** | Our event type is the missing row: **Paired-Dark Rendezvous candidate (0 of 2)**. Show all three tiers in the "how it works" panel, using our own illustrations in the style of Skylight's explainer cards (`tmp/skylight-ref/02`, `03`). |
-| **UI layout** full-bleed map, floating event cards anchored at location, teal header, two-column label/value grid, "Vessels in the Vicinity" list, event-history count, thumbs up/down feedback | **Reuse the pattern.** | Wireframe in §6. Thumbs feedback becomes our `analyst_disposition` capture, which is the label the data spec says we need. |
-| Icon convention black = AIS-corroborated, red = not | **Reuse.** | Filled endpoint = AIS fact; hollow red = inferred (meeting point, projected paths). |
-| Speed-coloured tracks with chevrons | **Drop.** | No tracks. Replace with dashed red "dark window" projections and solid short stubs. |
-| "Night Lights" event type and glow icon | **Reuse.** | VIIRS detections render as glowing dots, like Skylight's Night Lights illustration (`04`). |
-| **`allenai/vessel-detection-viirs`** Docker, CPU | **Run it.** | Stretch but high-value: run Skylight's own detector on the archival VIIRS DNB granule over the showcase pair's night. "Skylight's model sees a lit vessel where AIS is silent" is the line. |
-| Light basemap (pale cyan water, grey land) | **Reuse the look** via CARTO Positron (free, no key). | A dark basemap reads as "hacker"; Skylight's light one reads as "analyst tool". Decide in §8. |
-| **Areas of Interest + Entry events** (rule-based: vessel crosses into a user AOI) | **Reuse as `eez_entry_while_dark`.** | Gap starts on the high seas and ends inside an EEZ, computed from the end coordinates against public EEZ polygons (Marine Regions). Also names the jurisdiction on the card. RFMO convention areas are the second AOI layer, and feed the Level 1 authorization check. |
-| **Detection–AIS correlation** (black icon = a broadcasting vessel explains the detection, red = it does not) | **Reuse for VIIRS.** | A night-light counts as corroboration only if no broadcasting vessel explains it. Correlate against GFW's AIS presence layer for that day and cell; fallback is the corpus' own broadcasting endpoints within ±1 h. Uncorrelated lights render red, correlated black, exactly Skylight's convention. |
-| **Dark Rendezvous single-vessel kinematic model** (ML on one visible vessel's speed and course, ≥15 min) | **Substitute.** | We cannot run it and have no tracks. GFW LOITERING events (a vessel under 2 kn for an extended period away from port) are the closest public analog and enter Detector 3 as a scored input, not as context text. |
+Within each tier, candidates are further split by **component class** (bilateral, fleet cluster, regional blackout, unresolved) and **role pair** (fishing–carrier is the transshipment archetype; fishing–fishing is fleet coordination or fuel, crew, catch consolidation; carrier–carrier is rare; unknown when identity is unresolved). The 2017–2019 disabling corpus is fishing-only, so any fishing–carrier candidate in T0 or T1 requires carrier gap events from GFW (data item D2).
 
 ---
 
-## 4. Atlantes, and the rendezvous rules we cite instead of inventing
+## 2. Data requirements
 
-### 4.1 What `allenai/atlantes` actually contains
+What we need and why, not how it is obtained. Priority P0 blocks the core queue, P1 makes the queue credible, P2 is upside.
 
-Apache-2.0, last push July 2026, described by AI2 as Skylight's AIS backbone since fall 2024 (paper: arXiv 2504.19036, ICLR CCAI 2025).
+| # | Data | Fields needed | Used by | Priority |
+|---|---|---|---|---|
+| D1 | AIS disabling events 2017–2019 (**on disk**, 55,368) | mmsi, class, flag, off/on time, off/on lat/lon, distance from shore both ends, gap hours, length, tonnage | T0, T1, all features | P0 |
+| D2 | GFW gap events for **carriers, reefers, support vessels**, same years, same regions | same shape as D1 plus vessel type | fishing–carrier candidates in T0 and T1 | P1 |
+| D3 | GFW `ENCOUNTER` events, 2017–2019, for corpus vessels and their regions | both vessel ids, start/end, position, median distance, median speed, vessel types | T2 queue; known-partners feature; T0 calibration | P0 |
+| D4 | GFW `LOITERING` events, same scope | vessel id, start/end, start and end position, mean speed, distance from shore | T1 join; behaviour feature for T0 | P0 |
+| D5 | GFW `PORT_VISIT` events, same scope | vessel id, port name, port country, anchorage id, start/end | port context, A.1 risk-port reach, `port_after_gap` | P0 |
+| D6 | GFW `FISHING` events, same scope | vessel id, start/end, position | fishing-ground alternative explanation; coarse heading proxy | P1 |
+| D7 | GFW vessel identity for all ~5,300 corpus MMSIs (and D2 vessels) | gfw vessel id, all MMSI/IMO/callsign aliases with date ranges, vessel type and gear, flag history, owner, build year, **public RFMO authorizations with dates** | identity resolution, role pair, Level 1 context, A.4 features | P0 |
+| D8 | Static geography | EEZ polygons, RFMO convention areas, GFW anchorages or Natural Earth ports, PSMA party list | `eez_entry_while_dark`, RFMO check, A.1 port reach, jurisdiction label | P0 |
+| D9 | Risk lists | EU IUU carding history (flag, card colour, start, end), combined RFMO IUU vessel list (name, MMSI, IMO, listing dates), Tokyo MoU flag list | `context_risk` | P0 |
+| D10 | Reception quality | GFW satellite reception model raster (positions/day expected), monthly, both AIS classes | `coverage_quality` penalty | P1 |
+| D11 | VIIRS boat detections (NOAA EOG VBD) for the nights and boxes of the top ~30 candidates | lat, lon, timestamp, radiance, quality flag, cloud flag | corroboration | P1 |
+| D12 | AIS presence for the same nights and boxes (GFW presence raster or broadcasting positions) | cell or position, timestamp, vessel count | AIS-correlation test for VIIRS lights | P1 |
+| D13 | Raw AIS tracks for the top ~20 candidate vessels, ±7 days around each window | mmsi, timestamp, lat, lon, sog, cog, nav status | T2 rule run by us; kinematic features; last heading before gap; optional ATLAS run | P2 |
+| D14 | SAR detections (GFW Sentinel-1 dataset) for top candidates | lat, lon, timestamp, length, AIS-matched flag, scores | corroboration, expected mostly "no coverage" on the high seas | P2 |
 
-| Item | Finding | Use for us |
-|---|---|---|
-| ATLAS activity model | Weights in-repo, not LFS (19 MB). Classifies the end of a track as fishing / anchored / moored / transiting (+ other, unknown). Input columns: lat, lon, sog, cog, send, nav, mmsi, trackId, dist2coast, name, flag_code, category. | Needs raw tracks. Our corpus has endpoints only and GFW's API serves no tracks, so it cannot run on our vessels. Citable architecture; optional 20-minute demo on the repo's NOAA sample track to show "what Skylight's backbone sees". |
-| ATLAS entity models | Vessel type (fishing, cargo, tanker, ...) and buoy-vs-vessel, weights in-repo. | Same track limitation. |
-| Changepoint detector (`cpd/constants.py`) | `MIN_TIME_GAP = 2 h` splits a track into subpaths; `MAX_DURATION = 24 h`; `MAX_NUM_MESSAGES = 500`; SOG-distribution changepoints. | Skylight's own documented definition of an AIS gap. Cite it next to GFW's 12 h corpus threshold. |
-| **One-sided rendezvous (OSR) dataset script** (`gen_dataset_label_files/create_osr_dataset.py`, config label `one_sided_rendezvous`) | Training data for the one-visible-vessel model is made by taking **two-sided Standard Rendezvous events**, keeping only vessel 0's track for that day with a week of context, and labelling the messages inside the event window as `one_sided_rendezvous`. Docs: "we have an OSR model branch but it has not been merged." No OSR model or weights are public. | **This is the documented Dark Rendezvous recipe: learn the one-sided signature from two-sided events.** See 4.3. |
-| Branch `henryh/tutorials` | Adds `ais/tutorials/eval.ipynb` running `AtlasActivityClassifier` on public NOAA coastal AIS, plus NOAA-to-Atlantes converters. References a Hugging Face dataset `hherzog/atlantes-noaa-dataset` that the HF API did not resolve; verify before relying on it. | The only path to run ATLAS without AI2's cloud. NOAA data is US-coastal, so still not our vessels. |
-| Other branches | `mike/atlas-sidecar` (53 commits, inference refactor), `mike/bump-cpd-timegap` (changes the 2 h constant), `debug-int-vs-prod`, dependabot, and several `josh/claude/*` buoy-pattern branches. No branch contains rendezvous model code. | Nothing further to mine. |
-| Docker inference | `docker-compose.yml` mounts GCP credentials; the notebook path loads in-repo weights directly and `main_activity.py` has no GCS references. | Local inference likely works without GCP. Verify only if the demo in row 1 is wanted. |
-
-### 4.2 Documented thresholds, quoted, and where each enters our model
-
-| Source | Rule, as published | Where it enters GapPair |
-|---|---|---|
-| Skylight Standard Rendezvous | Two AIS signals within **250 m**, together **≥30 min**, speeds **<4 kn**, **>10 km** from coast; buoys excluded. | The 2-of-2 tier in the "how it works" panel. |
-| Skylight Dark Rendezvous | One transmitting vessel shows rendezvous-like behaviour for **≥15 min**; not generated within **100 km** of shore; "ground truth data to create such a machine learning model is limited". | The 1-of-2 tier. The 100 km exclusion matches our corpus, whose gaps all start ≥93 km offshore. |
-| GFW encounter (Miller et al. 2018; GFW FAQ) | Within **500 m** for **≥2 h**, median speed **<2 kn**, **≥10 km** from an anchorage, on a 10-minute interpolated grid. Sensitivity ranges tested: 250–1000 m, 2–12 h, 1–6 kn. | Detector 3 "known partners" feature, and the lineage for Detector 1's endpoint thresholds (below). |
-| GFW loitering (Miller et al. 2018) | Average speed **<2 kn**, **≥20 nm** from shore, **≥8 h** for a reefer. The API's loitering dataset uses the same speed and shore rule with a shorter minimum duration; confirm the value when the token arrives. | Detector 3's single-vessel behaviour input, the public analog of Skylight's one-sided model. |
-| Welch et al. 2022 (our corpus) | Reception **>10 positions/day**, gap **≥12 h**, **≥50 nm** from shore, boosted-regression-tree split of intentional vs coverage loss. | Provenance of every input event; quoted in the methods drawer. |
-| Atlantes CPD | Time gap **≥2 h** splits a subpath. | Cited alongside the 12 h corpus threshold to show our gaps are 6× Skylight's own cut. |
-| Ballinger 2024 (arXiv 2404.07607) | Dark STS in the Kerch Strait from satellite detections cross-referenced with AIS gaps; STS defined as **500 m, ≥2 h, SOG <1 kn**. | Precedent for imagery-plus-gap corroboration; cited beside our VIIRS layer. |
-| Fernández-Villaverde et al. 2025 | Two vessels dark simultaneously in close proximity, required-speed plausibility (Alg. A.2). | Detector 2, and the only published precedent for reasoning about two simultaneously dark vessels. |
-| OFAC / State / USCG 2020 maritime advisory | Deceptive practices list: AIS disabling or manipulation, illicit STS, extended transmission gaps, abnormal voyage patterns, MMSI manipulation. | Language for the context block and the deck's "why this matters" line. |
-
-**Why Detector 1 uses 10 km / 1 h and not 500 m / 2 h.** Encounter rules apply to positions during the meeting. Our endpoints are the last fix before and the first fix after a gap of 12 to 40 hours, during which both vessels move. Ten kilometres and one hour at each end is the endpoint analog of the encounter rule, and the permutation null is what calibrates it. The threshold ladder in the methods drawer shows the same signal at 5 km / 1 h and 25 km / 3 h.
-
-### 4.3 The lineage we can state on one slide
-
-Skylight built its one-sided detector from two-sided events: take a Standard Rendezvous, hide one vessel, learn what the other looks like. GapPair takes the next step in the same direction: take the paired gap where both vessels are hidden, and calibrate it against the same two-sided events. Concretely, Detector 3 checks whether a paired gap is bracketed by a published GFW encounter or loitering event involving either vessel. That is convergent validation using the very event type Skylight trains from, and it is the honest answer to "where are your labels".
-
-Both research agents confirm the same thing: **no published rule set exists for a zero-visible-vessel paired gap.** Skylight and GFW pair a dark or loitering vessel against a visible one; the Oxford paper is the only precedent for two simultaneously dark vessels. Gap-to-gap pairing with a permutation null is our synthesis, and the deck should say so plainly rather than claim it is replicated from anywhere.
-
-### 4.4 Open-source code worth borrowing
-
-- `GlobalFishingWatch/pipe-encounters` (Apache-2.0): distance and duration matching logic with `max_encounter_dist_km` and `min_encounter_time_minutes`; adapt from position pairs to endpoint pairs, and keep its parameter names.
-- `GlobalFishingWatch/pipe-gaps` (Apache-2.0): gap object schema (OFF = last position, ON = first resumed position); adopt its field names for the evidence ledger.
-- `GlobalFishingWatch/AIS-disabling-high-seas`: the corpus's own thresholds and reception model, for the provenance section.
-- `allenai/atlantes`: CPD constants and the OSR label recipe, cited; ATLAS weights only for the optional NOAA demo.
+Two questions for the data owner decide the shape of T1 and the fishing–carrier story: does GFW's gap dataset include carriers (D2), and can we get any raw tracks at all (D13)?
 
 ---
 
-## 5. The model: a transparent three-family ensemble
+## 3. Shared primitives
 
-No labels exist, so the "ensemble" is a scorecard with a calibrated null, not a trained classifier. Every component is displayed as its own bar on the card.
+### 3.1 Reachable set and dwell time (the core geometric object)
+
+For a gap `G` with shutoff `(p0, t0)`, reappearance `(p1, t1)`, and class maximum speed `V`:
 
 ```
-priority = w1·synchrony_surprise      (Detector 1, ours: both-ends 10 km / 1 h, lift vs within-cell null)
-         + w2·sts_plausibility        (Detector 2, Oxford A.2 adapted)
-         + w3·corroboration           (Detector 3: uncorrelated VIIRS light in feasible region; GFW loitering / encounter)
-         + w4·context_risk            (Oxford Level 1 adapted: flag carding, RFMO authorization, port context, IUU list)
-         + w5·risk_port_reach         (Oxford A.1, paper's sign: a risk port reachable during the gap)
-         − w6·local_density_penalty   (other gaps within 200 km / ±1 h)
-         − w7·fleet_penalty           (component size, same-flag share, sequential MMSI)
-flags    eez_entry_while_dark, possible_port_transit   (shown on the card, not weighted)
+L(p)      = D(p0, p) + D(p, p1)                 detour distance through p
+dwell(p)  = (t1 − t0) − L(p) / V                longest stay possible at p
+arrive(p) = t0 + D(p0, p) / V                   earliest arrival at p
+depart(p) = t1 − D(p, p1) / V                   latest departure from p
 ```
 
-Labels from the sign of the penalties: `investigate` · `coordinated-fleet-pattern` · `likely-coverage-or-cluster-artifact` · `possible-port-transit` · `insufficient-evidence`.
+`p` is feasible for a rendezvous of minimum length `τ_min` iff `dwell(p) ≥ τ_min`. The reachable set is `{p : dwell(p) ≥ τ_min}`, a lens around the straight line from `p0` to `p1`. Everything below is built from these four numbers. This generalises Oxford Alg. A.2: their required speed at the overlap midpoint is the special case `L(p) / (t1 − t0)` with zero dwell.
 
-**Level 1 in detail (the paper's trip classification, adapted).** The paper decides suspicion first from where a trip went, then from gaps. Our `context_risk` does the same with four joins, all on fields we hold or can fetch:
-- **Flag-state risk**: EU IUU carding status at the gap date (yellow / red / none), joined on the corpus `flag` column with a hand-made table of card dates. Tokyo MoU flag list as a second column for Asia-Pacific flags.
-- **RFMO authorization**: which convention area contains the shutoff position (NPFC, WCPFC, IATTC, ICCAT, IOTC, SPRFMO polygons), and whether the vessel held a public authorization for it at that date, from the GFW Vessels API. Dark inside an RFMO area without authorization is unregulated by definition.
-- **Port context**: last GFW port visit before the gap and first after it, with port country; PSMA non-party ports flagged.
-- **IUU listing**: MMSI or name on the combined RFMO IUU vessel list.
+Defaults: `τ_min = 1 h` (between Skylight's 30 min and GFW's 2 h; both shown in the methods drawer). `V` by class: squid jigger 12 kn, drifting longline 12, trawler 13, tuna purse seine 16, other fishing 14, carrier or reefer 18, unknown 16. Speeds are conservative upper bounds and live in `config.py`.
 
-**Detector 3 in detail (the Skylight analog).** Skylight watches the visible vessel's behaviour and correlates detections with AIS. We have no tracks, so we use public substitutes for both halves:
-- **GFW behaviour events** per vessel, ±7 days around the gap (Events API, needs token): a carrier LOITERING event nearby during the window (the closest public analog to Skylight's single-vessel kinematic signal), a prior ENCOUNTER between the same two vessels (known partners), FISHING events at the same spot just before (fishing ground, not transfer). Each is a signed, weighted feature with a sentence in the evidence ledger.
-- **VIIRS night-lights** for the dark night(s): NOAA EOG VBD detections inside the feasible region, three-state: detection / clear-sky no detection / cloud or no coverage. A detection is corroboration only after the AIS-correlation test in §3 says no broadcasting vessel explains it. For squid jiggers, "clear sky, no lights" is itself anomalous and is reported as such.
+### 3.2 Joint feasibility for two vessels
 
-Evaluation we can honestly show: the lift ladder against null C (prior run: 35× at the operating threshold, 22.5× cross-flag), the share of candidates each penalty removes, and the showcase pair's full ledger.
+For vessels A and B and a point `p`: joint dwell `τ_AB(p) = min(depart_A(p), depart_B(p)) − max(arrive_A(p), arrive_B(p))`. The pair is kinematically feasible iff `max_p τ_AB(p) ≥ τ_min`. `p* = argmax_p τ_AB(p)` is the **feasible meeting point**, found by a coarse grid over the bounding box of the four endpoints with margin, then a local refinement. Outputs: `p*`, `joint_dwell_hours`, `required_speed_kn = max_v L_v(p*) / ((t1 − t0)_v − τ_min)`, and the reachable-set polygon for display.
+
+### 3.3 Kinematic plausibility
+
+Two forms, both reported: `kin_plausibility = clip(1 − required_speed_kn / V, 0, 1)` and the Oxford form `kin_percentile = 1 − percentile(required_speed_kn | corpus implied-speed distribution)`, where implied speed is `D(p0, p1) / (t1 − t0)` across all gaps of that class.
+
+### 3.4 Local context
+
+Computed per event and per pair, excluding the pair's own two events: `local_dark_count` and `local_unique_vessels` within 200 km and ±1 h at shutoff and separately at reappearance; `local_same_flag_share`, `local_sequential_share`; graph components over operating T0 pairs giving `component_size` and `component_class`; `coverage_quality` from D10 at the shutoff cell and month; `gap_unusualness` as the gap's percentile within the vessel's own gap history; `repeat_rate` as the vessel's gaps per year and the share of its gaps that pair.
+
+### 3.5 Null models
+
+- **T0 within-cell permutation.** Permute gap start times among events in the same 5° cell, keep durations and positions, rerun the pairing, 100 draws. Reports lift and an empirical p for the count at each threshold. Per candidate, a local version: permute start times among the events in its 200 km / ±24 h neighbourhood and record how often a both-ended match at that threshold appears, giving `local_null_p`.
+- **T1 time-shift.** Shift each loitering event by a random offset of ±3 to ±30 days within the same cell and rerun the feasibility join, 100 draws. Gives the expected number of chance joins and, per candidate, `shift_null_p` as the fraction of draws in which that gap still joins some loiterer.
+- **T2.** No null; the encounter is observed. `historical_pair_count` says whether it is routine for these two vessels.
+
+A lift of exactly 1.00× is the signature of a broken null and fails the run.
 
 ---
 
-## 6. UI wireframe (Skylight pattern, our content)
+## 4. Candidate generation
 
-```
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ GapPair  ▸ Paired-dark candidates · 2017–2019 · GFW corpus        [Methods] │  ← thin teal strip
-├───────────────┬──────────────────────────────────────────────────────────────┤
-│ QUEUE (437)   │  MAP (MapLibre + deck.gl, CARTO Positron)                    │
-│ ▣ cross-flag  │                                                              │
-│ ▢ fleet       │      ●───────╌╌╌╌╌╌▶ ■ ◀╌╌╌╌╌╌───────●   vessel A (red)      │
-│ ▢ artifact    │      ○───────╌╌╌╌╌╌▶   ◀╌╌╌╌╌╌───────○   vessel B (blue)     │
-│───────────────│                    ✦ VIIRS 01:47 local                       │
-│ #1 CHN/TWN    │      ·  ·   (other dark gaps ±1 h, grey)                     │
-│  0.91 investig│                                                              │
-│ #2 VUT/TWN    │   ┌─ EVENT CARD (floating, anchored) ──────────────────────┐ │
-│  0.84 investig│   │ Paired-Dark Rendezvous candidate         [▾][×]        │ │
-│ #3 CHN/CHN    │   │ Vessel A 412331147 CHN squid jigger │ B 416004105 TWN  │ │
-│  0.31 fleet   │   │ Dark 2017-07-01 04:12Z (Δ 5 s)      │ Back +41.8 h (Δ43s)│ │
-│ ...           │   │ Start sep 6.6 km │ End sep 4.1 km │ 482 nm offshore     │ │
-│               │   │ ── Score ─────────────────────────────────────────────  │ │
-│               │   │ Synchrony  ████████░ 35× null C                          │ │
-│               │   │ STS plaus. ███████░░ req. 2.3 kn (p05)                   │ │
-│               │   │ Corrobor.  ██████░░░ VIIRS lit vessel in region          │ │
-│               │   │ Density   −█░░░░░░░░ 3 others within 200 km              │ │
-│               │   │ Fleet     −░░░░░░░░░ component size 2, cross-flag        │ │
-│               │   │ Context   ████░░░░░ TWN yellow card 2015–19 · NPFC reg ✓ │ │
-│               │   │ Risk port ░░░░░░░░░ nearest risk port 890 km, needs 21 kn│ │
-│               │   │ Flags: high seas → high seas (no EEZ entry while dark)   │ │
-│               │   │ ── Vessels in the vicinity (±1 h, 200 km) ─────────────  │ │
-│               │   │ 🇻🇺 577101000 · 🇨🇳 412…                                 │ │
-│               │   │ ── Assessment (agent) ─────────────────────────────────  │ │
-│               │   │ "Both vessels ceased AIS within [5 s]✓ at [6.6 km]✓ …    │ │
-│               │   │  … a lift of [35×]✓ over a [within-cell null]✓ …"        │ │
-│               │   │ [👍 investigate] [👎 dismiss] [⚠ adversarial mode]       │ │
-│               │   └────────────────────────────────────────────────────────┘ │
-│               │  ◀━━━━━━━━━━━━●━━━━━━━━━━━━━━━━━━━━━━▶ time scrubber (gap)   │
-└───────────────┴──────────────────────────────────────────────────────────────┘
-```
+### 4.1 T2 Standard (both visible)
 
-Also: a **Challenge panel** tab ("what would make this innocent?") and a **Methods drawer** (thresholds, three nulls, sources: GFW, Skylight, Oxford, WCPFC, EOG).
+Ingest D3 as-is; GFW has already applied the 500 m, 2 h, 2 kn, 10 km rule. Deduplicate mirrored records (each encounter appears once per vessel). If D13 arrives, run the same rule ourselves with `pipe-encounters` parameter names so the two agree, and add Skylight's tighter 250 m / 30 min variant as a flag.
+
+### 4.2 T1 Dark, one-sided (one visible)
+
+For each loitering event `L` (vessel `v_L`, window `[l1, l2]`, positions `q1, q2`) and each gap `G` of a different vessel whose interval overlaps `[l1, l2]`:
+
+1. Spatial gate: `D(p0_G, q1) ≤ V_G × (l2 − t0_G)` and `D(q2, p1_G) ≤ V_G × (t1_G − l1)`; skip otherwise.
+2. Feasibility: `overlap = min(depart_G(q), l2) − max(arrive_G(q), l1)` at `q` = the loitering centroid; keep if `overlap ≥ τ_min`.
+3. Emit a T1 candidate `(v_L, v_G)` with `overlap_hours`, `required_speed_kn` for the gap vessel to reach `q`, and the loiterer's own event fields.
+
+Loitering events with no feasible join become T1u records with low priority. A gap that joins many loiterers is a density signal, not many meetings; `t1_join_count` feeds the density penalty.
+
+### 4.3 T0 Paired dark (neither visible)
+
+Operating rule, deterministic and pre-registered: different MMSIs, both valid; shutoffs within 10 km and 1 h; reappearances within 10 km and 1 h; dark intervals overlap. Blocked by a sliding window on shutoff time plus vectorised haversine; validated against brute force on a subsample. Canonical `pair_id` from the sorted gap ids.
+
+Loose rule for recall: intervals overlap, shutoffs within 50 km and 6 h, reappearances within 50 km and 6 h, **and** joint feasibility from 3.2 holds. Loose-only candidates are ranked below operating candidates unless corroborated.
+
+Threshold ladder reported for the methods drawer: start-only 50 km / 24 h and 5 km / 1 h; both-ends 25 km / 3 h, 10 km / 1 h, 5 km / 1 h, 2 km / 30 min. Prior run: 437 operating pairs at ~35× the within-cell null, 27 cross-flag at ~22×. These numbers are re-run, not quoted.
 
 ---
 
-## 7. Options evaluated
+## 5. Features and scoring
 
-**Product shape**
-- **A. Standalone GapPair, Skylight-pattern UI, Oxford-adapted scoring, VIIRS corroboration.** Recommended. Every piece is public data or open code; nothing is mocked; the Skylight tie-in is real (their open detector) and honest (their event taxonomy has a hole we fill).
-- B. Same scoring, Streamlit + pydeck UI. Faster for a Python-only team, but click-to-select is weak, animation is clunky, and it looks like a notebook. Fallback only.
-- C. Fake a Skylight integration (mock API, mock "push"). Rejected. Judges who know Skylight will ask one question and the demo dies.
+Every candidate, regardless of tier, gets the same feature families. Missing inputs yield nulls, never zeros, and the explanation says what was missing.
 
-**Front end**
-- **Single HTML file, CDN MapLibre + deck.gl, precomputed JSON.** Recommended for a crude prototype: no build step, opens on Windows and macOS, survives venue wifi if the tiles are cached once, and the "one live button" (adversarial verifier / GFW fetch) hits a tiny local Python server or is pre-recorded.
-- Vite + React + deck.gl. Same look, cleaner code, ~1 extra hour. Choose it only if whoever owns the UI is already a React dev.
-- kepler.gl: 20 minutes to a data look for us, wrong shape for the deliverable. GFW's open frontend: MIT but welded to their API config model; use as a screenshot reference only.
+| Family | Features | Tiers |
+|---|---|---|
+| Geometry and synchrony | start/end distance and delta, overlap hours, duration ratio, `local_null_p` or `shift_null_p` | T0, T1 |
+| Kinematics | `p*`, `joint_dwell_hours`, `required_speed_kn`, `kin_plausibility`, `kin_percentile` | T0, T1 |
+| Behaviour | `loiter_bracket` (loitering by either vessel within ±24 h and 50 km), `encounter_bracket`, `known_partners` (prior T2 encounter between the same two), `fishing_ground_context` (fishing events by either vessel at the same spot within ±24 h), `port_after_gap` with country and risk flag | all |
+| Context (Oxford Level 1 adapted) | `flag_card_a/b` at date, `rfmo_area`, `rfmo_authorized_a/b`, `iuu_listed_a/b`, `port_risk`, `role_pair`, `eez_entry_while_dark` | all |
+| Risk-port reach (Oxford A.1, paper's sign) | `risk_port_reach` = max dwell at the nearest risk port from 3.1 with `τ_min = 2 h`; `possible_port_transit` flag for a generic port | T0, T1 |
+| Corroboration | `viirs_state`, `viirs_uncorrelated_count`, `viirs_min_km_to_p*`, `sar_state` | T0, T1 |
+| Confounders | `local_dark_count`, `component_class`, `local_same_flag_share`, `sequential_mmsi`, `coverage_quality`, `gap_unusualness`, `repeat_rate`, `t1_join_count` | T0, T1 |
 
-**Corroboration (ranked by value per hour)**
-1. EOG VBD nightly CSV for the showcase pair's nights (free account, filter a bbox). ~1 hour. Shown as glowing dots inside the feasible region with local time.
-2. Run `allenai/vessel-detection-viirs` in Docker on the archival VNP02DNB/VNP03DNB granules for that overpass (Earthdata login, swap NRT URLs for LAADS DAAC). ~2–3 hours, needs Docker on the Mac. Payoff: "Skylight's model, on the same night, independently." Do it only after item 1 succeeds.
-3. GFW events and identity for the top 30 candidates (token). ~2 hours. Payoff: loitering/encounter inputs for Detector 3, port visits and RFMO authorizations for Level 1, owner and build year for A.4. The flag-carding and IUU-list joins need no token and take ~30 minutes.
-4. SAR/optical: 15-minute check, expect nothing, and report "no coverage" honestly. The three-state coverage result is itself a feature of the product.
+**Score.** A log-odds scorecard, weights documented in config, every term shown on the card:
 
-**Scoring model**
-- Transparent scorecard + null lift. Recommended.
-- Paper-style two-cluster k-means as a toggle. Cheap, cosmetic, optional.
-- Trained classifier. No labels; rejected, and the methods drawer says why.
+```
+logit = b_tier
+      + w_geom · S_geom      T0: clip(−log10(local_null_p), 0, 3)/3 ; T1: same with shift_null_p ; T2: 1
+      + w_kin  · S_kin       kin_plausibility (T2: not applicable, 0 weight)
+      + w_beh  · S_beh       weighted sum of behaviour features, role_pair fishing–carrier counts most
+      + w_ctx  · S_ctx       context risk incl. risk_port_reach
+      + w_cor  · S_cor       uncorrelated VIIRS or SAR in the reachable set during the window
+      − w_den  · S_den       local density, t1_join_count
+      − w_flt  · S_flt       fleet component, same-flag share, sequential MMSI
+      − w_cov  · S_cov       poor reception quality, low gap unusualness (habitual gaps)
+priority = sigmoid(logit)      labelled "analyst priority", never a probability of wrongdoing
+```
 
-**Agent-trust component (Defense track)**
-- Keep the narration + span verifier. It is ~3 hours of Sonnet work, the record is a flat JSON so verification is field lookup with tolerances (±1000 m on shore distance, ±0.017 h on duration, "estimated" badge on length/tonnage), and the adversarial button is the one live demo moment that no other team will have.
+Proposed defaults: `w_geom 0.30, w_kin 0.15, w_beh 0.20, w_ctx 0.15, w_cor 0.20, w_den 0.15, w_flt 0.20, w_cov 0.10`, `b_tier` = 0 for T0, +0.2 for T1, +0.4 for T2. There are no labels, so weights are choices and the methods drawer says so. The `analyst_disposition` field the frontend sends back is the first label we collect.
+
+**Labels** (from the dominant term): `investigate` when priority ≥ 0.6, component bilateral, no penalty dominant; `coordinated-fleet-pattern` when the fleet term dominates; `likely-coverage-or-cluster-artifact` when density or coverage dominates; `possible-port-transit` when the generic-port geometry holds and a port visit follows; `insufficient-evidence` when identity is unresolved or required fields are missing.
+
+**Evidence tier** (separate from priority, monotone in what has been checked): `coincidence_or_artifact` → `coordinated_fleet_activity` → `bilateral_rendezvous_plausible` → `behaviour_corroborated` (T2, or T0/T1 with a bracket) → `imagery_corroborated`.
 
 ---
 
-## 8. Decisions needed from the team
+## 6. Corroboration layer
 
-1. Light basemap (Skylight look, CARTO Positron) or dark (CARTO Dark Matter)? Recommendation: light.
-2. Single-HTML or Vite + React? Recommendation: single-HTML unless the UI owner is a React dev.
-3. LLM for narration: OpenAI (sponsor points) or Anthropic? Either works for the verifier.
-4. Who owns UI, who owns corroboration data? Docker available on the Mac?
-5. Track: Defense (verifier as the agent-trust answer) unless a partner prompt released on-site fits better.
+For each top candidate, join D11 and D12 to the reachable set (T0: joint set around `p*`; T1: a 20 km disc around the loiterer) during the dark window. A light counts only if no broadcasting vessel explains it. Output is three-state and coverage-aware: `uncorrelated_detection`, `correlated_only`, `clear_no_detection`, `no_coverage`. For squid jiggers, `clear_no_detection` is itself anomalous and is reported as "lights off", never as absence. SAR from D14 gets the same treatment and will mostly read `no_coverage` on the high seas; that result is shown, not hidden.
 
+---
+
+## 7. Pipeline stages and files
+
+Backend is Python in `pipeline/`, messy is fine, every stage reruns from files.
+
+| Stage | Module | Reads | Writes |
+|---|---|---|---|
+| S1 normalise | `load.py`, `events.py`, `identity.py` | D1–D9 | `gap_events.parquet`, `behaviour_events.parquet`, `vessels.parquet`, `exclusions.json` |
+| S2 feasibility | `feasibility.py` | gap events | `feasibility.parquet` (implied speed, V, reachable-set params) |
+| S3 candidates | `pair_t0.py`, `join_t1.py`, `ingest_t2.py` | S1, S2 | `candidates_t0.parquet`, `_t1`, `_t2`, `pair_grid_counts.json` |
+| S4 context | `context.py` | S1, S3 | `local_context.parquet`, `components.parquet` |
+| S5 nulls | `nulls.py` | S1, S3 | `null_results.json`, per-candidate `local_null_p`, `shift_null_p` |
+| S6 features + score | `features.py`, `score.py` | S1–S5, D8, D9 | `features.parquet`, `scores.parquet` |
+| S7 corroboration | `corroborate.py` | D11, D12, D14, S6 | `corroboration.parquet` |
+| S8 export | `export.py` | S6, S7 | `candidates.json`, `evidence_ledger.parquet`, `summary.md` |
+| S9 narrate + verify | `narrate.py`, `verify.py` | `candidates.json` | `narratives.json` |
+
+Existing: `load.py` done and verified (815 invalid MMSIs quarantined); `pair.py` written, not run.
+
+---
+
+## 8. Output contract (what the frontend and the narrator consume)
+
+`candidates.json` is a list of objects with this shape. Field names are stable; the frontend owner builds against this.
+
+```json
+{
+  "candidate_id": "t0-3f9a1c2b7d4e",
+  "tier": 0,                         // 0 paired-dark, 1 one-sided, 2 standard, "1u" unpaired loiter
+  "label": "investigate",
+  "evidence_tier": "bilateral_rendezvous_plausible",
+  "priority": 0.87,
+  "vessels": [
+    {"mmsi": "412331147", "flag": "CHN", "class": "squid_jigger", "role": "fishing",
+     "identity_confidence": "resolved", "flag_card": "none", "rfmo_authorized": true, "iuu_listed": false},
+    {"mmsi": "416004105", "flag": "TWN", "class": "squid_jigger", "role": "fishing",
+     "identity_confidence": "resolved", "flag_card": "yellow", "rfmo_authorized": true, "iuu_listed": false}
+  ],
+  "window": {"start": "2017-07-01T04:12:05Z", "end": "2017-07-02T22:00:48Z", "overlap_hours": 41.8},
+  "geometry": {
+    "endpoints": [{"mmsi": "412331147", "off": [42.71, 162.03], "on": [42.55, 162.41]},
+                  {"mmsi": "416004105", "off": [42.66, 162.09], "on": [42.58, 162.38]}],
+    "meeting_point": {"lat": 42.64, "lon": 162.2, "kind": "inferred"},   // "observed" for T1/T2
+    "reachable_set": {"type": "Polygon", "coordinates": []},
+    "jurisdiction": {"zone": "high_seas", "rfmo": "NPFC", "eez_entry_while_dark": false}
+  },
+  "scores": {"geom": 0.92, "kin": 0.81, "beh": 0.35, "ctx": 0.40, "cor": 0.60,
+             "den": 0.10, "flt": 0.00, "cov": 0.05},
+  "features": {"start_distance_km": 6.6, "start_delta_min": 0.08, "end_distance_km": 4.1,
+               "end_delta_min": 0.72, "required_speed_kn": 2.3, "joint_dwell_hours": 36.4,
+               "local_null_p": 0.002, "local_dark_count": 3, "component_class": "bilateral",
+               "sequential_mmsi": false, "risk_port_reach_hours": 0, "known_partners": 0},
+  "corroboration": {"viirs_state": "uncorrelated_detection", "viirs_uncorrelated_count": 2,
+                    "viirs_min_km_to_meeting_point": 3.1, "sar_state": "no_coverage"},
+  "neighbours": [{"mmsi": "577101000", "flag": "VUT", "delta_min": 41, "distance_km": 88}],
+  "explanations": ["Both vessels ceased AIS within 5 s at 6.6 km separation.",
+                   "Only 3 other vessels dark within 200 km and 1 h; local null p = 0.002.",
+                   "Taiwan held an EU IUU yellow card on this date."],
+  "sources": [{"claim": "off_time_a", "value": "2017-07-01T04:12:05Z", "source": "GFW disabling corpus", "as_of": "2022-08-08"}],
+  "analyst_disposition": null
+}
+```
+
+`evidence_ledger.parquet` holds one row per claim with source, retrieval time, and tolerance, and is what the verifier checks against.
+
+---
+
+## 9. Narration and verification (agent-trust feature)
+
+An LLM writes the per-candidate assessment from the candidate object only. A verifier extracts every factual span (identifier, timestamp, position, distance, duration, count, score, null name) and checks it against the evidence ledger with tolerances measured from the corpus: ±1000 m on shore distance, ±0.017 h on duration, "estimated" badge required on length and tonnage. Each span renders `verified`, `contradicted`, or `unverifiable`, with eight `unverifiable` reason codes. A statistical claim that does not name its null is `unverifiable`. Adversarial mode corrupts the record, not the prompt, and the verifier must catch it. Narratives for the top 20 are precomputed; the live button runs one on demand.
+
+---
+
+## 10. Limits stated in the product
+
+- Fishing vessels only in D1; carriers only if D2 arrives. No tankers. The method is the Oxford paper's; the tanker evidence is theirs.
+- No coordinate-level ground truth. WCPFC found 78% of AIS-only transshipment candidates unsubstantiated; the number is shown.
+- T0's meeting point is inferred and drawn as a heuristic. T1 and T2 meeting points are observed.
+- Detection is retrospective for T0 and T1: both gaps must close before a pair can form.
+- Level 3 kinematics from the paper (detour, speed variability) need tracks and are absent unless D13 arrives.
+
+---
+
+## 11. Open questions for the team
+
+1. Does GFW's gap dataset cover carriers and reefers (D2)? This decides whether fishing–carrier candidates exist at all.
+2. Are raw tracks obtainable for even the top 20 vessels (D13)? This decides whether T2 is ingested or computed, and whether kinematic features exist.
+3. Years in scope: 2017–2019 only, or also recent years through the GFW API with separate versioning?
+4. Which LLM for narration, and is the verifier in scope for the pitch?
+5. Should T1u (loitering without a partner) appear in the queue at all, or only as map context?
