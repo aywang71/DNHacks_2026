@@ -9,5 +9,8 @@
     "duplicate_gap_id": 0,
     "blank_flag": 702
   },
-  "invalid_mmsi_share": 0.0147
+  "invalid_mmsi_share": 0.0147,
+  "created_at": "2026-09-05T22:29:02.792892Z",
+  "source_sha256": "d3c39713a92778e83c086452c9c517a1d99c5053ac7924f0a8f748d42dbc2ccf",
+  "row_count": 55368
 }

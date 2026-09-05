@@ -1,0 +1,105 @@
+{
+  "corpus": {
+    "events": 55368,
+    "vessels": 5269,
+    "flags": 101,
+    "years": [2017, 2018, 2019],
+    "source": "Global Fishing Watch AIS-disabling corpus (Welch et al. 2022)",
+    "license": "CC BY-NC 4.0"
+  },
+  "operatingRule": {
+    "startKm": 10.0,
+    "startHours": 1.0,
+    "endKm": 10.0,
+    "endHours": 1.0,
+    "requiresOverlap": true,
+    "description": "Two vessel gaps must begin within 10 km and 1 h, end within 10 km and 1 h, and overlap."
+  },
+  "ladder": [
+    {"rung": "start-only 50 km / 24 h", "observed": 101901, "nullMean": 1327.4, "lift": 76.77, "draws": 20},
+    {"rung": "start-only 5 km / 1 h", "observed": 1230, "nullMean": 2.7, "lift": 455.56, "draws": 20},
+    {"rung": "both ends 25 km / 3 h", "observed": 5630, "nullMean": 109.3, "lift": 51.51, "draws": 20},
+    {"rung": "both ends 10 km / 1 h", "observed": 434, "nullMean": 12.0, "lift": 36.2, "draws": 20},
+    {"rung": "both ends 5 km / 1 h", "observed": 103, "nullMean": 1.8, "lift": 57.22, "draws": 20},
+    {"rung": "both ends 2 km / 30 min", "observed": 3, "nullMean": 0.1, "lift": 30.0, "draws": 20}
+  ],
+  "loose": {
+    "observed": 18775,
+    "feasibleAtTauMin": 18735,
+    "startKm": 50.0,
+    "startHours": 6.0,
+    "endKm": 50.0,
+    "endHours": 6.0,
+    "description": "Methods-only loose rule; it is not a queue source."
+  },
+  "null": {
+    "name": "within-cell permutation v1",
+    "cellDeg": 5,
+    "draws": 200,
+    "seed": 20260905,
+    "observed": 434,
+    "nullMean": 12.0,
+    "nullSd": 3.1,
+    "lift": 36.2
+  },
+  "classSpeedsKn": {
+    "squid_jigger": 12.0,
+    "drifting_longlines": 12.0,
+    "trawlers": 13.0,
+    "tuna_purse_seines": 16.0,
+    "other": 14.0,
+    "carrier": 18.0,
+    "reefer": 18.0,
+    "unknown": 16.0
+  },
+  "weights": {
+    "geom": 0.3,
+    "kin": 0.15,
+    "beh": 0.2,
+    "ctx": 0.15,
+    "cor": 0.2,
+    "den": -0.15,
+    "flt": -0.2,
+    "hab": -0.1
+  },
+  "labelRules": [
+    "Investigate when priority is at least 0.50 and no artifact or fleet penalty dominates the score.",
+    "Coordinated-fleet-pattern marks a fleet_cluster with a strong fleet-pattern penalty, including sequential MMSIs.",
+    "Likely-coverage-or-cluster-artifact marks a regional_blackout or other case whose density or cluster confounder dominates.",
+    "Risk levels are high for investigate, review for fleet-pattern cases, and watch for likely artifacts in this P0 fixture."
+  ],
+  "labelHistogram": {
+    "investigate": 1,
+    "coordinated-fleet-pattern": 1,
+    "likely-coverage-or-cluster-artifact": 1
+  },
+  "componentHistogram": {
+    "bilateral": 1,
+    "fleet_cluster": 1,
+    "regional_blackout": 1
+  },
+  "counts": {
+    "crossFlag": 26,
+    "sequentialMmsi": 173,
+    "identityTwin": 181,
+    "bilateral": 237,
+    "zeroNeighbour": 37
+  },
+  "caveats": [
+    "WCPFC found that 78% of 77 AIS-only transshipment candidates were unsubstantiated after triangulation.",
+    "Detection is retrospective because both AIS gaps must close before a pair can be assessed.",
+    "The corpus covers fishing vessels only; it does not provide coordinate-level ground truth for a transfer.",
+    "Meeting points and reachable-set rings are inferred heuristics, never observed AIS positions.",
+    "Kinematics are largely uninformative at the operating rule and are not used as affirmative evidence."
+  ],
+  "sources": [
+    {"name": "Global Fishing Watch AIS-disabling corpus", "detail": "Welch et al. 2022 event corpus used for endpoint observations.", "license": "CC BY-NC 4.0"},
+    {"name": "Skylight threshold guidance", "detail": "Context for transparent temporal and spatial screening thresholds."},
+    {"name": "Global Fishing Watch encounter rule", "detail": "Potential enrichment source for behaviour evidence; not pulled for the P0 showcase."},
+    {"name": "Oxford A.1/A.2 kinematic formulation", "detail": "Reachable-set and required-speed heuristic basis."},
+    {"name": "WCPFC AIS-only transshipment review", "detail": "Source of the 78% unsubstantiated-after-triangulation precision caveat."}
+  ],
+  "fixtureScope": "P0 static preview: the three-record histograms describe risk-events.json, while corpus, operating-rule, loose-rule, and structural counts are the planned full-run figures.",
+  "attribution": "Data: Global Fishing Watch AIS-disabling corpus (Welch et al. 2022), CC BY-NC 4.0",
+  "generatedAt": "2026-09-05T17:30:00Z"
+}
