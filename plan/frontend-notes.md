@@ -1,6 +1,6 @@
 # Frontend notes (handed to the UI owner; not part of the backend plan)
 
-The backend emits `data/derived/candidates.json` in the contract defined in `build-plan.md` §8. Everything below is reference material for building the analyst view on top of it.
+The backend emits `risk-events.json` (the `GET /risk-events` payload) and per-candidate `tracks/<id>.geojson` in the contract defined in `build-plan.md` §9. It keeps every field the UI renders today and adds pair, tier, scores, and geometry fields. All coordinates are `[lon, lat]`; all timestamps are ISO-8601 UTC for the frontend to format. The GFW attribution string in each record must be visible in the UI (CC BY-NC 4.0). Everything below is reference material for building the analyst view on top of it.
 
 ## Skylight visual reference
 Screenshots and explainer illustrations are in `tmp/skylight-ref/` (files 01–09). The paper's Figure 1c mechanism diagram, which is the per-candidate map drawing to emulate, is at `tmp/pdfs/dark-page-11.png`.
