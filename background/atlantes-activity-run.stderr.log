@@ -24,3 +24,16 @@ export DISABLE_PANDERA_IMPORT_WARNING=True
 ```
 
   warnings.warn(_future_warning, FutureWarning)
+Traceback (most recent call last):
+  File "C:\Users\hyper\Documents\GitHub\DNHacks_2026\scripts\run_atlantes_activity_experiment.py", line 134, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\hyper\Documents\GitHub\DNHacks_2026\scripts\run_atlantes_activity_experiment.py", line 75, in main
+    from atlantes.inference.atlas_activity.model import AtlasActivityModel
+  File "C:\Users\hyper\Documents\GitHub\DNHacks_2026\background\atlantes\ais\src\atlantes\inference\atlas_activity\model.py", line 12, in <module>
+    from atlantes.atlas.atlas_net import AtlasActivityEndOfSequenceTaskNet
+  File "C:\Users\hyper\Documents\GitHub\DNHacks_2026\background\atlantes\ais\src\atlantes\atlas\atlas_net.py", line 27, in <module>
+    from atlantes.atlas.basemodel import BaseModel
+  File "C:\Users\hyper\Documents\GitHub\DNHacks_2026\background\atlantes\ais\src\atlantes\atlas\basemodel.py", line 9, in <module>
+    from fvcore.nn import FlopCountAnalysis
+ModuleNotFoundError: No module named 'fvcore'
