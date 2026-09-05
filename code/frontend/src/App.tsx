@@ -4,6 +4,7 @@ import { Timeline } from './components/Timeline'
 import { VesselPanel } from './components/VesselPanel'
 import { InvestigationPanel, type RiskFilter } from './components/InvestigationPanel'
 import { dataProvider } from './data/provider'
+import { ModelQueue } from './components/ModelQueue'
 import { createPresenceProvider } from './presence/provider.mjs'
 import { formatTime } from './presence/format'
 import { HOUR, coveredHours, createLatestRequest, currentObservations, dateRange, dayOf, latestPositionedHour, nextCovered, presetStart, requiredDays, trailFeatures } from './presence/timeline.mjs'
@@ -173,7 +174,10 @@ export default function App() {
         {currentError && <div className="inline-error"><span>{currentError}</span><button onClick={() => setDataRetry(value => value + 1)}>Retry data</button></div>}
         <Timeline catalog={catalog} range={range} startDate={startDate} endDate={endDate} cursor={cursor} available={available} playing={playing} speed={speed} error={Boolean(currentError)} onPlay={() => setPlaying(value => !value)} onStep={step} onScrub={scrub} onSpeed={setSpeed} />
       </section>
-      <VesselPanel vessels={vessels} selectedId={selectedId} onSelect={setSelectedId} positions={positions} visibleIds={visibleIds} ready={ready} validRange={Boolean(range)} indexReady={index.key === indexKey && Boolean(range)} indexError={indexError?.key === indexKey ? indexError.message : ''} onRetry={() => setDataRetry(value => value + 1)} onJump={scrub} rangeKey={indexKey} />
+      <div className="investigation-sidebar">
+        <ModelQueue cursor={cursor} vessels={vessels} selectedId={selectedId} onSelect={setSelectedId} onJump={date => { applyRange(date, date, '1'); setCursor(Date.parse(`${date}T00:00:00Z`)) }} />
+        <VesselPanel vessels={vessels} selectedId={selectedId} onSelect={setSelectedId} positions={positions} visibleIds={visibleIds} ready={ready} validRange={Boolean(range)} indexReady={index.key === indexKey && Boolean(range)} indexError={indexError?.key === indexKey ? indexError.message : ''} onRetry={() => setDataRetry(value => value + 1)} onJump={scrub} rangeKey={indexKey} />
+      </div>
     </main>}
     <div className="toast" role="status" aria-live="polite">{notice}</div>
   </div>

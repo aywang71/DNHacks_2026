@@ -1,0 +1,16 @@
+{
+  "algorithm": "pandas row-key hash XOR selected seed, SplitMix64, threshold at 2^63",
+  "artifact_role": "deterministic random/no-skill demonstration",
+  "balanced_accuracy": 0.5000059229074368,
+  "false_positive_rate": 0.4999881541851264,
+  "false_positives": 21104,
+  "negatives": 42209,
+  "positives": 36,
+  "scoring_inputs": [
+    "vessel_id",
+    "anchor_date"
+  ],
+  "seed_selected_on_training_labels": 110,
+  "true_positive_rate": 0.5,
+  "true_positives": 18
+}

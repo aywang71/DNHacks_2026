@@ -17,6 +17,10 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=8,<9"]
+model = [
+  "joblib>=1.4,<2",
+  "scikit-learn>=1.6,<1.7",
+]
 
 [project.scripts]
 dark-rendezvous = "dark_rendezvous.cli:main"

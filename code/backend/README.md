@@ -6,6 +6,7 @@ From this directory:
 
 ```bash
 npm run import:presence
+npm run export:investigations
 npm test
 ```
 
@@ -21,6 +22,13 @@ backend/
   src/presence/geometry.mjs     Dateline-aware bounds for exported days
   tests/                       Import, publication, and bounds checks
 ```
+
+## Model registry and investigation queue
+
+The active viewer now consumes the exported model queue. Models are stored in
+`models/`, with configurable ensemble weights and a queue threshold in
+`models/registry.json`. See [MODELS.md](MODELS.md) for inference commands,
+dependencies, adding models, score contracts, and frontend integration.
 
 ## Historical risk API proposal — not implemented
 
