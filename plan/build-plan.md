@@ -20,6 +20,8 @@
 | GFW API token? | Free, self-service, immediate. Events API serves fishing / encounters / loitering / port visits from 2017. | globalfishingwatch.org/our-apis |
 | Data on disk? | Yes. 55,368 gaps, all 15 columns, 815 invalid MMSIs quarantined (matches the Aug 31 run exactly). | `data/raw`, `data/derived/exclusions.json` |
 | Local prior work? | `pipeline/load.py` done; `pipeline/pair.py` written, never run; nulls/features not written. Skylight UI screenshots saved to `tmp/skylight-ref/`. Paper Figure 1 at `tmp/pdfs/dark-page-11.png`. | this session |
+| Is there a fisheries analog to the paper's "sanctioned country" list? | Yes. The EU IUU carding list. Taiwan held a yellow card from Oct 2015 to 27 Jun 2019, spanning the whole corpus and the TWN vessel in the showcase pair. Vietnam carded 2017; Cambodia red. | ec.europa.eu/commission/presscorner/detail/en/ip_19_3397 |
+| Is the showcase water managed by an RFMO with a registry and IUU list? | Yes. 42.7°N 162°E is inside the North Pacific Fisheries Commission area, which manages neon flying squid, keeps a vessel registry, and has kept an IUU vessel list under CMM 2017-02. | npfc.int/npfc-iuu-vessel-list |
 
 The showcase pair is two **squid jiggers**. Squid jiggers fish under lights so bright they are the single most detectable vessel class in VIIRS night imagery. That is the luckiest fact in this project and the plan is built around it.
 
@@ -31,13 +33,14 @@ Appendix A gives four algorithms. Our corpus has only gap endpoints (no headings
 
 | Paper component | Verdict | How we use it |
 |---|---|---|
+| **Level 1 trip classification** (trip starts or ends at a port in a sanctioned country → suspicious before any gap analysis) | **Adapt as a "trip and identity context" block.** | No sanctions list for fishing, so four public risk lists play the same role: (1) flag-state risk from the EU IUU carding list, the fisheries analog of the paper's Paris MoU list; (2) RFMO authorization for the water where the vessel went dark, from GFW Vessels API public authorizations (NPFC registry for the showcase pair); (3) port country before and after the gap from GFW port-visit events, with non-parties to the FAO Port State Measures Agreement as risk ports; (4) the combined RFMO IUU vessel list. Together these are `context_risk`. |
 | **Fig. 1c geometry** (last signal → dashed projection → intersection point → first signal, two colours, "long data gap" brackets) | **Reuse as the per-candidate map drawing.** | Render exactly this from the four endpoints. Square marker labelled "feasible meeting point (heuristic)". |
 | **A.2 ship-to-ship suspicion score** (overlapping gaps → meeting time = overlap midpoint → required speed out and back → 1 − percentile of required speed) | **Adapt.** | Meeting point: no headings, so evaluate a small set of candidates (midpoint of starts, midpoint of ends, centroid, and a 5×5 grid around the centroid) and take the one minimising the larger vessel's required speed. Percentile reference: the corpus-wide distribution of implied gap speed (start→end distance / gap hours). Output: `sts_plausibility ∈ [0,1]`. |
 | **A.3 heading intersection** | **Drop, state why.** | Headings are not in the public corpus. Optional Sunday-morning add: the vessel's last GFW fishing event before the gap gives a coarse direction of travel. |
-| **A.1 port-based suspicion** (required speed to reach the nearest port and return during the gap) | **Reuse as an alternative explanation.** | For fishing vessels this is the "port run" hypothesis. 7% of gaps end inside 50 nm with a 66 h median; a high A.1 score means the gap may be a transit, not a meeting. Port list: Natural Earth `ne_10m_ports` (free, ~1,000 ports). |
+| **A.1 port-based suspicion** (required speed to reach the nearest suspicious port and return during the gap; low required speed → high suspicion) | **Reuse with the paper's sign.** | Against the risk-port list from Level 1 (non-PSMA ports, ports in carded flag states) it is a positive feature `risk_port_reach`: a vessel dark offshore that could have reached a risk port and returned is the unreported-landing pattern. Against a generic port list (Natural Earth `ne_10m_ports`) the same geometry only yields the `possible-port-transit` label. 7% of gaps end inside 50 nm with a 66 h median, so this fires often enough to matter. |
 | **Long-gap definition** (per-vessel 99th percentile of inter-signal time) | **Reuse.** | GFW already applies ≥12 h. We add `gap_unusualness` = this gap's percentile within the vessel's own gap history. |
-| **A.4 vessel-level clustering** (trip score, idle ratio, age, operator fleet size, flag risk; 2-cluster k-means) | **Adapt, partially.** | Flag is in the corpus. Repeat-participation (MMSI 577101000 has 173 events, 7 of 27 cross-flag pairs) replaces "idle ratio". Owner/fleet size and build year via GFW Vessels API if the token arrives. k-means kept as an optional "paper-style partition" toggle, not as the ranking. |
-| Detour factor, speed std-dev | **Drop.** | Need tracks. Say so in the methodology drawer. |
+| **A.4 vessel-level clustering** (trip score, idle ratio, age, operator fleet size, Paris MoU flag rank; 2-cluster k-means) | **Adapt, partially.** | Flag rank → EU carding status (and Tokyo MoU list for Asia-Pacific flags). Repeat-participation (MMSI 577101000 has 173 events, 7 of 27 cross-flag pairs) replaces "idle ratio". Owner/fleet size and build year via GFW Vessels API registry fields, token-gated. k-means kept as an optional "paper-style partition" toggle, not as the ranking. |
+| **Level 3 kinematics** (detour factor, speed std-dev, average speed per trip) | **Drop.** | Need tracks. The only proxy is `gap_unusualness` above. Say so in the methodology drawer. |
 | Sanctions/tanker figures (558 dark tankers/yr, 43% of seaborne crude) | **Borrow for context only.** | One slide: "the method is the paper's; the evidence here is fishing vessels; the paper shows the tanker scale." Label as the paper's model estimates. |
 
 ---
@@ -53,6 +56,9 @@ Appendix A gives four algorithms. Our corpus has only gap endpoints (no headings
 | "Night Lights" event type and glow icon | **Reuse.** | VIIRS detections render as glowing dots, like Skylight's Night Lights illustration (`04`). |
 | **`allenai/vessel-detection-viirs`** Docker, CPU | **Run it.** | Stretch but high-value: run Skylight's own detector on the archival VIIRS DNB granule over the showcase pair's night. "Skylight's model sees a lit vessel where AIS is silent" is the line. |
 | Light basemap (pale cyan water, grey land) | **Reuse the look** via CARTO Positron (free, no key). | A dark basemap reads as "hacker"; Skylight's light one reads as "analyst tool". Decide in §7. |
+| **Areas of Interest + Entry events** (rule-based: vessel crosses into a user AOI) | **Reuse as `eez_entry_while_dark`.** | Gap starts on the high seas and ends inside an EEZ, computed from the end coordinates against public EEZ polygons (Marine Regions). Also names the jurisdiction on the card. RFMO convention areas are the second AOI layer, and feed the Level 1 authorization check. |
+| **Detection–AIS correlation** (black icon = a broadcasting vessel explains the detection, red = it does not) | **Reuse for VIIRS.** | A night-light counts as corroboration only if no broadcasting vessel explains it. Correlate against GFW's AIS presence layer for that day and cell; fallback is the corpus' own broadcasting endpoints within ±1 h. Uncorrelated lights render red, correlated black, exactly Skylight's convention. |
+| **Dark Rendezvous single-vessel kinematic model** (ML on one visible vessel's speed and course, ≥15 min) | **Substitute.** | We cannot run it and have no tracks. GFW LOITERING events (a vessel under 2 kn for an extended period away from port) are the closest public analog and enter Detector 3 as a scored input, not as context text. |
 
 ---
 
@@ -63,17 +69,25 @@ No labels exist, so the "ensemble" is a scorecard with a calibrated null, not a 
 ```
 priority = w1·synchrony_surprise      (Detector 1, ours: both-ends 10 km / 1 h, lift vs within-cell null)
          + w2·sts_plausibility        (Detector 2, Oxford A.2 adapted)
-         + w3·corroboration           (Detector 3: VIIRS detection in feasible region; GFW context events)
-         − w4·local_density_penalty   (other gaps within 200 km / ±1 h)
-         − w5·fleet_penalty           (component size, same-flag share, sequential MMSI)
-         − w6·port_run_penalty        (Oxford A.1: could this gap be a port transit?)
+         + w3·corroboration           (Detector 3: uncorrelated VIIRS light in feasible region; GFW loitering / encounter)
+         + w4·context_risk            (Oxford Level 1 adapted: flag carding, RFMO authorization, port context, IUU list)
+         + w5·risk_port_reach         (Oxford A.1, paper's sign: a risk port reachable during the gap)
+         − w6·local_density_penalty   (other gaps within 200 km / ±1 h)
+         − w7·fleet_penalty           (component size, same-flag share, sequential MMSI)
+flags    eez_entry_while_dark, possible_port_transit   (shown on the card, not weighted)
 ```
 
 Labels from the sign of the penalties: `investigate` · `coordinated-fleet-pattern` · `likely-coverage-or-cluster-artifact` · `possible-port-transit` · `insufficient-evidence`.
 
-**Detector 3 in detail (the Skylight analog).** Skylight watches the visible vessel's behaviour. We have no tracks, so we use two public substitutes:
-- **GFW context events** per vessel, ±7 days around the gap (Events API, needs token): a prior published ENCOUNTER between the same two vessels (known partners), FISHING events at the same spot just before (fishing ground, not transfer), a carrier LOITERING event nearby (transshipment context), a PORT VISIT right after (offload). Each is a signed feature with a sentence in the evidence ledger.
-- **VIIRS night-lights** for the dark night(s): NOAA EOG VBD detections inside the feasible region, three-state: detection / clear-sky no detection / cloud or no coverage. For squid jiggers, "clear sky, no lights" is itself anomalous and is reported as such.
+**Level 1 in detail (the paper's trip classification, adapted).** The paper decides suspicion first from where a trip went, then from gaps. Our `context_risk` does the same with four joins, all on fields we hold or can fetch:
+- **Flag-state risk**: EU IUU carding status at the gap date (yellow / red / none), joined on the corpus `flag` column with a hand-made table of card dates. Tokyo MoU flag list as a second column for Asia-Pacific flags.
+- **RFMO authorization**: which convention area contains the shutoff position (NPFC, WCPFC, IATTC, ICCAT, IOTC, SPRFMO polygons), and whether the vessel held a public authorization for it at that date, from the GFW Vessels API. Dark inside an RFMO area without authorization is unregulated by definition.
+- **Port context**: last GFW port visit before the gap and first after it, with port country; PSMA non-party ports flagged.
+- **IUU listing**: MMSI or name on the combined RFMO IUU vessel list.
+
+**Detector 3 in detail (the Skylight analog).** Skylight watches the visible vessel's behaviour and correlates detections with AIS. We have no tracks, so we use public substitutes for both halves:
+- **GFW behaviour events** per vessel, ±7 days around the gap (Events API, needs token): a carrier LOITERING event nearby during the window (the closest public analog to Skylight's single-vessel kinematic signal), a prior ENCOUNTER between the same two vessels (known partners), FISHING events at the same spot just before (fishing ground, not transfer). Each is a signed, weighted feature with a sentence in the evidence ledger.
+- **VIIRS night-lights** for the dark night(s): NOAA EOG VBD detections inside the feasible region, three-state: detection / clear-sky no detection / cloud or no coverage. A detection is corroboration only after the AIS-correlation test in §3 says no broadcasting vessel explains it. For squid jiggers, "clear sky, no lights" is itself anomalous and is reported as such.
 
 Evaluation we can honestly show: the lift ladder against null C (prior run: 35× at the operating threshold, 22.5× cross-flag), the share of candidates each penalty removes, and the showcase pair's full ledger.
 
@@ -103,7 +117,9 @@ Evaluation we can honestly show: the lift ladder against null C (prior run: 35×
 │               │   │ Corrobor.  ██████░░░ VIIRS lit vessel in region          │ │
 │               │   │ Density   −█░░░░░░░░ 3 others within 200 km              │ │
 │               │   │ Fleet     −░░░░░░░░░ component size 2, cross-flag        │ │
-│               │   │ Port run  −░░░░░░░░░ nearest port 890 km, needs 21 kn    │ │
+│               │   │ Context   ████░░░░░ TWN yellow card 2015–19 · NPFC reg ✓ │ │
+│               │   │ Risk port ░░░░░░░░░ nearest risk port 890 km, needs 21 kn│ │
+│               │   │ Flags: high seas → high seas (no EEZ entry while dark)   │ │
 │               │   │ ── Vessels in the vicinity (±1 h, 200 km) ─────────────  │ │
 │               │   │ 🇻🇺 577101000 · 🇨🇳 412…                                 │ │
 │               │   │ ── Assessment (agent) ─────────────────────────────────  │ │
@@ -134,7 +150,7 @@ Also: a **Challenge panel** tab ("what would make this innocent?") and a **Metho
 **Corroboration (ranked by value per hour)**
 1. EOG VBD nightly CSV for the showcase pair's nights (free account, filter a bbox). ~1 hour. Shown as glowing dots inside the feasible region with local time.
 2. Run `allenai/vessel-detection-viirs` in Docker on the archival VNP02DNB/VNP03DNB granules for that overpass (Earthdata login, swap NRT URLs for LAADS DAAC). ~2–3 hours, needs Docker on the Mac. Payoff: "Skylight's model, on the same night, independently." Do it only after item 1 succeeds.
-3. GFW context events for the top 30 candidates (token). ~2 hours. Payoff: the vicinity list and trip context.
+3. GFW events and identity for the top 30 candidates (token). ~2 hours. Payoff: loitering/encounter inputs for Detector 3, port visits and RFMO authorizations for Level 1, owner and build year for A.4. The flag-carding and IUU-list joins need no token and take ~30 minutes.
 4. SAR/optical: 15-minute check, expect nothing, and report "no coverage" honestly. The three-state coverage result is itself a feature of the product.
 
 **Scoring model**
