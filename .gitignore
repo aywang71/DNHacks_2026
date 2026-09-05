@@ -1,0 +1,13 @@
+# local environment
+.venv/
+__pycache__/
+.env
+.DS_Store
+
+# data: commit the 4 MB zip, not the 12 MB CSV or derived parquet
+data/raw/*.csv
+data/derived/*.parquet
+
+# 15 MB paper PDF; text extraction and page PNGs are committed.
+# Source: https://users.ox.ac.uk/~wadh4073/research_files/Dark_Shipping.pdf
+tmp/pdfs/Dark_Shipping.pdf

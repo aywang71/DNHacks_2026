@@ -1,0 +1,13 @@
+{
+  "n_total_rows": 55368,
+  "excluded_from_pairing": {
+    "invalid_mmsi": 815
+  },
+  "n_valid_for_pairing": 54553,
+  "other_data_quality_notes": {
+    "negative_or_zero_duration": 0,
+    "duplicate_gap_id": 0,
+    "blank_flag": 702
+  },
+  "invalid_mmsi_share": 0.0147
+}
