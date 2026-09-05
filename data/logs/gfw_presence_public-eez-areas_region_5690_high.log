@@ -218,3 +218,30 @@
 2026-09-05T17:00:44.0544196-04:00 loader data\silver\gfw_presence_hourly\retrieval_id=presence_public-eez-areas_region_5690_high_20260826_20260905T170017Z\region_dataset=public-eez-areas\region_id=5690\points.parquet
 2026-09-05T17:00:44.0554242-04:00 completed day=2026-08-26 loaded_days_this_process=7
 2026-09-05T17:00:45.0640342-04:00 loading day=2026-08-27 retrieval_id=presence_public-eez-areas_region_5690_high_20260827_20260905T170045Z
+2026-09-05T17:01:10.0048877-04:00 loader data\silver\gfw_presence_hourly\retrieval_id=presence_public-eez-areas_region_5690_high_20260827_20260905T170045Z\region_dataset=public-eez-areas\region_id=5690\points.parquet
+2026-09-05T17:01:10.0068901-04:00 completed day=2026-08-27 loaded_days_this_process=8
+2026-09-05T17:01:11.0212021-04:00 loading day=2026-08-28 retrieval_id=presence_public-eez-areas_region_5690_high_20260828_20260905T170111Z
+2026-09-05T17:01:32.8807580-04:00 loader data\silver\gfw_presence_hourly\retrieval_id=presence_public-eez-areas_region_5690_high_20260828_20260905T170111Z\region_dataset=public-eez-areas\region_id=5690\points.parquet
+2026-09-05T17:01:32.8837588-04:00 completed day=2026-08-28 loaded_days_this_process=9
+2026-09-05T17:01:33.8963045-04:00 loading day=2026-08-29 retrieval_id=presence_public-eez-areas_region_5690_high_20260829_20260905T170133Z
+2026-09-05T17:01:52.2010631-04:00 loader data\silver\gfw_presence_hourly\retrieval_id=presence_public-eez-areas_region_5690_high_20260829_20260905T170133Z\region_dataset=public-eez-areas\region_id=5690\points.parquet
+2026-09-05T17:01:52.2030630-04:00 completed day=2026-08-29 loaded_days_this_process=10
+2026-09-05T17:01:53.2192440-04:00 loading day=2026-08-30 retrieval_id=presence_public-eez-areas_region_5690_high_20260830_20260905T170153Z
+2026-09-05T17:02:17.2671390-04:00 loader data\silver\gfw_presence_hourly\retrieval_id=presence_public-eez-areas_region_5690_high_20260830_20260905T170153Z\region_dataset=public-eez-areas\region_id=5690\points.parquet
+2026-09-05T17:02:17.2708204-04:00 completed day=2026-08-30 loaded_days_this_process=11
+2026-09-05T17:02:18.2763011-04:00 loading day=2026-08-31 retrieval_id=presence_public-eez-areas_region_5690_high_20260831_20260905T170218Z
+2026-09-05T17:02:59.4160515-04:00 loader data\silver\gfw_presence_hourly\retrieval_id=presence_public-eez-areas_region_5690_high_20260831_20260905T170218Z\region_dataset=public-eez-areas\region_id=5690\points.parquet
+2026-09-05T17:02:59.4180575-04:00 completed day=2026-08-31 loaded_days_this_process=12
+2026-09-05T17:03:00.4238038-04:00 loading day=2026-09-01 retrieval_id=presence_public-eez-areas_region_5690_high_20260901_20260905T170300Z
+2026-09-05T17:03:19.7414601-04:00 loader data\silver\gfw_presence_hourly\retrieval_id=presence_public-eez-areas_region_5690_high_20260901_20260905T170300Z\region_dataset=public-eez-areas\region_id=5690\points.parquet
+2026-09-05T17:03:19.7444598-04:00 completed day=2026-09-01 loaded_days_this_process=13
+2026-09-05T17:03:20.7566335-04:00 loading day=2026-09-02 retrieval_id=presence_public-eez-areas_region_5690_high_20260902_20260905T170320Z
+2026-09-05T17:03:36.4167923-04:00 loader data\silver\gfw_presence_hourly\retrieval_id=presence_public-eez-areas_region_5690_high_20260902_20260905T170320Z\region_dataset=public-eez-areas\region_id=5690\points.parquet
+2026-09-05T17:03:36.4178001-04:00 completed day=2026-09-02 loaded_days_this_process=14
+2026-09-05T17:03:37.4252390-04:00 loading day=2026-09-03 retrieval_id=presence_public-eez-areas_region_5690_high_20260903_20260905T170337Z
+2026-09-05T17:03:51.5840380-04:00 loader data\silver\gfw_presence_hourly\retrieval_id=presence_public-eez-areas_region_5690_high_20260903_20260905T170337Z\region_dataset=public-eez-areas\region_id=5690\points.parquet
+2026-09-05T17:03:51.5860347-04:00 completed day=2026-09-03 loaded_days_this_process=15
+2026-09-05T17:03:52.5953173-04:00 loading day=2026-09-04 retrieval_id=presence_public-eez-areas_region_5690_high_20260904_20260905T170352Z
+2026-09-05T17:04:05.2445460-04:00 loader data\silver\gfw_presence_hourly\retrieval_id=presence_public-eez-areas_region_5690_high_20260904_20260905T170352Z\region_dataset=public-eez-areas\region_id=5690\points.parquet
+2026-09-05T17:04:05.2485448-04:00 completed day=2026-09-04 loaded_days_this_process=16
+2026-09-05T17:04:05.2645506-04:00 complete loaded_days_this_process=16 skipped_complete_days_this_process=0

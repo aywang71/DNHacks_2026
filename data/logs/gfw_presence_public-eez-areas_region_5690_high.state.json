@@ -1,8 +1,8 @@
 ﻿{
-    "status":  "running",
-    "updated_at":  "2026-09-05T21:00:44.0544196Z",
-    "next_day":  "2026-08-27",
-    "loaded_days_this_process":  7,
+    "status":  "complete",
+    "finished_at":  "2026-09-05T21:04:05.2505461Z",
+    "next_day":  null,
+    "loaded_days_this_process":  16,
     "skipped_complete_days_this_process":  0,
     "log_path":  "C:\\Users\\hyper\\Documents\\GitHub\\DNHacks_2026\\data\\logs\\gfw_presence_public-eez-areas_region_5690_high.log"
 }
