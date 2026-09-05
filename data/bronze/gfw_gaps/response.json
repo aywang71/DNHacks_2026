@@ -1,0 +1,86 @@
+{
+  "entries": [
+    {
+      "boundingBox": [
+        120.258985,
+        -9.543746666666667,
+        165.12774666666667,
+        36.00002166666667
+      ],
+      "distances": {
+        "endDistanceFromPortKm": 0,
+        "endDistanceFromShoreKm": 1,
+        "startDistanceFromPortKm": 436.86028100000004,
+        "startDistanceFromShoreKm": 114
+      },
+      "end": "2026-06-13T01:29:22.000Z",
+      "gap": {
+        "distanceKm": "6904.8610256622405",
+        "durationHours": 82496.63333333333,
+        "impliedSpeedKnots": "0.045193682906525784",
+        "intentionalDisabling": true,
+        "offPosition": {
+          "lat": -9.543746666666667,
+          "lon": 165.12774666666667
+        },
+        "onPosition": {
+          "lat": "36.00002166666667",
+          "lon": "120.258985"
+        },
+        "positions12HoursBeforeSat": "74",
+        "positionsPerDaySatReception": 326.1429888529972
+      },
+      "id": "87ab704a63445d61c846bb2b9f75d8b2",
+      "position": {
+        "lat": 14.2573,
+        "lon": 145.0264
+      },
+      "regions": {
+        "eez": [
+          "8314"
+        ],
+        "eez12Nm": [],
+        "fao": [
+          "71"
+        ],
+        "highSeas": [],
+        "majorFao": [
+          "71"
+        ],
+        "mpa": [],
+        "mpaNoTake": [],
+        "mpaNoTakePartial": [],
+        "rfmo": [
+          "ACAP",
+          "WCPFC",
+          "FFA",
+          "IWC",
+          "SPC"
+        ]
+      },
+      "start": "2017-01-13T16:51:02.000Z",
+      "type": "gap",
+      "vessel": {
+        "flag": "KOR",
+        "id": "8e126a2d7-7c99-38e2-0096-cf6a22b81b33",
+        "name": "DONGWON NO.16",
+        "nextPort": null,
+        "ssvid": "440825000",
+        "type": "fishing"
+      }
+    }
+  ],
+  "limit": 1,
+  "metadata": {
+    "datasets": [
+      "public-global-gaps-events:v4.0"
+    ],
+    "dateRange": {
+      "from": "2024-01-01",
+      "to": "2024-01-02"
+    }
+  },
+  "nextOffset": 1,
+  "offset": 0,
+  "total": 8905
+}
