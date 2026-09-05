@@ -81,6 +81,10 @@ def normalize_presence_report(
                         row_index,
                     )
                 ),
+                # ``entryTimestamp`` and ``exitTimestamp`` describe the
+                # report's requested interval. ``date`` is the actual
+                # HOURLY group-by bucket for this vessel/grid-cell row.
+                "timestamp": row.get("date"),
                 "report_dataset": dataset or requested_dataset,
             }
         )

@@ -107,7 +107,7 @@ def test_presence_report_becomes_hourly_grid_centre_positions() -> None:
             {
                 "public-global-presence:v4.0": [
                     {
-                        "date": "2022-01-01 00:00",
+                        "date": "2022-01-01 01:00",
                         "entryTimestamp": "2022-01-01T00:00:00Z",
                         "lat": 53.03,
                         "lon": 158.64,
@@ -135,6 +135,7 @@ def test_presence_report_becomes_hourly_grid_centre_positions() -> None:
 
     assert tuple(result.columns) == GFW_PRESENCE_COLUMNS
     assert result.loc[0, "vessel_id"] == "gfw:gfw-vessel-1"
+    assert result.loc[0, "ts"].isoformat() == "2022-01-01T01:00:00+00:00"
     assert result.loc[0, "mmsi"] == "273294510"
     assert result.loc[0, "vessel_name"] == "VICTORIA"
     assert result.loc[0, "position_semantics"] == PRESENCE_POSITION_SEMANTICS

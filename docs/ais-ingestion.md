@@ -183,7 +183,9 @@ semantics.
         manifest.json
 
 The Bronze object is the raw API response payload, retained before field
-mapping (as a canonical JSON serialization). Silver rows use the shared
+mapping (as a canonical JSON serialization). The Silver `ts` is the report's
+hourly `date` bucket; GFW's `entryTimestamp` and `exitTimestamp` describe the
+overall requested interval, not an individual row's observation time. Silver rows use the shared
 position fields (`ts`, `lat`, `lon`, `vessel_id`, MMSI, IMO, name, and callsign)
 plus `presence_hours`, GFW vessel type/flag, report dataset, and grid
 resolution. They are always labelled
