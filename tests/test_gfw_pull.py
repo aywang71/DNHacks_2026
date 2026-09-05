@@ -59,3 +59,22 @@ def test_pull_writes_page_partitioned_raw_and_normalized_artifacts(tmp_path) -> 
     assert [call["time_filter_mode"] for call in client.calls] == ["START-DATE", "START-DATE"]
     assert (tmp_path / "bronze/gfw_gaps/retrieval_id=test-run/window_start=2024-01-01/window_end=2024-01-03/offset=000000000/response.json").exists()
     assert (tmp_path / "silver/gfw_gap_endpoints/retrieval_id=test-run/pull_manifest.json").exists()
+
+
+def test_bronze_only_pull_skips_silver_artifacts(tmp_path) -> None:
+    summary = pull_gap_windows(
+        FakeGfwClient(),  # type: ignore[arg-type]
+        start=date(2024, 1, 1),
+        end=date(2024, 1, 3),
+        bronze_root=tmp_path / "bronze",
+        silver_root=tmp_path / "silver",
+        max_pages=1,
+        retrieval_id="bronze-only",
+        write_silver=False,
+    )
+
+    assert summary.complete is False
+    assert summary.endpoints_written == 0
+    assert summary.silver_output_root is None
+    assert (tmp_path / "bronze/gfw_gaps/retrieval_id=bronze-only/pull_manifest.json").exists()
+    assert not (tmp_path / "silver/gfw_gap_endpoints/retrieval_id=bronze-only").exists()

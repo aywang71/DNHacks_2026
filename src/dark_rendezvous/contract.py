@@ -28,6 +28,7 @@ CANONICAL_POSITION_COLUMNS: tuple[str, ...] = (
     "heading_deg",
     "nav_status",
     "transceiver_class",
+    "position_semantics",
     "collection_mode",
     "raw_payload_hash",
     "quality_flags",
@@ -72,6 +73,8 @@ def canonicalize_positions(
     raw_payload_hash: str,
     dataset_version: str = "unknown",
     collection_mode: str = "unknown",
+    position_semantics: str = "provider_reported_position",
+    vessel_id_override: str | pd.Series | Sequence[object] | None = None,
 ) -> pd.DataFrame:
     """Map raw AIS rows to the project-wide provenance-preserving schema.
 
@@ -79,7 +82,20 @@ def canonicalize_positions(
     coverage analysis rather than silently changing provider history.
     """
     ts = pd.to_datetime(
-        _field(frame, ("observed_at", "timestamp", "base_date_time", "basedatetime", "time", "ts")),
+        _field(
+            frame,
+            (
+                "observed_at",
+                "timestamp",
+                "entry_timestamp",
+                "entryTimestamp",
+                "base_date_time",
+                "basedatetime",
+                "time",
+                "ts",
+                "date",
+            ),
+        ),
         errors="coerce",
         utc=True,
     )
@@ -93,6 +109,12 @@ def canonicalize_positions(
     vessel_id = pd.Series(pd.NA, index=frame.index, dtype="string")
     vessel_id = vessel_id.mask(imo.notna(), "imo:" + imo)
     vessel_id = vessel_id.mask(vessel_id.isna() & mmsi.notna(), "mmsi:" + mmsi)
+    if vessel_id_override is not None:
+        if isinstance(vessel_id_override, str):
+            vessel_id = pd.Series(vessel_id_override, index=frame.index, dtype="string")
+        else:
+            overrides = pd.Series(vessel_id_override, index=frame.index, dtype="string")
+            vessel_id = overrides.fillna(vessel_id)
 
     valid_ts = ts.notna()
     valid_coordinates = lat.between(-90, 90) & lon.between(-180, 180)
@@ -143,6 +165,7 @@ def canonicalize_positions(
             "heading_deg": pd.to_numeric(_field(frame, ("heading", "true_heading")), errors="coerce"),
             "nav_status": clean_identifier(_field(frame, ("status", "nav_status", "navigation_status"))),
             "transceiver_class": clean_identifier(_field(frame, ("transceiver", "transceiver_class", "transceiverclass", "ais_class"))),
+            "position_semantics": position_semantics,
             "collection_mode": collection_mode,
             "raw_payload_hash": raw_payload_hash,
             "quality_flags": flags,
@@ -150,4 +173,3 @@ def canonicalize_positions(
         }
     )
     return output.loc[:, CANONICAL_POSITION_COLUMNS]
-

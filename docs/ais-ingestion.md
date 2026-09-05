@@ -126,12 +126,91 @@ They are an append-only snapshot, so deduplicate a later analysis view by
 source snapshots. Use `--max-pages` only for a bounded probe: its run manifest
 will explicitly record `complete: false` when pagination stops early.
 
+Pass `--bronze-only` for an independent long-running acquisition job. It saves
+the response and page manifest but does not write or overwrite any Silver
+artifacts. The operational handoff is in
+[the Bronze backfill runbook](bronze-backfill-runbook.md).
+
+### GFW per-vessel track points
+
+`gfw-track` targets GFW's documented per-vessel `/tracks` route for a selected
+GFW vessel ID and time range. It requests JSON line segments with `LONLAT`,
+`TIMESTAMP`, `SPEED`, and `COURSE`, without server-side thinning. The connector
+retains the raw response, expands each returned coordinate into the canonical
+point schema, and writes a distinct `gfw_track_points` table when the account
+has access:
+
+    dark-rendezvous gfw-track --vessel-id <gfw-vessel-id> \
+        --start-date 2017-01-01 --end-date 2017-02-01
+
+    data/bronze/gfw_tracks/gfw_vessel_id=<id>/start=YYYY-MM-DD/end=YYYY-MM-DD/track.lines.json
+    data/silver/gfw_track_points/gfw_vessel_id=<id>/start=YYYY-MM-DD/end=YYYY-MM-DD/points.parquet
+
+These are labelled `position_semantics=gfw_derived_track`; they must not be
+called raw AIS. The track API does not document an hourly sampling parameter,
+so preserve native returned points and construct a separate hourly display view
+only after retrieval. A frontend should draw returned pre/post-gap points as a
+visible path and render the intervening AIS-off interval as uncertainty, never
+as interpolated observed motion.
+
+The currently configured GFW application is authenticated but has no
+`public-global-fishing-tracks:*` permission, and the documented route returns
+`404` under that account. Do not schedule this command for a backfill unless
+GFW grants track access and a smoke test succeeds.
+
+### GFW 4Wings hourly Presence: implemented derived-AIS fallback
+
+`gfw-presence` requests a bounded `public-global-presence` 4Wings report,
+grouped by vessel and hour. GFW derives this product by selecting one AIS
+position per vessel-hour, then reports the centre of the requested spatial
+grid cell. Therefore the exact provider response is Bronze but it is **not**
+raw AIS; the flattened output is a separate Silver table with explicit grid
+semantics.
+
+    dark-rendezvous gfw-presence \
+        --start 2022-01-01T00:00:00Z --end 2022-01-01T01:00:00Z \
+        --region-id 5690 --region-dataset public-eez-areas \
+        --spatial-resolution HIGH
+
+    data/bronze/gfw_presence/retrieval_id=<UTC-run-id>/
+      region_dataset=public-eez-areas/region_id=5690/
+        report.json
+        manifest.json
+
+    data/silver/gfw_presence_hourly/retrieval_id=<UTC-run-id>/
+      region_dataset=public-eez-areas/region_id=5690/
+        points.parquet
+        manifest.json
+
+The Bronze object is the raw API response payload, retained before field
+mapping (as a canonical JSON serialization). The Silver `ts` is the report's
+hourly `date` bucket; GFW's `entryTimestamp` and `exitTimestamp` describe the
+overall requested interval, not an individual row's observation time. Silver rows use the shared
+position fields (`ts`, `lat`, `lon`, `vessel_id`, MMSI, IMO, name, and callsign)
+plus `presence_hours`, GFW vessel type/flag, report dataset, and grid
+resolution. They are always labelled
+`position_semantics=gfw_presence_grid_center_hourly`.
+
+`HIGH` produces 0.01-degree grid centres (roughly 1.1 km north/south); `LOW`
+produces 0.1-degree centres. Treat each coordinate as an uncertainty cell, not
+the vessel's exact fix. This makes the table appropriate for global candidate
+screening and coarse frontend playback, but raw provider AIS remains required
+for a close-approach/rendezvous assessment.
+
+The report API permits only one report per account at a time and may time out
+on large regions/windows. Pull small region-time windows serially. If GFW
+documents a timeout but has completed the query, `--reuse-last-report` stores
+the account's last report as a separately labelled retrieval; verify that it
+matches the requested parameters before using it. Use `--bronze-only` for an
+acquisition worker that must not write Silver.
+
 GFW's AIS-disabling repository provides useful gap/reception methodology and a
 final event dataset, but its raw AIS message tables are license-restricted. It
 is a validation and method reference, not a raw-AIS provider.
 
 Source details: [GFW Events API](https://globalfishingwatch.org/our-apis/documentation/docs/v3/events/get-all-events),
 [GFW Vessels API](https://globalfishingwatch.org/our-apis/documentation/docs/v3/vessels/get-one-vessel),
+[GFW 4Wings Presence and Report API](https://globalfishingwatch.org/our-apis/documentation/docs/v3/4wings),
 and the [AIS-disabling method repository](https://github.com/GlobalFishingWatch/AIS-disabling-high-seas).
 
 ### Commercial global satellite AIS: supported through normalize-file
@@ -166,6 +245,7 @@ insufficient_coverage_evidence, not intentional disabling.
     dark-rendezvous normalize-file --input C:\data\provider.csv --source provider_export
     dark-rendezvous gfw-gaps --start-date 2024-01-01 --end-date 2024-01-31
     dark-rendezvous gfw-gaps-pull --start-date 2017-01-01 --end-date 2017-02-01 --page-size 500
+    dark-rendezvous gfw-presence --start 2022-01-01T00:00:00Z --end 2022-01-01T01:00:00Z --region-id 5690
     dark-rendezvous gfw-identity --query <IMO-or-MMSI-or-name>
 
 All data land under data/, which is Git-ignored. Every ingestion writes a JSON
