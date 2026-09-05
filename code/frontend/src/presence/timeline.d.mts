@@ -5,6 +5,7 @@ export function dayOf(timestamp: number): string
 export function dateRange(startDate: string, endDate: string): TimeRange | null
 export function presetStart(endDate: string, days: number): string
 export function coveredHours(catalog: PresenceCatalog, range: TimeRange): number[]
+export function latestPositionedHour(catalog: PresenceCatalog, range: TimeRange): number | null
 export function nextCovered(hours: number[], cursor: number, direction?: number): number | null
 export function requiredDays(cursor: number, rangeStart: number, catalog: PresenceCatalog): PresenceDay[]
 export function currentObservations(observations: Observation[], cursor: number): Observation[]

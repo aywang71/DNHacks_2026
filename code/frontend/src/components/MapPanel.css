@@ -6,5 +6,7 @@
 .world-map .maplibregl-ctrl-icon{filter:invert(90%)}
 .map-key{position:absolute;left:18px;bottom:14px;pointer-events:none;display:flex;flex-wrap:wrap;gap:8px 18px;padding:8px 10px;background:#0c0a09e8;color:var(--muted);font-size:11px;border:1px solid var(--line)}
 .map-key span{display:flex;align-items:center;gap:7px}.map-key i{width:7px;height:7px;background:var(--cyan);border-radius:50%}
+.map-key i.port-key{background:#d946ef;border:1px solid #f5d0fe}
+.port-label{display:none;pointer-events:none;white-space:nowrap;color:#f5d0fe;font:600 11px/1 var(--font-mono);text-shadow:0 1px 2px #0c0a09,1px 0 2px #0c0a09,-1px 0 2px #0c0a09}.port-label.is-visible{display:block}
 .map-message{position:absolute;left:50%;top:45%;transform:translate(-50%,-50%);width:max-content;max-width:85%;padding:15px 20px;border:1px solid var(--line);background:#141210ed;color:var(--text);text-align:center}
-@media(max-width:760px){.presence-map{min-height:350px}.map-key-detail{display:none!important}}
+@media(max-width:760px){.presence-map{min-height:350px}.map-key-detail{display:none!important}.world-map .maplibregl-ctrl-group button{min-width:44px;min-height:44px}}
