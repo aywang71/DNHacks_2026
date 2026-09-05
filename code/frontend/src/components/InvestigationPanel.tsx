@@ -34,7 +34,6 @@ export function InvestigationPanel({
   vessels, selected, onSelect, caseRecord, onOpenCase, onSetNotes, watching, onWatch, filter, onFilter,
 }: InvestigationPanelProps) {
   const notesId = useId()
-  const [activeTab, setActiveTab] = useState<'evidence' | 'timeline'>('evidence')
   const [notice, setNotice] = useState('')
   const visibleVessels = filter === 'all' ? vessels : vessels.filter((vessel) => vessel.riskLevel === filter)
   const caseInfo = statusCopy[caseRecord.status]
@@ -90,23 +89,18 @@ export function InvestigationPanel({
 
         <div className="investigation-grid">
           <section className="evidence-section" aria-label="Evidence review">
-            <div className="tab-row" aria-label="Investigation detail">
-              <button aria-pressed={activeTab === 'evidence'} className={activeTab === 'evidence' ? 'is-active' : ''} onClick={() => setActiveTab('evidence')}>Evidence ({selected.evidence.length})</button>
-              <button aria-pressed={activeTab === 'timeline'} className={activeTab === 'timeline' ? 'is-active' : ''} onClick={() => setActiveTab('timeline')}>Replay timeline</button>
+            <div className="tab-row" aria-label="Investigation detail"><span className="is-active">Evidence & replay</span></div>
+            <div className="evidence-list">
+              {selected.evidence.map((evidence) => <div className="evidence-row" key={evidence.id}>
+                <span className={`confidence confidence-${evidence.confidence}`}>{evidence.confidence}</span>
+                <div><strong>{evidence.claim}</strong><p>{evidence.source} · {evidence.observedAt}</p></div>
+              </div>)}
+              <p className="uncertainty-note">Evidence records observations, not conclusions. The route across the AIS gap is an estimated corridor and remains uncertain.</p>
             </div>
-            {activeTab === 'evidence' ? (
-              <div className="evidence-list">
-                {selected.evidence.map((evidence) => <div className="evidence-row" key={evidence.id}>
-                  <span className={`confidence confidence-${evidence.confidence}`}>{evidence.confidence}</span>
-                  <div><strong>{evidence.claim}</strong><p>{evidence.source} · {evidence.observedAt}</p></div>
-                </div>)}
-                <p className="uncertainty-note">Evidence records observations, not conclusions. The route across the AIS gap is an estimated corridor and remains uncertain.</p>
-              </div>
-            ) : (
-              <ol className="timeline-list">
-                {selected.timeline.map((event) => <li className={event.emphasis ? 'is-emphasis' : ''} key={`${event.time}-${event.title}`}><time>{event.time}</time><div><strong>{event.title}</strong><p>{event.detail}</p></div></li>)}
-              </ol>
-            )}
+            <div className="timeline-heading"><h3>Replay timeline</h3><p>Observed positions and signal events</p></div>
+            <ol className="timeline-list">
+              {selected.timeline.map((event) => <li className={event.emphasis ? 'is-emphasis' : ''} key={`${event.time}-${event.title}`}><time>{event.time}</time><div><strong>{event.title}</strong><p>{event.detail}</p></div></li>)}
+            </ol>
           </section>
 
           <section className="case-section" aria-label="Case workflow">
