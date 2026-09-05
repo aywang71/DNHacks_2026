@@ -65,7 +65,7 @@ def _target_location(target: dict[str, Any]) -> tuple[list[str], dict[str, Any]]
         encoded = json.dumps(geometry, sort_keys=True, separators=(",", ":")).encode("utf-8")
         geometry_hash = hashlib.sha256(encoded).hexdigest()
         return (
-            [f"region_slug={target['slug']}", f"geojson_sha256={geometry_hash}"],
+            [f"geojson_id={geometry_hash[:12]}"],
             {"kind": "geojson", "geojson": geometry, "geojson_sha256": geometry_hash},
         )
     raise ValueError(f"Unsupported target kind {target['kind']!r}")
@@ -95,6 +95,11 @@ def main() -> None:
     parser.add_argument("--timeout-seconds", type=float, default=180.0)
     parser.add_argument("--start", help="Override the configured inclusive UTC start timestamp.")
     parser.add_argument("--end", help="Override the configured exclusive UTC end timestamp.")
+    parser.add_argument(
+        "--silver-only",
+        action="store_true",
+        help="Do not retain the raw Bronze response; write only normalized Silver and its manifest.",
+    )
     args = parser.parse_args()
 
     config = json.loads(args.config.read_text(encoding="utf-8"))
@@ -124,16 +129,16 @@ def main() -> None:
             temporal_resolution=settings["temporal_resolution"],
         )
 
-    range_label = start.replace("-", "").replace(":", "").replace("T", "_").replace("Z", "")
-    run_id = f"{target['slug']}_{range_label}_{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}"
+    range_label = f"{start[:10].replace('-', '')}_{end[:10].replace('-', '')}"
+    run_id = f"{range_label}_{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}"
     bronze_base = ROOT / "data" / "bronze" / "gfw_presence_global_demo" / f"target={target['slug']}" / "gfw_presence" / f"retrieval_id={run_id}"
     silver_base = ROOT / "data" / "silver" / "gfw_presence_global_demo" / f"target={target['slug']}" / "gfw_presence_hourly" / f"retrieval_id={run_id}"
     for segment in path_segments:
         bronze_base /= segment
         silver_base /= segment
     output_path = silver_base / "points.parquet"
-    raw_paths = _write_report_parts(bronze_base, response)
     raw_hash = json_hash(response)
+    raw_paths = [] if args.silver_only else _write_report_parts(bronze_base, response)
     dataset_version = report_dataset_version(response, client.last_dataset_version or client.presence_dataset)
     positions = normalize_presence_report(
         response,
@@ -157,11 +162,8 @@ def main() -> None:
             "spatial-resolution": settings["spatial_resolution"],
             "spatial-aggregation": settings["spatial_aggregation"],
         },
-        "raw_response_path": str(raw_paths[0].relative_to(ROOT)),
-        "raw_response_paths": [str(path.relative_to(ROOT)) for path in raw_paths],
-        "raw_response_part_sha256": [sha256_file(path) for path in raw_paths],
-        "raw_response_part_bytes": [path.stat().st_size for path in raw_paths],
         "raw_response_sha256": raw_hash,
+        "raw_response_stored": bool(raw_paths),
         "normalized_path": str(output_path.relative_to(ROOT)),
         "row_count": len(positions),
         "valid_position_count": int(positions["is_valid_position"].sum()),
@@ -169,7 +171,18 @@ def main() -> None:
         "position_semantics": PRESENCE_POSITION_SEMANTICS,
         "coordinate_uncertainty": "GFW 4Wings grid-cell centre; HIGH=0.01 degree, LOW=0.1 degree",
     }
-    write_manifest(bronze_base / "manifest.json", manifest)
+    if raw_paths:
+        manifest.update(
+            {
+                "raw_response_path": str(raw_paths[0].relative_to(ROOT)),
+                "raw_response_paths": [str(path.relative_to(ROOT)) for path in raw_paths],
+                "raw_response_part_sha256": [sha256_file(path) for path in raw_paths],
+                "raw_response_part_bytes": [path.stat().st_size for path in raw_paths],
+            }
+        )
+        write_manifest(bronze_base / "manifest.json", manifest)
+    else:
+        manifest["raw_response_retention"] = "not retained (silver-only MVP pull)"
     write_manifest(output_path.with_name("manifest.json"), manifest)
     print(
         json.dumps(

@@ -1,0 +1,69 @@
+{
+  "coordinate_uncertainty": "GFW 4Wings grid-cell centre; HIGH=0.01 degree, LOW=0.1 degree",
+  "created_at": "2026-09-05T23:50:13.685347+00:00",
+  "dataset_version": "public-global-presence:v4.0",
+  "normalized_path": "data\\silver\\gfw_presence_global_demo\\target=suez_red_sea_corridor\\gfw_presence_hourly\\retrieval_id=20260806_20260905_20260905T234959Z\\geojson_id=69c76c525d21\\points.parquet",
+  "position_semantics": "gfw_presence_grid_center_hourly",
+  "raw_response_retention": "not retained (silver-only MVP pull)",
+  "raw_response_sha256": "04c7f24c76620972578831afb4e8c8c84473e7772af973a0bd7d277cff39a006",
+  "raw_response_stored": false,
+  "request": {
+    "datasets[0]": "public-global-presence:latest",
+    "date-range": "2026-08-06T00:00:00Z,2026-09-05T00:00:00Z",
+    "format": "JSON",
+    "group-by": "VESSEL_ID",
+    "spatial-aggregation": false,
+    "spatial-resolution": "HIGH",
+    "temporal-resolution": "HOURLY"
+  },
+  "retrieval_id": "20260806_20260905_20260905T234959Z",
+  "row_count": 445925,
+  "source": "global_fishing_watch_presence",
+  "source_uri": "https://gateway.api.globalfishingwatch.org/v3/4wings/report",
+  "target": {
+    "geojson": {
+      "coordinates": [
+        [
+          [
+            31.8,
+            31.6
+          ],
+          [
+            35.9,
+            29.0
+          ],
+          [
+            44.8,
+            13.0
+          ],
+          [
+            44.5,
+            11.8
+          ],
+          [
+            41.6,
+            11.8
+          ],
+          [
+            33.6,
+            27.2
+          ],
+          [
+            31.8,
+            30.0
+          ],
+          [
+            31.8,
+            31.6
+          ]
+        ]
+      ],
+      "type": "Polygon"
+    },
+    "geojson_sha256": "69c76c525d21bb14db410133dfd04b5edb804b527027c924118c81a1e6945319",
+    "kind": "geojson",
+    "label": "Suez Canal and Red Sea corridor",
+    "slug": "suez_red_sea_corridor"
+  },
+  "valid_position_count": 445925
+}

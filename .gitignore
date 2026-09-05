@@ -16,3 +16,5 @@ data/derived/*.parquet
 # 15 MB paper PDF; text extraction and page PNGs are committed.
 # Source: https://users.ox.ac.uk/~wadh4073/research_files/Dark_Shipping.pdf
 tmp/pdfs/Dark_Shipping.pdf
+/code/frontend/node_modules/.bin
+/code/frontend/node_modules
