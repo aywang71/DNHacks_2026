@@ -129,7 +129,13 @@ function Get-CompletedDays {
     return $result
 }
 
-$completedDays = Get-CompletedDays
+# PowerShell enumerates collections emitted by functions.  Rebuild a mutable
+# HashSet here rather than assigning the function output directly, which can
+# otherwise become a fixed-size Object[] once completed days exist.
+$completedDays = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+Get-CompletedDays | ForEach-Object {
+    [void]$completedDays.Add([string]$_)
+}
 $requestedDays = 0
 $skippedDays = 0
 $loadedDays = 0

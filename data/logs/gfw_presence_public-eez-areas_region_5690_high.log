@@ -10,3 +10,8 @@
 2026-09-05T16:35:52.7862946-04:00 complete loaded_days_this_process=0 skipped_complete_days_this_process=1
 2026-09-05T16:44:56.8953200-04:00 started start=2021-09-05 end_exclusive=2026-09-05 region_id=5690 region_dataset=public-eez-areas spatial_resolution=HIGH already_complete=1 dry_run=False
 2026-09-05T16:44:56.9059367-04:00 loading day=2021-09-05 retrieval_id=presence_public-eez-areas_region_5690_high_20210905_20260905T164456Z
+2026-09-05T16:46:45.9349093-04:00 loader data\silver\gfw_presence_hourly\retrieval_id=presence_public-eez-areas_region_5690_high_20210905_20260905T164456Z\region_dataset=public-eez-areas\region_id=5690\points.parquet
+2026-09-05T16:47:42.7646206-04:00 started start=2021-09-05 end_exclusive=2026-09-05 region_id=5690 region_dataset=public-eez-areas spatial_resolution=HIGH already_complete=2 dry_run=False
+2026-09-05T16:47:42.7756205-04:00 skipped_complete day=2021-09-05
+2026-09-05T16:47:42.7807811-04:00 loading day=2021-09-06 retrieval_id=presence_public-eez-areas_region_5690_high_20210906_20260905T164742Z
+2026-09-05T16:48:02.5013151-04:00 loader data\silver\gfw_presence_hourly\retrieval_id=presence_public-eez-areas_region_5690_high_20210906_20260905T164742Z\region_dataset=public-eez-areas\region_id=5690\points.parquet
