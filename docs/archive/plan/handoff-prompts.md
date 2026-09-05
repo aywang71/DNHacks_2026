@@ -1,3 +1,5 @@
+> **Archived 2026-09-05.** Historical planning/handoff document for wake.ai. Superseded by [docs/candidate-pipeline.md](../../candidate-pipeline.md), [docs/status.md](../../status.md) and [docs/data.md](../../data.md). Status claims, branch advice and any schedules in this file are stale and must not be acted on.
+
 # GapPair backend — handoff prompts (terra vs Claude)
 
 Written Sat 2026-09-05 16:55 EDT, revised 17:15 EDT after pulling Andrew's 16:45–17:05 commits and `main`. Foundation already in the repo on `Tanner-dev`: `pipeline/config.py`, `pipeline/geo.py`, `pipeline/run.py`, `tests/test_pipeline_geo.py` (5 tests green; 16 green repo-wide). Everything below builds on it.

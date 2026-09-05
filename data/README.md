@@ -1,14 +1,22 @@
 # Data
 
-`raw/disabling_events.zip` is the Global Fishing Watch AIS-disabling corpus (Welch et al. 2022), 55,368 events, 2017–2019.
-Source: https://github.com/GlobalFishingWatch/AIS-disabling-high-seas (branch `master`, `data/disabling_events.zip`). License CC BY-NC 4.0; attribute GFW in any UI.
-`raw/gfw_config.py` is the upstream filter config (12 h min gap, >50 nm from shore at the off end).
+This directory holds wake.ai source archives, immutable GFW API records, normalized tables, GapPair outputs, static reference tables, and backfill logs. The full inventory, evidence limits, coverage gaps, and regeneration notes are in [docs/data.md](../docs/data.md).
+
+| Folder | Contents |
+| --- | --- |
+| `raw/` | The tracked disabling-events ZIP, its ignored extracted CSV, and upstream filter configuration. |
+| `bronze/` | Tracked immutable GFW GAP, Presence, and identity API responses with manifests. |
+| `silver/` | Tracked normalized Parquet outputs and manifests. |
+| `derived/` | GapPair working outputs and checkpoints. |
+| `reference/` | Static lookup tables and Natural Earth coastline geometry. |
+| `logs/` | Presence-backfill log and resumable state. |
+
+`data/raw/*.csv` and `data/derived/*.parquet` are ignored. Bronze is tracked by decision. Other files follow their existing tracked status.
+
+Extract the source CSV when needed:
 
 ```bash
-unzip data/raw/disabling_events.zip -d data/raw
-python3 -m venv .venv && .venv/bin/pip install pandas numpy pyarrow scipy scikit-learn httpx
+unzip -o data/raw/disabling_events.zip -d data/raw
 ```
 
-No pipeline code exists yet; the design is in `plan/build-plan.md` §8. `derived/` is gitignored output. `derived/exclusions.json` is a checkpoint from an earlier loader: 815 invalid MMSIs (1.47%) quarantined.
-
-Note for anyone writing code here: pandas 3 parses these timestamps to `datetime64[us, UTC]`. Use `Timedelta` arithmetic for durations.
+Pandas 3 parses the corpus timestamps as `datetime64[us, UTC]`. Use `Timedelta` arithmetic for durations and retain microsecond precision.

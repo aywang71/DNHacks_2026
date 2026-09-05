@@ -1,3 +1,5 @@
+> **Archived 2026-09-05.** Historical planning/handoff document for wake.ai. Superseded by [docs/candidate-pipeline.md](../../candidate-pipeline.md), [docs/status.md](../../status.md) and [docs/data.md](../../data.md). Status claims, branch advice and any schedules in this file are stale and must not be acted on.
+
 # Review-and-sync checkpoint — GapPair backend
 
 Checkpoint time: 2026-09-05 18:29:15 EDT  
@@ -184,4 +186,3 @@ git diff --no-index -- /dev/null pipeline/nulls.py
 - `data/derived/project_status_handoff.md` — whole-project status, including frontend, presentation, data and packaging.
 - `data/derived/branch_audit_handoff.md` — branch topology and remote work audit.
 - `data/derived/orchestrator_log.md` — chronological orchestration/task record.
-

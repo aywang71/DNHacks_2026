@@ -1,3 +1,5 @@
+> **Archived 2026-09-05.** Historical planning/handoff document for wake.ai. Superseded by [docs/candidate-pipeline.md](../../candidate-pipeline.md), [docs/status.md](../../status.md) and [docs/data.md](../../data.md). Status claims, branch advice and any schedules in this file are stale and must not be acted on.
+
 # GapPair / Dark Rendezvous — whole-project status handoff
 
 Snapshot: 2026-09-05 18:19:10 EDT  
@@ -218,4 +220,3 @@ Read [`branch_audit_handoff.md`](branch_audit_handoff.md) before any branch oper
 - `data/derived/orchestrator_log.md` — task-level pipeline record and accepted observations.
 - `data/derived/branch_audit_handoff.md` — current branch topology, remote-work summary and merge recommendations.
 - `data/derived/project_status_handoff.md` — this whole-project snapshot.
-

@@ -1,3 +1,5 @@
+> **Archived 2026-09-05.** Historical planning/handoff document for wake.ai. Superseded by [docs/candidate-pipeline.md](../../candidate-pipeline.md), [docs/status.md](../../status.md) and [docs/data.md](../../data.md). Status claims, branch advice and any schedules in this file are stale and must not be acted on.
+
 # GapPair — research notes (verification log, reuse maps, references)
 
 Superseded as the plan by `build-plan.md`, which is the design document. This file keeps the verified facts, the Oxford and Skylight reuse maps, the Atlantes dig, and the documented thresholds with sources.

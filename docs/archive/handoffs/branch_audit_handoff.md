@@ -1,3 +1,5 @@
+> **Archived 2026-09-05.** Historical planning/handoff document for wake.ai. Superseded by [docs/candidate-pipeline.md](../../candidate-pipeline.md), [docs/status.md](../../status.md) and [docs/data.md](../../data.md). Status claims, branch advice and any schedules in this file are stale and must not be acted on.
+
 # Branch audit handoff — GapPair repository
 
 Generated: 2026-09-05 17:57:32 EDT  
@@ -201,4 +203,3 @@ At the time of this audit, GapPair implementation remains intentionally paused a
   re-reviews; no later wave has started.
 - T8 remains conditional on a complete 2017–2019 GAP Bronze manifest; the audited remote raw data must not be
   mistaken for that condition.
-

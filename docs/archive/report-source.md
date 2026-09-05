@@ -1,3 +1,5 @@
+> **Archived 2026-09-05.** Historical planning/handoff document for wake.ai. Superseded by [docs/candidate-pipeline.md](../candidate-pipeline.md), [docs/status.md](../status.md) and [docs/data.md](../data.md). Status claims, branch advice and any schedules in this file are stale and must not be acted on.
+
 # Maritime Idea 01: Dark Rendezvous Due Diligence
 
 **Decision:** Build with a material pivot for a research/demo product. Do not proceed with the original market, novelty, or detection claims.

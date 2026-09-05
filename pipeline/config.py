@@ -1,7 +1,7 @@
 """Single source of truth for thresholds, speeds, weights and paths.
 
 Every value here is documented in methods.json at export. Do not change a
-value without updating plan/backend-implementation-plan.md §3.
+value without updating docs/candidate-pipeline.md.
 """
 
 from pathlib import Path

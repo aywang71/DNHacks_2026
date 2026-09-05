@@ -1,1 +1,1 @@
-"""GapPair backend pipeline. Spec: plan/backend-implementation-plan.md."""
+"""GapPair backend pipeline. Spec: docs/candidate-pipeline.md."""

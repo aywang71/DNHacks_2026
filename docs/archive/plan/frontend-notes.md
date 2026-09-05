@@ -1,3 +1,5 @@
+> **Archived 2026-09-05.** Historical planning/handoff document for wake.ai. Superseded by [docs/candidate-pipeline.md](../../candidate-pipeline.md), [docs/status.md](../../status.md) and [docs/data.md](../../data.md). Status claims, branch advice and any schedules in this file are stale and must not be acted on.
+
 # Frontend notes (handed to the UI owner; not part of the backend plan)
 
 The backend emits `risk-events.json` (the `GET /risk-events` payload) and per-candidate `tracks/<id>.geojson` in the contract defined in `build-plan.md` §9. It keeps every field the UI renders today and adds pair, tier, scores, and geometry fields. All coordinates are `[lon, lat]`; all timestamps are ISO-8601 UTC for the frontend to format. The GFW attribution string in each record must be visible in the UI (CC BY-NC 4.0). Everything below is reference material for building the analyst view on top of it.
