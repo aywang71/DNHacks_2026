@@ -1,6 +1,31 @@
-# Maritime Risk Intelligence API contract
+# Maritime Risk Intelligence backend
 
-The frontend defaults to `VITE_DATA_MODE=mock`, which is offline-safe. Set `VITE_DATA_MODE=api` and `VITE_API_BASE_URL=https://api.example.org` to use this API.
+The backend owns presence report validation, normalization, deduplication, static export, and the data contracts consumed by the frontend. It currently runs as an offline Node pipeline; no HTTP API is required by the viewer.
+
+From this directory:
+
+```bash
+npm run import:presence
+npm test
+```
+
+No backend dependencies need installing. The importer reads `data/bronze/gfw_presence` and publishes into the frontend's `public/data/presence` directory. That output stays with the frontend so both Vite and the production static build can serve it. The frontend's `npm run import:presence` command remains a shortcut to this backend CLI.
+
+See [DATA_FLOW.md](DATA_FLOW.md) for the full flow, schemas, commands, and future API integration boundary.
+
+```text
+backend/
+  contracts/presence.ts         Browser-safe data types
+  scripts/export-presence.mjs   CLI arguments and reporting
+  src/presence/source.mjs       Bronze discovery, validation, normalization, deduplication
+  src/presence/export.mjs       Daily aggregation and atomic asset publication
+  src/presence/geometry.mjs     Dateline-aware bounds for exported days
+  tests/                       Import, publication, and bounds checks
+```
+
+## Historical risk API proposal — not implemented
+
+The following is the earlier risk/investigation API proposal. The active presence viewer does not call these endpoints or use `VITE_DATA_MODE`/`VITE_API_BASE_URL`. Keep future risk work separate from the presence contract above.
 
 | Endpoint | Purpose |
 | --- | --- |

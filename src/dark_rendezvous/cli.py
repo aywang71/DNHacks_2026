@@ -7,6 +7,9 @@ import os
 from datetime import date, datetime, timezone
 from pathlib import Path
 
+import pandas as pd
+
+from .atlantes_adapter import adapt_gfw_presence_for_atlantes, coastline_distance_m
 from .cli_support import json_hash, write_json
 from .gfw_pull import pull_gap_windows
 from .ingest import ingest_noaa_day, normalize_file
@@ -18,7 +21,7 @@ from .providers.gfw_presence import (
     report_dataset_version,
 )
 from .providers.gfw_tracks import normalize_track_lines
-from .storage import write_manifest, write_parquet
+from .storage import sha256_file, write_manifest, write_parquet
 
 
 def _parse_date(value: str) -> date:
@@ -161,6 +164,36 @@ def build_parser() -> argparse.ArgumentParser:
     presence.add_argument("--bronze-root", type=Path, default=Path("data/bronze"))
     presence.add_argument("--silver-root", type=Path, default=Path("data/silver"))
 
+    atlantes = commands.add_parser(
+        "prepare-atlantes-presence",
+        help="Create explicitly experimental ATLAS tracks from GFW hourly Presence",
+    )
+    atlantes.add_argument(
+        "--input",
+        required=True,
+        type=Path,
+        action="append",
+        help="One or more gfw_presence_hourly points.parquet files",
+    )
+    atlantes.add_argument(
+        "--coastline",
+        required=True,
+        type=Path,
+        help="Local GeoJSON coastline used only to derive dist2coast",
+    )
+    atlantes.add_argument(
+        "--vessel-id",
+        action="append",
+        help="Optional source vessel ID filter; repeat for more than one vessel",
+    )
+    atlantes.add_argument("--max-gap-hours", type=float, default=1.5)
+    atlantes.add_argument("--min-points", type=int, default=100)
+    atlantes.add_argument(
+        "--output",
+        type=Path,
+        default=Path("data/silver/atlantes_presence_experimental/tracks.parquet"),
+    )
+
     identity = commands.add_parser("gfw-identity", help="Fetch and save a GFW vessel-identity response")
     identity.add_argument("--query", required=True)
     identity.add_argument("--output", type=Path, default=Path("data/bronze/gfw_identity/response.json"))
@@ -187,6 +220,54 @@ def main() -> None:
             dataset_version=args.dataset_version,
         )
         print(output)
+        return
+    if args.command == "prepare-atlantes-presence":
+        missing_files = [str(path) for path in args.input if not path.is_file()]
+        if missing_files:
+            raise FileNotFoundError(f"Presence input files do not exist: {missing_files}")
+        if not args.coastline.is_file():
+            raise FileNotFoundError(f"Coastline GeoJSON does not exist: {args.coastline}")
+        presence = pd.concat(
+            [pd.read_parquet(path) for path in args.input], ignore_index=True
+        )
+        if args.vessel_id:
+            requested_vessels = set(args.vessel_id)
+            presence = presence.loc[presence["vessel_id"].isin(requested_vessels)].copy()
+            if presence.empty:
+                raise ValueError("None of the requested --vessel-id values occur in --input")
+        dist2coast_m = coastline_distance_m(presence, args.coastline)
+        tracks = adapt_gfw_presence_for_atlantes(
+            presence,
+            dist2coast_m=dist2coast_m,
+            max_gap_hours=args.max_gap_hours,
+            min_points=args.min_points,
+        )
+        write_parquet(tracks, args.output)
+        write_manifest(
+            args.output.with_name("manifest.json"),
+            {
+                "source": "gfw_presence_hourly_to_atlantes_adapter",
+                "experimental_only": True,
+                "not_raw_ais": True,
+                "not_rendezvous_evidence": True,
+                "input_paths": [str(path) for path in args.input],
+                "input_sha256": {str(path): sha256_file(path) for path in args.input},
+                "coastline_path": str(args.coastline),
+                "coastline_sha256": sha256_file(args.coastline),
+                "source_position_semantics": "gfw_presence_grid_center_hourly",
+                "sog_semantics": "derived_from_successive_hourly_grid_centres",
+                "cog_semantics": "derived_from_successive_hourly_grid_centres",
+                "dist2coast_semantics": "derived_from_supplied_coastline_geometry",
+                "nav_semantics": "unavailable_from_gfw_presence; imputed_ais_not_defined",
+                "category_semantics": "unavailable_from_gfw_presence; imputed_ais_not_available",
+                "selected_vessel_ids": args.vessel_id,
+                "max_gap_hours": args.max_gap_hours,
+                "min_points": args.min_points,
+                "row_count": len(tracks),
+                "track_count": int(tracks["trackId"].nunique()) if not tracks.empty else 0,
+            },
+        )
+        print(args.output)
         return
     token = _gfw_api_token()
     # A 4Wings report may take longer than ordinary GFW lookups to start

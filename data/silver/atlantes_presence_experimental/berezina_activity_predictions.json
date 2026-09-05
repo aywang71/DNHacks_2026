@@ -1,0 +1,31 @@
+{
+  "atlantes_source": "background\\atlantes\\ais\\src",
+  "created_at": "2026-09-05T21:36:45.385866+00:00",
+  "distribution_shift_warning": "ATLAS was designed for AIS trajectories. Input positions are GFW hourly grid-cell centres; motion and coast-distance fields are derived.",
+  "experimental_only": true,
+  "input": "data\\silver\\atlantes_presence_experimental\\berezina_tracks.parquet",
+  "not_raw_ais": true,
+  "not_rendezvous_evidence": true,
+  "prediction_count": 1,
+  "predictions": [
+    {
+      "class_probabilities": {
+        "anchored": 0.00043825924512930214,
+        "fishing": 0.6605241894721985,
+        "moored": 0.000325719709508121,
+        "transiting": 0.33871182799339294
+      },
+      "confidence": 0.6605241894721985,
+      "end": "2026-09-01T23:00:00+00:00",
+      "model_id": "ATLAS-Activity-Real-Time_no_git_hash_2024-09-06-19-56-12_epoch2.pt",
+      "model_track_length": 671,
+      "model_version": "14a8b62_2026-09-05_17-36-44",
+      "points_used": 671,
+      "raw_activity_class": "fishing",
+      "source_vessel_id": "gfw:e5c4807f8-8e4d-502a-ef21-2b77e8178bf9",
+      "start": "2026-08-05T01:00:00+00:00",
+      "track_id": "gfw_presence:gfw:e5c4807f8-8e4d-502a-ef21-2b77e8178bf9:segment=1"
+    }
+  ],
+  "source_position_semantics": "gfw_presence_grid_center_hourly"
+}

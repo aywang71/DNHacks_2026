@@ -1,0 +1,575 @@
+{
+  "created_at": "2026-09-05T21:35:59.865717+00:00",
+  "source": "global_fishing_watch_vessels",
+  "source_uri": "https://gateway.api.globalfishingwatch.org/v3/vessels",
+  "requested_dataset": "public-global-vessel-identity:latest",
+  "registries_info_data": "ALL",
+  "selection": {
+    "year": 2026,
+    "selection_rule": "distinct gfw_vessel_id with timestamp in the requested year from locally cached GFW Presence silver files",
+    "input_file_count": 36,
+    "input_rows_in_year": 906181,
+    "distinct_vessel_count": 5448,
+    "coverage_note": "This cache covers vessels in the local Presence data, not all vessels globally observed year-to-date."
+  },
+  "response_summary": {
+    "batch_size": 100,
+    "batch_count": 55,
+    "entry_count": 5478,
+    "ids_found_count": 5505,
+    "ids_not_found_count": 2,
+    "total_bytes": 8414135
+  },
+  "batches": [
+    {
+      "file": "batch-0000.json",
+      "requested_vessel_count": 100,
+      "entry_count": 100,
+      "ids_found_count": 100,
+      "ids_not_found_count": 0,
+      "bytes": 150040,
+      "sha256": "ec49f7cdabe24a4621b47b463190010093d755b6e36a6eb6d25e83b207f167cd",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0001.json",
+      "requested_vessel_count": 100,
+      "entry_count": 100,
+      "ids_found_count": 100,
+      "ids_not_found_count": 0,
+      "bytes": 142048,
+      "sha256": "08ef0d5d23da35d0688381a9f52044ea8eaa0ece377e3fe3db021761ee7efdef",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0002.json",
+      "requested_vessel_count": 100,
+      "entry_count": 101,
+      "ids_found_count": 104,
+      "ids_not_found_count": 0,
+      "bytes": 152913,
+      "sha256": "0b57f0fd89ddde607ffe73b912854972e3a923b1bf90c8ef50df18a7e5156bc7",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0003.json",
+      "requested_vessel_count": 100,
+      "entry_count": 102,
+      "ids_found_count": 102,
+      "ids_not_found_count": 0,
+      "bytes": 166937,
+      "sha256": "19ffdf45ec7342c08b00a0262f171ec106086b2e4733de3f426e1dfe8ab97c8b",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0004.json",
+      "requested_vessel_count": 100,
+      "entry_count": 100,
+      "ids_found_count": 100,
+      "ids_not_found_count": 0,
+      "bytes": 155153,
+      "sha256": "99f13a782e0fb8ea64579fa5db082162271d70ef1544d1dcf40909026cde3793",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0005.json",
+      "requested_vessel_count": 100,
+      "entry_count": 103,
+      "ids_found_count": 103,
+      "ids_not_found_count": 0,
+      "bytes": 151530,
+      "sha256": "c14ef301b02134f3f53b6745346b2d54eb6c1c22162b96b1d90eb615352dfa1f",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0006.json",
+      "requested_vessel_count": 100,
+      "entry_count": 101,
+      "ids_found_count": 101,
+      "ids_not_found_count": 0,
+      "bytes": 161764,
+      "sha256": "092ec34d9b8146dbe0351c0b7e1b3a81ef50ef180346992a0637eb293b08c4f7",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0007.json",
+      "requested_vessel_count": 100,
+      "entry_count": 100,
+      "ids_found_count": 103,
+      "ids_not_found_count": 0,
+      "bytes": 153683,
+      "sha256": "636f6222172bd1674d7981ecf09352effe5186c06c78ef0b372ad97a7dc6ffd2",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0008.json",
+      "requested_vessel_count": 100,
+      "entry_count": 101,
+      "ids_found_count": 101,
+      "ids_not_found_count": 0,
+      "bytes": 144142,
+      "sha256": "c6770d99911daff5509d3e18f9764ff2877614e91d5980276b338d8b17f81e7f",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0009.json",
+      "requested_vessel_count": 100,
+      "entry_count": 101,
+      "ids_found_count": 101,
+      "ids_not_found_count": 0,
+      "bytes": 139780,
+      "sha256": "d71afe32175bd0d66912dff6e13f80472a16e7762146f6692ee81bfe3c4a1bc1",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0010.json",
+      "requested_vessel_count": 100,
+      "entry_count": 102,
+      "ids_found_count": 102,
+      "ids_not_found_count": 0,
+      "bytes": 168528,
+      "sha256": "a51bcf4362a2aee87e4058db145227fe1aab3c8c606fb5d416cf56050f768b70",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0011.json",
+      "requested_vessel_count": 100,
+      "entry_count": 100,
+      "ids_found_count": 100,
+      "ids_not_found_count": 0,
+      "bytes": 177104,
+      "sha256": "25306d25e1dd680222c46608ebdc8bf74d0f5c5229e8a1084398df4fd5e8f0c2",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0012.json",
+      "requested_vessel_count": 100,
+      "entry_count": 100,
+      "ids_found_count": 100,
+      "ids_not_found_count": 0,
+      "bytes": 145129,
+      "sha256": "0a79b3cb5a534d288036c11cd0051036180c85b0bf754d161f86a0f9a21df3aa",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0013.json",
+      "requested_vessel_count": 100,
+      "entry_count": 101,
+      "ids_found_count": 101,
+      "ids_not_found_count": 0,
+      "bytes": 163549,
+      "sha256": "2525fac1a56911d361192d33c0323c655ea2a2fd58959b9d2b12478b4654e08c",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0014.json",
+      "requested_vessel_count": 100,
+      "entry_count": 101,
+      "ids_found_count": 101,
+      "ids_not_found_count": 0,
+      "bytes": 167583,
+      "sha256": "c928fde5c434b595ed101466c2b1ef2045f59ef243285acada005a12207a5c24",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0015.json",
+      "requested_vessel_count": 100,
+      "entry_count": 101,
+      "ids_found_count": 104,
+      "ids_not_found_count": 0,
+      "bytes": 147104,
+      "sha256": "a581b7d5b312ee77a353273a74dff459ed8ab7fbee9fc5b7bcfba6aedb5d0dd5",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0016.json",
+      "requested_vessel_count": 100,
+      "entry_count": 100,
+      "ids_found_count": 100,
+      "ids_not_found_count": 0,
+      "bytes": 159689,
+      "sha256": "0436ab46a9394cfa7462aafe770bd5f7028bfac8586fb461d8ca6409eef7367f",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0017.json",
+      "requested_vessel_count": 100,
+      "entry_count": 100,
+      "ids_found_count": 100,
+      "ids_not_found_count": 0,
+      "bytes": 156492,
+      "sha256": "cda4df149208a5ce83684e8732b5d076864cac5e75149c990d9baed4db7bcdfb",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0018.json",
+      "requested_vessel_count": 100,
+      "entry_count": 100,
+      "ids_found_count": 100,
+      "ids_not_found_count": 0,
+      "bytes": 163098,
+      "sha256": "97be2ed01ed5c4c44b9aa725d016b5a412573cdf45b0f02eeddbb9eb736331e0",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0019.json",
+      "requested_vessel_count": 100,
+      "entry_count": 100,
+      "ids_found_count": 100,
+      "ids_not_found_count": 0,
+      "bytes": 153481,
+      "sha256": "c899f192762d466c70471230f4c2ac32b53b1811f8271f6a5618da78fa6e564d",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0020.json",
+      "requested_vessel_count": 100,
+      "entry_count": 100,
+      "ids_found_count": 100,
+      "ids_not_found_count": 0,
+      "bytes": 144793,
+      "sha256": "607e7e22467eaf614f94f1d51200e661ceb17b783b163695a590d3b0c676f843",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0021.json",
+      "requested_vessel_count": 100,
+      "entry_count": 102,
+      "ids_found_count": 102,
+      "ids_not_found_count": 0,
+      "bytes": 153237,
+      "sha256": "68d2f627ffc177432321a208789ede4e9387704551e237728857d45f121bc628",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0022.json",
+      "requested_vessel_count": 100,
+      "entry_count": 101,
+      "ids_found_count": 104,
+      "ids_not_found_count": 0,
+      "bytes": 151476,
+      "sha256": "f25d434b44f8e30cb7fceaf2f4ffc81eecc0d817bd28b991391e51f9e93a6ee2",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0023.json",
+      "requested_vessel_count": 100,
+      "entry_count": 100,
+      "ids_found_count": 100,
+      "ids_not_found_count": 0,
+      "bytes": 149730,
+      "sha256": "045dfd8cd93c9079aed8d99abfbba35cbfd3d04d17116017b311092efdf52e9c",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0024.json",
+      "requested_vessel_count": 100,
+      "entry_count": 102,
+      "ids_found_count": 102,
+      "ids_not_found_count": 0,
+      "bytes": 152843,
+      "sha256": "bca600c8958bf60238b06414ab8554bde23e07c0950db143562e06725defabc6",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0025.json",
+      "requested_vessel_count": 100,
+      "entry_count": 101,
+      "ids_found_count": 101,
+      "ids_not_found_count": 0,
+      "bytes": 145221,
+      "sha256": "1f34dbac64c8c8b2a7757d72a1f78489fd5d2a75f4ace9969f1b82dcf740dfa2",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0026.json",
+      "requested_vessel_count": 100,
+      "entry_count": 100,
+      "ids_found_count": 100,
+      "ids_not_found_count": 0,
+      "bytes": 153963,
+      "sha256": "c9e81edc6aa28f5f0dec06897ffe05b26fce1120f8062da5c1b0c4549cfd9eb9",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0027.json",
+      "requested_vessel_count": 100,
+      "entry_count": 100,
+      "ids_found_count": 100,
+      "ids_not_found_count": 0,
+      "bytes": 160703,
+      "sha256": "934488ec4bcfc231c8f5c6bf389ba10b6924ef9ec1adb18f54a7557abdaf3b2b",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0028.json",
+      "requested_vessel_count": 100,
+      "entry_count": 100,
+      "ids_found_count": 100,
+      "ids_not_found_count": 0,
+      "bytes": 165168,
+      "sha256": "bb688d7e695854c3053825c40fe413c0e0d36a3f5ec80a7fbacefa8a1836dc0f",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0029.json",
+      "requested_vessel_count": 100,
+      "entry_count": 101,
+      "ids_found_count": 101,
+      "ids_not_found_count": 0,
+      "bytes": 145667,
+      "sha256": "87012b2080ed631ba5a96461fba014cb86737b714b1b26dbf1712874e264d2e9",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0030.json",
+      "requested_vessel_count": 100,
+      "entry_count": 100,
+      "ids_found_count": 100,
+      "ids_not_found_count": 0,
+      "bytes": 163196,
+      "sha256": "44b01795b817d47d1615f20a76c4ef459f465d9d16a561a23ac3818462cf955e",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0031.json",
+      "requested_vessel_count": 100,
+      "entry_count": 101,
+      "ids_found_count": 101,
+      "ids_not_found_count": 0,
+      "bytes": 146731,
+      "sha256": "3f1353df975d6118b10ce73af661fc4b7c8a91c32371a32425ef35ba12517af7",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0032.json",
+      "requested_vessel_count": 100,
+      "entry_count": 100,
+      "ids_found_count": 100,
+      "ids_not_found_count": 0,
+      "bytes": 161059,
+      "sha256": "9341894d64c917e17e5f7ca471f2b0f1bbad053f7bd6078428c09d851122a434",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0033.json",
+      "requested_vessel_count": 100,
+      "entry_count": 100,
+      "ids_found_count": 100,
+      "ids_not_found_count": 0,
+      "bytes": 146850,
+      "sha256": "3f094156c75f6eef4d46de9380d0ed6a74f17bd0523bdc4f57424d1dfea338b1",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0034.json",
+      "requested_vessel_count": 100,
+      "entry_count": 100,
+      "ids_found_count": 100,
+      "ids_not_found_count": 0,
+      "bytes": 140409,
+      "sha256": "e669f8dedf756ade7a1aa5b2e998ecff597013e2af4e4cc74b0552d4217326b6",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0035.json",
+      "requested_vessel_count": 100,
+      "entry_count": 100,
+      "ids_found_count": 100,
+      "ids_not_found_count": 0,
+      "bytes": 145416,
+      "sha256": "84f83f319afce2f7fdca45071caa68540607eb7a4bc51803b5cebea340d5050b",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0036.json",
+      "requested_vessel_count": 100,
+      "entry_count": 101,
+      "ids_found_count": 104,
+      "ids_not_found_count": 1,
+      "bytes": 159027,
+      "sha256": "f356156ecb056a7659736d8448dfb325a8b4eb04718038b49c34399c82f6c16b",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0037.json",
+      "requested_vessel_count": 100,
+      "entry_count": 100,
+      "ids_found_count": 100,
+      "ids_not_found_count": 0,
+      "bytes": 150782,
+      "sha256": "fb5c31a5a365e7b0911d31c0e3ee9c9c208ba0b654863193d294b40a7d1267f3",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0038.json",
+      "requested_vessel_count": 100,
+      "entry_count": 100,
+      "ids_found_count": 100,
+      "ids_not_found_count": 0,
+      "bytes": 151500,
+      "sha256": "b9388a1bd5bf251369ae22c82a5e9ba68731e1758a5dd4703e9a9f4e1df3c4bf",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0039.json",
+      "requested_vessel_count": 100,
+      "entry_count": 102,
+      "ids_found_count": 102,
+      "ids_not_found_count": 0,
+      "bytes": 170692,
+      "sha256": "8a9cfdd9671230af09f0f24b4ac9bbe9755bd941dd5637fb7a48aa0cb90c4d40",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0040.json",
+      "requested_vessel_count": 100,
+      "entry_count": 100,
+      "ids_found_count": 100,
+      "ids_not_found_count": 0,
+      "bytes": 152590,
+      "sha256": "1455661458c0fc44b1f35b30a2e177d5785c97139ae424c696cb867cdcbf4206",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0041.json",
+      "requested_vessel_count": 100,
+      "entry_count": 100,
+      "ids_found_count": 100,
+      "ids_not_found_count": 0,
+      "bytes": 160063,
+      "sha256": "d145732a4bf4d21ac86e2d95c978b40d391df7d6af9704ec7930d26a1f86ff6e",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0042.json",
+      "requested_vessel_count": 100,
+      "entry_count": 100,
+      "ids_found_count": 103,
+      "ids_not_found_count": 0,
+      "bytes": 167665,
+      "sha256": "264bae0ac60251bfce9622399cdb917fe9c3fde0545a266c15e741decb0afe55",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0043.json",
+      "requested_vessel_count": 100,
+      "entry_count": 102,
+      "ids_found_count": 102,
+      "ids_not_found_count": 0,
+      "bytes": 149499,
+      "sha256": "816b3190cab189b1fd2b8a97fa1507a03dd097d40024cc0f2167175f4c7d1194",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0044.json",
+      "requested_vessel_count": 100,
+      "entry_count": 100,
+      "ids_found_count": 106,
+      "ids_not_found_count": 0,
+      "bytes": 178313,
+      "sha256": "5740925a8d349223f0e9e1d9ac90c2b73e6fa36889a4f251e15acb3f846b53e6",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0045.json",
+      "requested_vessel_count": 100,
+      "entry_count": 100,
+      "ids_found_count": 100,
+      "ids_not_found_count": 1,
+      "bytes": 159859,
+      "sha256": "b69acbb3aa11bb6b636e6ff4da897504ad3c1c4bf58bd31f3d0390afe04af986",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0046.json",
+      "requested_vessel_count": 100,
+      "entry_count": 101,
+      "ids_found_count": 101,
+      "ids_not_found_count": 0,
+      "bytes": 153490,
+      "sha256": "4e315e04dd173a96e41daa27a7eb2c30b1e5a702d61aa4193f32ce145e2e43d5",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0047.json",
+      "requested_vessel_count": 100,
+      "entry_count": 100,
+      "ids_found_count": 100,
+      "ids_not_found_count": 0,
+      "bytes": 140916,
+      "sha256": "dc8f71f176390e57bece1a9cc5399f0c0ecbd6f0ef5df8de3d7d4bf579c88141",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0048.json",
+      "requested_vessel_count": 100,
+      "entry_count": 100,
+      "ids_found_count": 100,
+      "ids_not_found_count": 0,
+      "bytes": 154524,
+      "sha256": "be826d79d07b17719f7d612be3d7c1071bb9d128171238bb767b80a05d8e7ead",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0049.json",
+      "requested_vessel_count": 100,
+      "entry_count": 100,
+      "ids_found_count": 100,
+      "ids_not_found_count": 0,
+      "bytes": 162321,
+      "sha256": "2d364b670e2ffbdda28f52d7296ceef005a7fa7e2b7bb7435ffcfd18762ea03c",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0050.json",
+      "requested_vessel_count": 100,
+      "entry_count": 101,
+      "ids_found_count": 101,
+      "ids_not_found_count": 0,
+      "bytes": 148233,
+      "sha256": "9b29cef3c2ef7e616952a33b915abfeb4429882c0e9c9258b742c7ad42b3c749",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0051.json",
+      "requested_vessel_count": 100,
+      "entry_count": 100,
+      "ids_found_count": 100,
+      "ids_not_found_count": 0,
+      "bytes": 158795,
+      "sha256": "2d6b57e962816388c3c0d240b19de2bd95ec25e0a1956cf3db33851fa983aa6e",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0052.json",
+      "requested_vessel_count": 100,
+      "entry_count": 100,
+      "ids_found_count": 103,
+      "ids_not_found_count": 0,
+      "bytes": 144760,
+      "sha256": "e848ec4361580306c502468d35bf3576f8e00cc5d06bff2b59de7ec30abd464f",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0053.json",
+      "requested_vessel_count": 100,
+      "entry_count": 100,
+      "ids_found_count": 100,
+      "ids_not_found_count": 0,
+      "bytes": 140298,
+      "sha256": "01f5470dacb93cda45272bdf884cd81f125b2e951f0348e002d1963dccbb2617",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    },
+    {
+      "file": "batch-0054.json",
+      "requested_vessel_count": 48,
+      "entry_count": 49,
+      "ids_found_count": 49,
+      "ids_not_found_count": 0,
+      "bytes": 64599,
+      "sha256": "c93f1b33102779070de733206c89e16e150730f7aae2a976d39d91fbb9eb11ed",
+      "dataset_version": "public-global-vessel-identity:v4.0"
+    }
+  ]
+}

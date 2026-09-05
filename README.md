@@ -38,4 +38,6 @@ token:
 
 See [AIS ingestion architecture](docs/ais-ingestion.md) for source boundaries,
 the schema, and commands; see the [Bronze backfill runbook](docs/bronze-backfill-runbook.md)
-for a separate-agent ingestion handoff.
+for a separate-agent ingestion handoff. The [targeted raw-AIS plan](docs/targeted-raw-ais-plan.md)
+defines the candidate-driven minute-level acquisition workflow and the
+synthetic-data boundary.
