@@ -1,0 +1,28 @@
+{
+  "created_at": "2026-09-05T20:32:07.232979+00:00",
+  "dataset_version": "public-global-gaps-events:latest",
+  "endpoint_count": null,
+  "event_count": 500,
+  "next_offset": 28000,
+  "normalized_path": null,
+  "raw_response_path": "data\\bronze\\gfw_gaps\\retrieval_id=20260905T202100Z\\window_start=2022-05-05\\window_end=2022-06-05\\offset=000027500\\response.json",
+  "raw_response_sha256": "ec78c384e40a593f8c8d5f7a6147eb9b5ca1d9b6811df13b9e4dc61b7e45d6a5",
+  "reported_total_for_window": 40036,
+  "request": {
+    "datasets": [
+      "public-global-gaps-events:latest"
+    ],
+    "endDate": "2022-06-05",
+    "gapIntentionalDisabling": true,
+    "limit": 500,
+    "offset": 27500,
+    "startDate": "2022-05-05",
+    "timeFilterMode": "START-DATE",
+    "types": [
+      "GAP"
+    ]
+  },
+  "retrieval_id": "20260905T202100Z",
+  "source": "global_fishing_watch_events",
+  "source_uri": "https://gateway.api.globalfishingwatch.org/v3/events"
+}

@@ -1,0 +1,26 @@
+{
+  "coordinate_uncertainty": "GFW 4Wings grid-cell centre; HIGH=0.01 degree, LOW=0.1 degree",
+  "created_at": "2026-09-05T20:58:59.854080+00:00",
+  "dataset_version": "public-global-presence:v4.0",
+  "normalized_path": "data\\silver\\gfw_presence_hourly\\retrieval_id=presence_public-eez-areas_region_5690_high_20260822_20260905T165823Z\\region_dataset=public-eez-areas\\region_id=5690\\points.parquet",
+  "position_semantics": "gfw_presence_grid_center_hourly",
+  "raw_response_path": "data\\bronze\\gfw_presence\\retrieval_id=presence_public-eez-areas_region_5690_high_20260822_20260905T165823Z\\region_dataset=public-eez-areas\\region_id=5690\\report.json",
+  "raw_response_sha256": "e10b8924f4f3b48d258ec3f4bff1dff7af16bcd32a59f37b2397d6aa21107e8c",
+  "request": {
+    "datasets[0]": "public-global-presence:latest",
+    "date-range": "2026-08-22T00:00:00Z,2026-08-23T00:00:00Z",
+    "format": "JSON",
+    "group-by": "VESSEL_ID",
+    "region-dataset": "public-eez-areas",
+    "region-id": 5690,
+    "spatial-aggregation": false,
+    "spatial-resolution": "HIGH",
+    "temporal-resolution": "HOURLY"
+  },
+  "retrieval_id": "presence_public-eez-areas_region_5690_high_20260822_20260905T165823Z",
+  "reused_last_report": false,
+  "row_count": 31081,
+  "source": "global_fishing_watch_presence",
+  "source_uri": "https://gateway.api.globalfishingwatch.org/v3/4wings/report",
+  "valid_position_count": 31081
+}

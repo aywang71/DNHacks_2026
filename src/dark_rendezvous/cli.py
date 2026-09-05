@@ -47,6 +47,36 @@ def _retrieval_id() -> str:
     return datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
 
 
+def _gfw_api_token() -> str:
+    """Get a GFW token without ever putting a local secret in source control.
+
+    A process environment variable wins over an ignored ``.env`` file.  The
+    latter lets the bundled PowerShell backfill runner work from a fresh shell
+    without requiring a third-party dotenv dependency.
+    """
+    if token := os.environ.get("GFW_API_TOKEN"):
+        return token
+
+    repo_env = Path(__file__).resolve().parents[2] / ".env"
+    candidates = (Path.cwd() / ".env", repo_env)
+    for env_path in dict.fromkeys(candidates):
+        try:
+            lines = env_path.read_text(encoding="utf-8").splitlines()
+        except FileNotFoundError:
+            continue
+        for line in lines:
+            stripped = line.strip()
+            if not stripped or stripped.startswith("#") or "=" not in stripped:
+                continue
+            name, value = stripped.split("=", maxsplit=1)
+            if name.strip() != "GFW_API_TOKEN":
+                continue
+            token = value.strip().strip("\"'")
+            if token:
+                return token
+    return ""
+
+
 def _parse_bbox(value: str) -> tuple[float, float, float, float]:
     try:
         parsed = tuple(float(part) for part in value.split(","))
@@ -158,8 +188,13 @@ def main() -> None:
         )
         print(output)
         return
-    token = os.environ.get("GFW_API_TOKEN", "")
-    client = GfwClient(token)
+    token = _gfw_api_token()
+    # A 4Wings report may take longer than ordinary GFW lookups to start
+    # streaming its daily, vessel-grouped response.  Keep the shorter default
+    # for other endpoints while allowing the bounded Presence request enough
+    # time to complete.
+    timeout_seconds = 180.0 if args.command == "gfw-presence" else 30.0
+    client = GfwClient(token, timeout_seconds=timeout_seconds)
     if args.command == "gfw-gaps":
         response = client.gap_events(
             start_date=args.start_date.isoformat(),

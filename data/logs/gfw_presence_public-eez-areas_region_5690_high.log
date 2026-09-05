@@ -1,0 +1,247 @@
+2026-09-05T16:34:57.4937980-04:00 started start=2021-09-05 end_exclusive=2026-09-05 region_id=5690 region_dataset=public-eez-areas spatial_resolution=HIGH already_complete=1 dry_run=True
+2026-09-05T16:34:57.5074183-04:00 would_load day=2021-09-05 retrieval_id=presence_public-eez-areas_region_5690_high__20260905T163457Z
+2026-09-05T16:34:57.5094180-04:00 would_load day=2021-09-06 retrieval_id=presence_public-eez-areas_region_5690_high__20260905T163457Z
+2026-09-05T16:34:57.5284358-04:00 stopped_at_max_days loaded_days_this_process=0 skipped_complete_days_this_process=0
+2026-09-05T16:35:16.1357244-04:00 started start=2021-09-05 end_exclusive=2026-09-05 region_id=5690 region_dataset=public-eez-areas spatial_resolution=HIGH already_complete=1 dry_run=True
+2026-09-05T16:35:16.1485528-04:00 would_load day=2021-09-05 retrieval_id=presence_public-eez-areas_region_5690_high_20210905_20260905T163516Z
+2026-09-05T16:35:16.1565545-04:00 stopped_at_max_days loaded_days_this_process=0 skipped_complete_days_this_process=0
+2026-09-05T16:35:52.7606532-04:00 started start=2026-08-01 end_exclusive=2026-08-02 region_id=5690 region_dataset=public-eez-areas spatial_resolution=HIGH already_complete=1 dry_run=True
+2026-09-05T16:35:52.7706581-04:00 skipped_complete day=2026-08-01
+2026-09-05T16:35:52.7862946-04:00 complete loaded_days_this_process=0 skipped_complete_days_this_process=1
+2026-09-05T16:44:56.8953200-04:00 started start=2021-09-05 end_exclusive=2026-09-05 region_id=5690 region_dataset=public-eez-areas spatial_resolution=HIGH already_complete=1 dry_run=False
+2026-09-05T16:44:56.9059367-04:00 loading day=2021-09-05 retrieval_id=presence_public-eez-areas_region_5690_high_20210905_20260905T164456Z
+2026-09-05T16:46:45.9349093-04:00 loader data\silver\gfw_presence_hourly\retrieval_id=presence_public-eez-areas_region_5690_high_20210905_20260905T164456Z\region_dataset=public-eez-areas\region_id=5690\points.parquet
+2026-09-05T16:47:42.7646206-04:00 started start=2021-09-05 end_exclusive=2026-09-05 region_id=5690 region_dataset=public-eez-areas spatial_resolution=HIGH already_complete=2 dry_run=False
+2026-09-05T16:47:42.7756205-04:00 skipped_complete day=2021-09-05
+2026-09-05T16:47:42.7807811-04:00 loading day=2021-09-06 retrieval_id=presence_public-eez-areas_region_5690_high_20210906_20260905T164742Z
+2026-09-05T16:48:02.5013151-04:00 loader data\silver\gfw_presence_hourly\retrieval_id=presence_public-eez-areas_region_5690_high_20210906_20260905T164742Z\region_dataset=public-eez-areas\region_id=5690\points.parquet
+2026-09-05T16:48:59.4997767-04:00 started start=2026-08-05 end_exclusive=2026-09-05 region_id=5690 region_dataset=public-eez-areas spatial_resolution=HIGH already_complete=3 dry_run=False
+2026-09-05T16:48:59.5139552-04:00 loading day=2026-08-05 retrieval_id=presence_public-eez-areas_region_5690_high_20260805_20260905T164859Z
+2026-09-05T16:49:32.6817622-04:00 loader data\silver\gfw_presence_hourly\retrieval_id=presence_public-eez-areas_region_5690_high_20260805_20260905T164859Z\region_dataset=public-eez-areas\region_id=5690\points.parquet
+2026-09-05T16:49:32.8081426-04:00 completed day=2026-08-05 loaded_days_this_process=1
+2026-09-05T16:49:33.8170961-04:00 loading day=2026-08-06 retrieval_id=presence_public-eez-areas_region_5690_high_20260806_20260905T164933Z
+2026-09-05T16:50:00.5935682-04:00 loader data\silver\gfw_presence_hourly\retrieval_id=presence_public-eez-areas_region_5690_high_20260806_20260905T164933Z\region_dataset=public-eez-areas\region_id=5690\points.parquet
+2026-09-05T16:50:00.6729284-04:00 completed day=2026-08-06 loaded_days_this_process=2
+2026-09-05T16:50:01.6825482-04:00 loading day=2026-08-07 retrieval_id=presence_public-eez-areas_region_5690_high_20260807_20260905T165001Z
+2026-09-05T16:50:31.4154541-04:00 loader data\silver\gfw_presence_hourly\retrieval_id=presence_public-eez-areas_region_5690_high_20260807_20260905T165001Z\region_dataset=public-eez-areas\region_id=5690\points.parquet
+2026-09-05T16:50:31.5008860-04:00 completed day=2026-08-07 loaded_days_this_process=3
+2026-09-05T16:50:32.5235544-04:00 loading day=2026-08-08 retrieval_id=presence_public-eez-areas_region_5690_high_20260808_20260905T165032Z
+2026-09-05T16:50:52.4044246-04:00 loader data\silver\gfw_presence_hourly\retrieval_id=presence_public-eez-areas_region_5690_high_20260808_20260905T165032Z\region_dataset=public-eez-areas\region_id=5690\points.parquet
+2026-09-05T16:50:52.4820423-04:00 completed day=2026-08-08 loaded_days_this_process=4
+2026-09-05T16:50:53.4918581-04:00 loading day=2026-08-09 retrieval_id=presence_public-eez-areas_region_5690_high_20260809_20260905T165053Z
+2026-09-05T16:51:09.8578884-04:00 loader data\silver\gfw_presence_hourly\retrieval_id=presence_public-eez-areas_region_5690_high_20260809_20260905T165053Z\region_dataset=public-eez-areas\region_id=5690\points.parquet
+2026-09-05T16:51:09.9700806-04:00 completed day=2026-08-09 loaded_days_this_process=5
+2026-09-05T16:51:10.9813767-04:00 loading day=2026-08-10 retrieval_id=presence_public-eez-areas_region_5690_high_20260810_20260905T165110Z
+2026-09-05T16:51:26.5108185-04:00 loader data\silver\gfw_presence_hourly\retrieval_id=presence_public-eez-areas_region_5690_high_20260810_20260905T165110Z\region_dataset=public-eez-areas\region_id=5690\points.parquet
+2026-09-05T16:51:26.5919633-04:00 completed day=2026-08-10 loaded_days_this_process=6
+2026-09-05T16:51:27.5984155-04:00 loading day=2026-08-11 retrieval_id=presence_public-eez-areas_region_5690_high_20260811_20260905T165127Z
+2026-09-05T16:51:51.2236428-04:00 loader data\silver\gfw_presence_hourly\retrieval_id=presence_public-eez-areas_region_5690_high_20260811_20260905T165127Z\region_dataset=public-eez-areas\region_id=5690\points.parquet
+2026-09-05T16:51:51.2991443-04:00 completed day=2026-08-11 loaded_days_this_process=7
+2026-09-05T16:51:52.3011961-04:00 loading day=2026-08-12 retrieval_id=presence_public-eez-areas_region_5690_high_20260812_20260905T165152Z
+2026-09-05T16:52:23.5619291-04:00 loader data\silver\gfw_presence_hourly\retrieval_id=presence_public-eez-areas_region_5690_high_20260812_20260905T165152Z\region_dataset=public-eez-areas\region_id=5690\points.parquet
+2026-09-05T16:52:23.6420030-04:00 completed day=2026-08-12 loaded_days_this_process=8
+2026-09-05T16:52:24.6476899-04:00 loading day=2026-08-13 retrieval_id=presence_public-eez-areas_region_5690_high_20260813_20260905T165224Z
+2026-09-05T16:52:42.5037076-04:00 loader data\silver\gfw_presence_hourly\retrieval_id=presence_public-eez-areas_region_5690_high_20260813_20260905T165224Z\region_dataset=public-eez-areas\region_id=5690\points.parquet
+2026-09-05T16:52:42.5907349-04:00 completed day=2026-08-13 loaded_days_this_process=9
+2026-09-05T16:52:43.6031034-04:00 loading day=2026-08-14 retrieval_id=presence_public-eez-areas_region_5690_high_20260814_20260905T165243Z
+2026-09-05T16:53:10.5963728-04:00 loader data\silver\gfw_presence_hourly\retrieval_id=presence_public-eez-areas_region_5690_high_20260814_20260905T165243Z\region_dataset=public-eez-areas\region_id=5690\points.parquet
+2026-09-05T16:53:10.6750351-04:00 completed day=2026-08-14 loaded_days_this_process=10
+2026-09-05T16:53:11.6866374-04:00 loading day=2026-08-15 retrieval_id=presence_public-eez-areas_region_5690_high_20260815_20260905T165311Z
+2026-09-05T16:53:34.8650072-04:00 loader data\silver\gfw_presence_hourly\retrieval_id=presence_public-eez-areas_region_5690_high_20260815_20260905T165311Z\region_dataset=public-eez-areas\region_id=5690\points.parquet
+2026-09-05T16:53:34.9510937-04:00 completed day=2026-08-15 loaded_days_this_process=11
+2026-09-05T16:53:35.9543192-04:00 loading day=2026-08-16 retrieval_id=presence_public-eez-areas_region_5690_high_20260816_20260905T165335Z
+2026-09-05T16:54:05.7369859-04:00 loader data\silver\gfw_presence_hourly\retrieval_id=presence_public-eez-areas_region_5690_high_20260816_20260905T165335Z\region_dataset=public-eez-areas\region_id=5690\points.parquet
+2026-09-05T16:54:05.8203470-04:00 completed day=2026-08-16 loaded_days_this_process=12
+2026-09-05T16:54:06.8386656-04:00 loading day=2026-08-17 retrieval_id=presence_public-eez-areas_region_5690_high_20260817_20260905T165406Z
+2026-09-05T16:54:35.9130451-04:00 loader data\silver\gfw_presence_hourly\retrieval_id=presence_public-eez-areas_region_5690_high_20260817_20260905T165406Z\region_dataset=public-eez-areas\region_id=5690\points.parquet
+2026-09-05T16:54:36.0019834-04:00 completed day=2026-08-17 loaded_days_this_process=13
+2026-09-05T16:54:37.0162148-04:00 loading day=2026-08-18 retrieval_id=presence_public-eez-areas_region_5690_high_20260818_20260905T165437Z
+2026-09-05T16:56:00.0999809-04:00 started start=2026-08-05 end_exclusive=2026-09-05 region_id=5690 region_dataset=public-eez-areas spatial_resolution=HIGH already_complete=16 dry_run=False
+2026-09-05T16:56:00.1110582-04:00 skipped_complete day=2026-08-05
+2026-09-05T16:56:00.1295813-04:00 stopped_at_max_days loaded_days_this_process=0 skipped_complete_days_this_process=1
+2026-09-05T16:56:08.8666032-04:00 started start=2026-08-18 end_exclusive=2026-08-19 region_id=5690 region_dataset=public-eez-areas spatial_resolution=HIGH already_complete=16 dry_run=False
+2026-09-05T16:56:08.8801185-04:00 loading day=2026-08-18 retrieval_id=presence_public-eez-areas_region_5690_high_20260818_20260905T165608Z
+2026-09-05T16:56:11.6293090-04:00 loader data\silver\gfw_presence_hourly\retrieval_id=presence_public-eez-areas_region_5690_high_20260818_20260905T165608Z\region_dataset=public-eez-areas\region_id=5690\points.parquet
+2026-09-05T16:56:11.6637357-04:00 completed day=2026-08-18 loaded_days_this_process=1
+2026-09-05T16:56:11.6698335-04:00 complete loaded_days_this_process=1 skipped_complete_days_this_process=0
+2026-09-05T16:56:16.8993167-04:00 started start=2026-08-05 end_exclusive=2026-09-05 region_id=5690 region_dataset=public-eez-areas spatial_resolution=HIGH already_complete=17 dry_run=False
+2026-09-05T16:56:16.9123182-04:00 skipped_complete day=2026-08-05
+2026-09-05T16:56:16.9143183-04:00 skipped_complete day=2026-08-06
+2026-09-05T16:56:16.9163200-04:00 skipped_complete day=2026-08-07
+2026-09-05T16:56:16.9173197-04:00 skipped_complete day=2026-08-08
+2026-09-05T16:56:16.9193181-04:00 skipped_complete day=2026-08-09
+2026-09-05T16:56:16.9213194-04:00 skipped_complete day=2026-08-10
+2026-09-05T16:56:16.9236444-04:00 skipped_complete day=2026-08-11
+2026-09-05T16:56:16.9256439-04:00 skipped_complete day=2026-08-12
+2026-09-05T16:56:16.9276463-04:00 skipped_complete day=2026-08-13
+2026-09-05T16:56:16.9296449-04:00 skipped_complete day=2026-08-14
+2026-09-05T16:56:16.9316426-04:00 skipped_complete day=2026-08-15
+2026-09-05T16:56:16.9336438-04:00 skipped_complete day=2026-08-16
+2026-09-05T16:56:16.9346446-04:00 skipped_complete day=2026-08-17
+2026-09-05T16:56:16.9366425-04:00 skipped_complete day=2026-08-18
+2026-09-05T16:56:16.9421751-04:00 loading day=2026-08-19 retrieval_id=presence_public-eez-areas_region_5690_high_20260819_20260905T165616Z
+2026-09-05T16:56:47.8860546-04:00 loader Traceback (most recent call last):
+2026-09-05T16:56:47.8880576-04:00 loader   File "C:\Users\hyper\Documents\GitHub\DNHacks_2026\.venv313\Lib\site-packages\httpx\_transports\default.py", line 101, in map_httpcore_exceptions
+2026-09-05T16:56:47.8890563-04:00 loader     yield
+2026-09-05T16:56:47.8910560-04:00 loader   File "C:\Users\hyper\Documents\GitHub\DNHacks_2026\.venv313\Lib\site-packages\httpx\_transports\default.py", line 250, in handle_request
+2026-09-05T16:56:47.8920569-04:00 loader     resp = self._pool.handle_request(req)
+2026-09-05T16:56:47.8930611-04:00 loader   File "C:\Users\hyper\Documents\GitHub\DNHacks_2026\.venv313\Lib\site-packages\httpcore\_sync\connection_pool.py", line 256, in handle_request
+2026-09-05T16:56:47.8951227-04:00 loader     raise exc from None
+2026-09-05T16:56:47.8961226-04:00 loader   File "C:\Users\hyper\Documents\GitHub\DNHacks_2026\.venv313\Lib\site-packages\httpcore\_sync\connection_pool.py", line 236, in handle_request
+2026-09-05T16:56:47.8971218-04:00 loader     response = connection.handle_request(
+2026-09-05T16:56:47.8991215-04:00 loader         pool_request.request
+2026-09-05T16:56:47.9001238-04:00 loader     )
+2026-09-05T16:56:47.9011239-04:00 loader   File "C:\Users\hyper\Documents\GitHub\DNHacks_2026\.venv313\Lib\site-packages\httpcore\_sync\connection.py", line 103, in handle_request
+2026-09-05T16:56:47.9161265-04:00 loader     return self._connection.handle_request(request)
+2026-09-05T16:56:47.9181270-04:00 loader            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+2026-09-05T16:56:47.9191317-04:00 loader   File "C:\Users\hyper\Documents\GitHub\DNHacks_2026\.venv313\Lib\site-packages\httpcore\_sync\http11.py", line 136, in handle_request
+2026-09-05T16:56:47.9201277-04:00 loader     raise exc
+2026-09-05T16:56:47.9221286-04:00 loader   File "C:\Users\hyper\Documents\GitHub\DNHacks_2026\.venv313\Lib\site-packages\httpcore\_sync\http11.py", line 106, in handle_request
+2026-09-05T16:56:47.9231266-04:00 loader     ) = self._receive_response_headers(**kwargs)
+2026-09-05T16:56:47.9241283-04:00 loader         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+2026-09-05T16:56:47.9251316-04:00 loader   File "C:\Users\hyper\Documents\GitHub\DNHacks_2026\.venv313\Lib\site-packages\httpcore\_sync\http11.py", line 177, in _receive_response_headers
+2026-09-05T16:56:47.9261270-04:00 loader     event = self._receive_event(timeout=timeout)
+2026-09-05T16:56:47.9276319-04:00 loader   File "C:\Users\hyper\Documents\GitHub\DNHacks_2026\.venv313\Lib\site-packages\httpcore\_sync\http11.py", line 217, in _receive_event
+2026-09-05T16:56:47.9293636-04:00 loader     data = self._network_stream.read(
+2026-09-05T16:56:47.9303716-04:00 loader         self.READ_NUM_BYTES, timeout=timeout
+2026-09-05T16:56:47.9313702-04:00 loader     )
+2026-09-05T16:56:47.9333727-04:00 loader   File "C:\Users\hyper\Documents\GitHub\DNHacks_2026\.venv313\Lib\site-packages\httpcore\_backends\sync.py", line 126, in read
+2026-09-05T16:56:47.9343708-04:00 loader     with map_exceptions(exc_map):
+2026-09-05T16:56:47.9353690-04:00 loader          ~~~~~~~~~~~~~~^^^^^^^^^
+2026-09-05T16:56:47.9363736-04:00 loader   File "C:\Users\hyper\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 162, in __exit__
+2026-09-05T16:56:47.9373687-04:00 loader     self.gen.throw(value)
+2026-09-05T16:56:47.9393744-04:00 loader     ~~~~~~~~~~~~~~^^^^^^^
+2026-09-05T16:56:47.9403747-04:00 loader   File "C:\Users\hyper\Documents\GitHub\DNHacks_2026\.venv313\Lib\site-packages\httpcore\_exceptions.py", line 14, in map_exceptions
+2026-09-05T16:56:47.9413722-04:00 loader     raise to_exc(exc) from exc
+2026-09-05T16:56:47.9423697-04:00 loader httpcore.ReadTimeout: The read operation timed out
+2026-09-05T16:56:47.9443696-04:00 loader System.Management.Automation.RemoteException
+2026-09-05T16:56:47.9453748-04:00 loader The above exception was the direct cause of the following exception:
+2026-09-05T16:56:47.9463700-04:00 loader System.Management.Automation.RemoteException
+2026-09-05T16:56:47.9483835-04:00 loader Traceback (most recent call last):
+2026-09-05T16:56:47.9493822-04:00 loader   File "<frozen runpy>", line 203, in _run_module_as_main
+2026-09-05T16:56:47.9503806-04:00 loader   File "<frozen runpy>", line 88, in _run_code
+2026-09-05T16:56:47.9523804-04:00 loader   File "C:\Users\hyper\Documents\GitHub\DNHacks_2026\src\dark_rendezvous\cli.py", line 381, in <module>
+2026-09-05T16:56:47.9533791-04:00 loader     main()
+2026-09-05T16:56:47.9545105-04:00 loader     ~~~~^^
+2026-09-05T16:56:47.9555165-04:00 loader   File "C:\Users\hyper\Documents\GitHub\DNHacks_2026\src\dark_rendezvous\cli.py", line 303, in main
+2026-09-05T16:56:47.9565183-04:00 loader     response = client.presence_report(
+2026-09-05T16:56:47.9575188-04:00 loader         start=request_start,
+2026-09-05T16:56:47.9585162-04:00 loader     ...<3 lines>...
+2026-09-05T16:56:47.9595185-04:00 loader         spatial_resolution=args.spatial_resolution,
+2026-09-05T16:56:47.9615152-04:00 loader     )
+2026-09-05T16:56:47.9615152-04:00 loader   File "C:\Users\hyper\Documents\GitHub\DNHacks_2026\src\dark_rendezvous\providers\gfw.py", line 249, in presence_report
+2026-09-05T16:56:47.9640313-04:00 loader     return self._get(
+2026-09-05T16:56:47.9650329-04:00 loader            ~~~~~~~~~^
+2026-09-05T16:56:47.9660310-04:00 loader         "/4wings/report",
+2026-09-05T16:56:47.9680282-04:00 loader         ^^^^^^^^^^^^^^^^^
+2026-09-05T16:56:47.9690279-04:00 loader     ...<11 lines>...
+2026-09-05T16:56:47.9700288-04:00 loader         extra_headers={"Content-Language": "en-EN"},
+2026-09-05T16:56:47.9710289-04:00 loader         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-09-05T16:56:47.9720302-04:00 loader     )
+2026-09-05T16:56:47.9730287-04:00 loader     ^
+2026-09-05T16:56:47.9750274-04:00 loader   File "C:\Users\hyper\Documents\GitHub\DNHacks_2026\src\dark_rendezvous\providers\gfw.py", line 145, in _get
+2026-09-05T16:56:47.9760275-04:00 loader     response = httpx.get(
+2026-09-05T16:56:47.9770329-04:00 loader         f"{self.base_url}{path}",
+2026-09-05T16:56:47.9780290-04:00 loader     ...<2 lines>...
+2026-09-05T16:56:47.9800328-04:00 loader         timeout=self._timeout_seconds,
+2026-09-05T16:56:47.9810284-04:00 loader     )
+2026-09-05T16:56:47.9830276-04:00 loader   File "C:\Users\hyper\Documents\GitHub\DNHacks_2026\.venv313\Lib\site-packages\httpx\_api.py", line 195, in get
+2026-09-05T16:56:47.9840283-04:00 loader     return request(
+2026-09-05T16:56:47.9850286-04:00 loader         "GET",
+2026-09-05T16:56:47.9860319-04:00 loader     ...<9 lines>...
+2026-09-05T16:56:47.9870272-04:00 loader         trust_env=trust_env,
+2026-09-05T16:56:47.9880285-04:00 loader     )
+2026-09-05T16:56:47.9890286-04:00 loader   File "C:\Users\hyper\Documents\GitHub\DNHacks_2026\.venv313\Lib\site-packages\httpx\_api.py", line 109, in request
+2026-09-05T16:56:47.9910290-04:00 loader     return client.request(
+2026-09-05T16:56:47.9920298-04:00 loader            ~~~~~~~~~~~~~~^
+2026-09-05T16:56:47.9930283-04:00 loader         method=method,
+2026-09-05T16:56:47.9940338-04:00 loader         ^^^^^^^^^^^^^^
+2026-09-05T16:56:47.9951118-04:00 loader     ...<8 lines>...
+2026-09-05T16:56:47.9971117-04:00 loader         follow_redirects=follow_redirects,
+2026-09-05T16:56:47.9981119-04:00 loader         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-09-05T16:56:47.9991105-04:00 loader     )
+2026-09-05T16:56:48.0011118-04:00 loader     ^
+2026-09-05T16:56:48.0021159-04:00 loader   File "C:\Users\hyper\Documents\GitHub\DNHacks_2026\.venv313\Lib\site-packages\httpx\_client.py", line 825, in request
+2026-09-05T16:56:48.0031102-04:00 loader     return self.send(request, auth=auth, follow_redirects=follow_redirects)
+2026-09-05T16:56:48.0041110-04:00 loader            ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-09-05T16:56:48.0061111-04:00 loader   File "C:\Users\hyper\Documents\GitHub\DNHacks_2026\.venv313\Lib\site-packages\httpx\_client.py", line 914, in send
+2026-09-05T16:56:48.0071121-04:00 loader     response = self._send_handling_auth(
+2026-09-05T16:56:48.0081142-04:00 loader         request,
+2026-09-05T16:56:48.0091110-04:00 loader     ...<2 lines>...
+2026-09-05T16:56:48.0111117-04:00 loader         history=[],
+2026-09-05T16:56:48.0121136-04:00 loader     )
+2026-09-05T16:56:48.0141121-04:00 loader   File "C:\Users\hyper\Documents\GitHub\DNHacks_2026\.venv313\Lib\site-packages\httpx\_client.py", line 942, in _send_handling_auth
+2026-09-05T16:56:48.0151112-04:00 loader     response = self._send_handling_redirects(
+2026-09-05T16:56:48.0161139-04:00 loader         request,
+2026-09-05T16:56:48.0171115-04:00 loader         follow_redirects=follow_redirects,
+2026-09-05T16:56:48.0181113-04:00 loader         history=history,
+2026-09-05T16:56:48.0201105-04:00 loader     )
+2026-09-05T16:56:48.0211109-04:00 loader   File "C:\Users\hyper\Documents\GitHub\DNHacks_2026\.venv313\Lib\site-packages\httpx\_client.py", line 979, in _send_handling_redirects
+2026-09-05T16:56:48.0221116-04:00 loader     response = self._send_single_request(request)
+2026-09-05T16:56:48.0231117-04:00 loader   File "C:\Users\hyper\Documents\GitHub\DNHacks_2026\.venv313\Lib\site-packages\httpx\_client.py", line 1014, in _send_single_request
+2026-09-05T16:56:48.0241110-04:00 loader     response = transport.handle_request(request)
+2026-09-05T16:56:48.0261118-04:00 loader   File "C:\Users\hyper\Documents\GitHub\DNHacks_2026\.venv313\Lib\site-packages\httpx\_transports\default.py", line 249, in handle_request
+2026-09-05T16:56:48.0271140-04:00 loader     with map_httpcore_exceptions():
+2026-09-05T16:56:48.0281876-04:00 loader          ~~~~~~~~~~~~~~~~~~~~~~~^^
+2026-09-05T16:56:48.0291885-04:00 loader   File "C:\Users\hyper\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 162, in __exit__
+2026-09-05T16:56:48.0311875-04:00 loader     self.gen.throw(value)
+2026-09-05T16:56:48.0321865-04:00 loader     ~~~~~~~~~~~~~~^^^^^^^
+2026-09-05T16:56:48.0331921-04:00 loader   File "C:\Users\hyper\Documents\GitHub\DNHacks_2026\.venv313\Lib\site-packages\httpx\_transports\default.py", line 118, in map_httpcore_exceptions
+2026-09-05T16:56:48.0341864-04:00 loader     raise mapped_exc(message) from exc
+2026-09-05T16:56:48.0351886-04:00 loader httpx.ReadTimeout: The read operation timed out
+2026-09-05T16:56:48.0431911-04:00 failed day=2026-08-19 exit_code=1; preserve_artifacts=true; rerun_the_same_command_to_resume
+2026-09-05T16:57:24.8074148-04:00 started start=2026-08-19 end_exclusive=2026-08-20 region_id=5690 region_dataset=public-eez-areas spatial_resolution=HIGH already_complete=17 dry_run=False
+2026-09-05T16:57:24.8209680-04:00 loading day=2026-08-19 retrieval_id=presence_public-eez-areas_region_5690_high_20260819_20260905T165724Z
+2026-09-05T16:57:27.5886622-04:00 loader data\silver\gfw_presence_hourly\retrieval_id=presence_public-eez-areas_region_5690_high_20260819_20260905T165724Z\region_dataset=public-eez-areas\region_id=5690\points.parquet
+2026-09-05T16:57:27.6131631-04:00 completed day=2026-08-19 loaded_days_this_process=1
+2026-09-05T16:57:27.6191637-04:00 complete loaded_days_this_process=1 skipped_complete_days_this_process=0
+2026-09-05T16:57:32.5951745-04:00 started start=2026-08-20 end_exclusive=2026-09-05 region_id=5690 region_dataset=public-eez-areas spatial_resolution=HIGH already_complete=18 dry_run=False
+2026-09-05T16:57:32.6097108-04:00 loading day=2026-08-20 retrieval_id=presence_public-eez-areas_region_5690_high_20260820_20260905T165732Z
+2026-09-05T16:57:54.6565434-04:00 loader data\silver\gfw_presence_hourly\retrieval_id=presence_public-eez-areas_region_5690_high_20260820_20260905T165732Z\region_dataset=public-eez-areas\region_id=5690\points.parquet
+2026-09-05T16:57:54.6647035-04:00 completed day=2026-08-20 loaded_days_this_process=1
+2026-09-05T16:57:55.6802624-04:00 loading day=2026-08-21 retrieval_id=presence_public-eez-areas_region_5690_high_20260821_20260905T165755Z
+2026-09-05T16:58:22.3282894-04:00 loader data\silver\gfw_presence_hourly\retrieval_id=presence_public-eez-areas_region_5690_high_20260821_20260905T165755Z\region_dataset=public-eez-areas\region_id=5690\points.parquet
+2026-09-05T16:58:22.3302866-04:00 completed day=2026-08-21 loaded_days_this_process=2
+2026-09-05T16:58:23.3470417-04:00 loading day=2026-08-22 retrieval_id=presence_public-eez-areas_region_5690_high_20260822_20260905T165823Z
+2026-09-05T16:59:00.0030774-04:00 loader data\silver\gfw_presence_hourly\retrieval_id=presence_public-eez-areas_region_5690_high_20260822_20260905T165823Z\region_dataset=public-eez-areas\region_id=5690\points.parquet
+2026-09-05T16:59:00.0060796-04:00 completed day=2026-08-22 loaded_days_this_process=3
+2026-09-05T16:59:01.0101361-04:00 loading day=2026-08-23 retrieval_id=presence_public-eez-areas_region_5690_high_20260823_20260905T165901Z
+2026-09-05T16:59:25.1264943-04:00 loader data\silver\gfw_presence_hourly\retrieval_id=presence_public-eez-areas_region_5690_high_20260823_20260905T165901Z\region_dataset=public-eez-areas\region_id=5690\points.parquet
+2026-09-05T16:59:25.1284963-04:00 completed day=2026-08-23 loaded_days_this_process=4
+2026-09-05T16:59:26.1313315-04:00 loading day=2026-08-24 retrieval_id=presence_public-eez-areas_region_5690_high_20260824_20260905T165926Z
+2026-09-05T16:59:49.0988478-04:00 loader data\silver\gfw_presence_hourly\retrieval_id=presence_public-eez-areas_region_5690_high_20260824_20260905T165926Z\region_dataset=public-eez-areas\region_id=5690\points.parquet
+2026-09-05T16:59:49.1128472-04:00 completed day=2026-08-24 loaded_days_this_process=5
+2026-09-05T16:59:50.1141507-04:00 loading day=2026-08-25 retrieval_id=presence_public-eez-areas_region_5690_high_20260825_20260905T165950Z
+2026-09-05T17:00:16.8693938-04:00 loader data\silver\gfw_presence_hourly\retrieval_id=presence_public-eez-areas_region_5690_high_20260825_20260905T165950Z\region_dataset=public-eez-areas\region_id=5690\points.parquet
+2026-09-05T17:00:16.8703950-04:00 completed day=2026-08-25 loaded_days_this_process=6
+2026-09-05T17:00:17.8822502-04:00 loading day=2026-08-26 retrieval_id=presence_public-eez-areas_region_5690_high_20260826_20260905T170017Z
+2026-09-05T17:00:44.0544196-04:00 loader data\silver\gfw_presence_hourly\retrieval_id=presence_public-eez-areas_region_5690_high_20260826_20260905T170017Z\region_dataset=public-eez-areas\region_id=5690\points.parquet
+2026-09-05T17:00:44.0554242-04:00 completed day=2026-08-26 loaded_days_this_process=7
+2026-09-05T17:00:45.0640342-04:00 loading day=2026-08-27 retrieval_id=presence_public-eez-areas_region_5690_high_20260827_20260905T170045Z
+2026-09-05T17:01:10.0048877-04:00 loader data\silver\gfw_presence_hourly\retrieval_id=presence_public-eez-areas_region_5690_high_20260827_20260905T170045Z\region_dataset=public-eez-areas\region_id=5690\points.parquet
+2026-09-05T17:01:10.0068901-04:00 completed day=2026-08-27 loaded_days_this_process=8
+2026-09-05T17:01:11.0212021-04:00 loading day=2026-08-28 retrieval_id=presence_public-eez-areas_region_5690_high_20260828_20260905T170111Z
+2026-09-05T17:01:32.8807580-04:00 loader data\silver\gfw_presence_hourly\retrieval_id=presence_public-eez-areas_region_5690_high_20260828_20260905T170111Z\region_dataset=public-eez-areas\region_id=5690\points.parquet
+2026-09-05T17:01:32.8837588-04:00 completed day=2026-08-28 loaded_days_this_process=9
+2026-09-05T17:01:33.8963045-04:00 loading day=2026-08-29 retrieval_id=presence_public-eez-areas_region_5690_high_20260829_20260905T170133Z
+2026-09-05T17:01:52.2010631-04:00 loader data\silver\gfw_presence_hourly\retrieval_id=presence_public-eez-areas_region_5690_high_20260829_20260905T170133Z\region_dataset=public-eez-areas\region_id=5690\points.parquet
+2026-09-05T17:01:52.2030630-04:00 completed day=2026-08-29 loaded_days_this_process=10
+2026-09-05T17:01:53.2192440-04:00 loading day=2026-08-30 retrieval_id=presence_public-eez-areas_region_5690_high_20260830_20260905T170153Z
+2026-09-05T17:02:17.2671390-04:00 loader data\silver\gfw_presence_hourly\retrieval_id=presence_public-eez-areas_region_5690_high_20260830_20260905T170153Z\region_dataset=public-eez-areas\region_id=5690\points.parquet
+2026-09-05T17:02:17.2708204-04:00 completed day=2026-08-30 loaded_days_this_process=11
+2026-09-05T17:02:18.2763011-04:00 loading day=2026-08-31 retrieval_id=presence_public-eez-areas_region_5690_high_20260831_20260905T170218Z
+2026-09-05T17:02:59.4160515-04:00 loader data\silver\gfw_presence_hourly\retrieval_id=presence_public-eez-areas_region_5690_high_20260831_20260905T170218Z\region_dataset=public-eez-areas\region_id=5690\points.parquet
+2026-09-05T17:02:59.4180575-04:00 completed day=2026-08-31 loaded_days_this_process=12
+2026-09-05T17:03:00.4238038-04:00 loading day=2026-09-01 retrieval_id=presence_public-eez-areas_region_5690_high_20260901_20260905T170300Z
+2026-09-05T17:03:19.7414601-04:00 loader data\silver\gfw_presence_hourly\retrieval_id=presence_public-eez-areas_region_5690_high_20260901_20260905T170300Z\region_dataset=public-eez-areas\region_id=5690\points.parquet
+2026-09-05T17:03:19.7444598-04:00 completed day=2026-09-01 loaded_days_this_process=13
+2026-09-05T17:03:20.7566335-04:00 loading day=2026-09-02 retrieval_id=presence_public-eez-areas_region_5690_high_20260902_20260905T170320Z
+2026-09-05T17:03:36.4167923-04:00 loader data\silver\gfw_presence_hourly\retrieval_id=presence_public-eez-areas_region_5690_high_20260902_20260905T170320Z\region_dataset=public-eez-areas\region_id=5690\points.parquet
+2026-09-05T17:03:36.4178001-04:00 completed day=2026-09-02 loaded_days_this_process=14
+2026-09-05T17:03:37.4252390-04:00 loading day=2026-09-03 retrieval_id=presence_public-eez-areas_region_5690_high_20260903_20260905T170337Z
+2026-09-05T17:03:51.5840380-04:00 loader data\silver\gfw_presence_hourly\retrieval_id=presence_public-eez-areas_region_5690_high_20260903_20260905T170337Z\region_dataset=public-eez-areas\region_id=5690\points.parquet
+2026-09-05T17:03:51.5860347-04:00 completed day=2026-09-03 loaded_days_this_process=15
+2026-09-05T17:03:52.5953173-04:00 loading day=2026-09-04 retrieval_id=presence_public-eez-areas_region_5690_high_20260904_20260905T170352Z
+2026-09-05T17:04:05.2445460-04:00 loader data\silver\gfw_presence_hourly\retrieval_id=presence_public-eez-areas_region_5690_high_20260904_20260905T170352Z\region_dataset=public-eez-areas\region_id=5690\points.parquet
+2026-09-05T17:04:05.2485448-04:00 completed day=2026-09-04 loaded_days_this_process=16
+2026-09-05T17:04:05.2645506-04:00 complete loaded_days_this_process=16 skipped_complete_days_this_process=0
