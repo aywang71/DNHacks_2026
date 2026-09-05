@@ -1,0 +1,10 @@
+{
+  "squid_jigger": 12.0,
+  "drifting_longlines": 12.0,
+  "trawlers": 13.0,
+  "tuna_purse_seines": 16.0,
+  "other": 14.0,
+  "carrier": 18.0,
+  "reefer": 18.0,
+  "unknown": 16.0
+}

@@ -1,24 +1,22 @@
-# Data directory
+# Data
 
-The repository-wide data catalog and lineage guide is
-[REPO_MAP.md](../REPO_MAP.md). It distinguishes raw AIS from GFW-derived GAP
-events and hourly Presence, and it identifies every supported Bronze, Silver,
-reference, and operational location.
+This directory holds wake.ai source archives, immutable GFW API records, normalized tables, GapPair outputs, static reference tables, and backfill logs. The full inventory, evidence limits, coverage gaps, and regeneration notes are in [docs/data.md](../docs/data.md).
 
-## Frozen research corpus
+| Folder | Contents |
+| --- | --- |
+| `raw/` | The tracked disabling-events ZIP, its ignored extracted CSV, and upstream filter configuration. |
+| `bronze/` | Tracked immutable GFW GAP, Presence, and identity API responses with manifests. |
+| `silver/` | Tracked normalized Parquet outputs and manifests. |
+| `derived/` | GapPair working outputs and checkpoints. |
+| `reference/` | Static lookup tables and Natural Earth coastline geometry. |
+| `logs/` | Presence-backfill log and resumable state. |
 
-`disabling_events.zip` is the Global Fishing Watch AIS-disabling corpus (Welch
-et al. 2022): 55,368 derived GAP events for 2017-2019. It contains event
-endpoints and attributes, not the underlying continuous AIS message stream.
-Source: https://github.com/GlobalFishingWatch/AIS-disabling-high-seas (branch
-`master`, `data/disabling_events.zip`). Its license is CC BY-NC 4.0; attribute
-GFW in any UI or other reuse.
+`data/raw/*.csv` and `data/derived/*.parquet` are ignored. Bronze is tracked by decision. Other files follow their existing tracked status.
 
-`gfw_config.py` is the upstream corpus filter configuration (12-hour minimum
-gap and more than 50 nautical miles from shore at the off endpoint). The
-current loader does not execute it. `exclusions.json` is a historical
-quarantine checkpoint from a previous corpus loader, not a current input.
+Extract the source CSV when needed:
 
-New work belongs in `bronze/` and `silver/`, not legacy `raw/` or `derived/`.
-Use [docs/ais-ingestion.md](../docs/ais-ingestion.md) for the active schema and
-commands.
+```bash
+unzip -o data/raw/disabling_events.zip -d data/raw
+```
+
+Pandas 3 parses the corpus timestamps as `datetime64[us, UTC]`. Use `Timedelta` arithmetic for durations and retain microsecond precision.

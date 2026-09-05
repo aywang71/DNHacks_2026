@@ -10,8 +10,7 @@ where a compatible raw provider covers the location.
 The first implementation target is NOAA Marine Cadastre data. It is public,
 U.S.-coastal, terrestrial-receiver AIS and is therefore a validation corpus,
 not evidence for high-seas or global claims. The project's NOAA adapter uses
-the published daily product: NOAA's 2018-2023 compressed CSV archive and the
-later GeoParquet archive. It labels the observations
+the published daily GeoParquet broadcast-point product and labels it
 `terrestrial_ais_minute_downsampled`. It is not a source of global,
 second-by-second satellite AIS.
 
@@ -107,47 +106,6 @@ For a licensed provider, use `normalize-file` and preserve its original export
 unchanged in Bronze. The contract requires, at minimum, observation timestamp,
 latitude, longitude, vessel identifier, source/receiver mode, and any supplied
 SOG/COG/heading/quality fields.
-
-## Activated Gulf-of-Mexico validation pull
-
-The repository now includes one bounded public-data request at
-`data/requests/raw_ais/gulf_2021_09_aet_pair/request.json`. It is a
-screening-only pair of GFW GAP events for AET RESPONSIBILITY (MMSI 367530350)
-and AET EXCELLENCE (MMSI 367511240): their 2021-09-15/16 dark intervals overlap
-for 18.97 hours, and their off/on endpoints are 3.10 km and 6.15 km apart.
-That identifies a useful ingestion and coverage-validation window; it does not
-establish a rendezvous or an AIS-disabling finding.
-
-The request uses a six-hour buffer and a small northern-Gulf bounding box. It
-spans three UTC NOAA objects (2021-09-15 through 2021-09-17). Their compressed
-download size is approximately 756 MiB in total before decompression. Run or
-resume it with:
-
-```powershell
-.\scripts\run_targeted_noaa_minute_pull.ps1 `
-  -RequestFile data\requests\raw_ais\gulf_2021_09_aet_pair\request.json
-```
-
-Use `-PlanOnly` to print the exact three calls without downloading, and
-`-Force` only to replace an existing request-isolated Silver day. The runner
-writes Silver to `data/silver/ais_positions/source=noaa_marine_cadastre/`
-`request_id=gulf_2021_09_aet_pair/`; it never overwrites the default NOAA path.
-
-The first execution is complete. Its request, object hashes, row counts, and
-source-boundary outcome are in
-`data/requests/raw_ais/gulf_2021_09_aet_pair/result.json`. The three large
-Bronze archive objects were deliberately removed from the working tree after
-normalization to keep the repository pushable; the isolated Silver outputs
-contain 58,318 valid observations for 280 vessels. NOAA reports a small number
-of observations during both GFW-labelled gap intervals, which is the expected
-reminder that GFW's derived gap product and a terrestrial receiver archive have
-different reception and processing histories. Treat this as a
-coverage/provenance result, never as proof for or against a rendezvous.
-
-The current high-latitude Presence corpus is outside NOAA's footprint. For
-those priority candidates, prepare the identical request record but fulfil it
-with a licensed satellite/terrestrial AIS provider; Global Fishing Watch GAP,
-Presence, and track responses remain derived products, not raw message feeds.
 
 ### 3. Keep observation semantics intact
 

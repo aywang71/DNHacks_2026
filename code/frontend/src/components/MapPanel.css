@@ -1,0 +1,10 @@
+.presence-map{position:relative;min-height:340px;flex:1;isolation:isolate;background:var(--abyss)}
+.world-map{position:absolute;inset:0;width:100%;height:100%}
+.world-map .maplibregl-ctrl-group{overflow:hidden;border:1px solid var(--line);border-radius:3px;box-shadow:none;background:var(--shelf)}
+.world-map .maplibregl-ctrl-group button{background:var(--shelf)}
+.world-map .maplibregl-ctrl-group button+button{border-top-color:var(--line)}
+.world-map .maplibregl-ctrl-icon{filter:invert(90%)}
+.map-key{position:absolute;left:18px;bottom:14px;pointer-events:none;display:flex;flex-wrap:wrap;gap:8px 18px;padding:8px 10px;background:#0c0a09e8;color:var(--muted);font-size:11px;border:1px solid var(--line)}
+.map-key span{display:flex;align-items:center;gap:7px}.map-key i{width:7px;height:7px;background:var(--cyan);border-radius:50%}
+.map-message{position:absolute;left:50%;top:45%;transform:translate(-50%,-50%);width:max-content;max-width:85%;padding:15px 20px;border:1px solid var(--line);background:#141210ed;color:var(--text);text-align:center}
+@media(max-width:760px){.presence-map{min-height:350px}.map-key-detail{display:none!important}}

@@ -1,0 +1,542 @@
+[
+  {
+    "id": "t0-dd805cfef382",
+    "tier": "paired-dark",
+    "label": "investigate",
+    "evidenceTier": "bilateral_rendezvous_plausible",
+    "priority": 0.54,
+    "riskScore": 54,
+    "riskLevel": "high",
+    "eventKind": "dark-period",
+    "eventLabel": "Paired AIS dark period",
+    "name": "412331147 (CHN) × 416004105 (TWN)",
+    "imo": "MMSI 412331147 × 416004105",
+    "flag": "CHN / TWN",
+    "vesselType": "squid jigger / squid jigger",
+    "location": "NW Pacific high seas, 892 km from shore",
+    "lastSeen": "2017-07-03T12:19:32Z",
+    "coordinates": [161.958, 42.752],
+    "vessels": [
+      {
+        "mmsi": "412331147",
+        "imo": null,
+        "name": null,
+        "flag": "CHN",
+        "vesselClass": "squid_jigger",
+        "role": "fishing",
+        "identityStatus": "resolved",
+        "flagCard": "none",
+        "rfmoAuthorized": null,
+        "iuuListed": null,
+        "lengthM": 69.9,
+        "tonnageGt": 1408.0,
+        "lengthEstimated": true,
+        "tonnageEstimated": true,
+        "gapsInCorpus": 63,
+        "pairsInQueue": 1
+      },
+      {
+        "mmsi": "416004105",
+        "imo": null,
+        "name": null,
+        "flag": "TWN",
+        "vesselClass": "squid_jigger",
+        "role": "fishing",
+        "identityStatus": "resolved",
+        "flagCard": "yellow",
+        "rfmoAuthorized": null,
+        "iuuListed": null,
+        "lengthM": 72.8,
+        "tonnageGt": 962.0,
+        "lengthEstimated": true,
+        "tonnageEstimated": true,
+        "gapsInCorpus": 46,
+        "pairsInQueue": 1
+      }
+    ],
+    "window": {
+      "start": "2017-07-01T18:33:00Z",
+      "end": "2017-07-03T12:19:32Z",
+      "overlapStart": "2017-07-01T18:33:05Z",
+      "overlapEnd": "2017-07-03T12:18:49Z",
+      "overlapHours": 41.76
+    },
+    "meetingPoint": {
+      "coordinates": [161.958, 42.752],
+      "kind": "inferred",
+      "method": "argmax joint dwell, 15×15 grid + refinement"
+    },
+    "jurisdiction": {
+      "zone": "high_seas",
+      "eez": null,
+      "rfmo": null,
+      "eezEntryWhileDark": null,
+      "shoreDistanceKm": 892.0,
+      "portDistanceKm": null
+    },
+    "scores": {
+      "geom": 1.0,
+      "kin": null,
+      "beh": null,
+      "ctx": 0.6,
+      "cor": 0.0,
+      "den": 0.15,
+      "flt": 0.0,
+      "hab": 0.38,
+      "raw": 0.329
+    },
+    "features": {
+      "startDistanceKm": 6.6,
+      "startDeltaMin": 0.083,
+      "endDistanceKm": 8.99,
+      "endDeltaMin": 0.717,
+      "durationRatio": 0.9997,
+      "requiredSpeedKn": 0.92,
+      "jointDwellHours": 38.6,
+      "kinPlausibility": 0.95,
+      "pCell": 0.005,
+      "localDarkCount": 1,
+      "localUniqueVessels": 1,
+      "localSameFlagShare": null,
+      "componentSize": 2,
+      "componentClass": "bilateral",
+      "sequentialMmsi": false,
+      "identityTwin": false,
+      "crossFlag": true,
+      "gapUnusualness": 0.62,
+      "knownPartners": null,
+      "loiterBracket": null,
+      "encounterBracket": null,
+      "portAfterGapRisk": null,
+      "possiblePortTransit": null
+    },
+    "corroboration": {
+      "viirsState": "no_coverage",
+      "viirsUncorrelatedCount": 0,
+      "viirsMinKmToMeetingPoint": null,
+      "viirsDetections": [],
+      "presenceSource": "corpus_endpoints"
+    },
+    "nullModel": {
+      "name": "within-cell permutation v1",
+      "draws": 200,
+      "cellDeg": 5,
+      "observed": 434,
+      "nullMean": 12.0,
+      "lift": 36.2
+    },
+    "neighbours": [
+      {
+        "mmsi": "412329634",
+        "flag": "CHN",
+        "deltaMin": 1.4,
+        "distanceKm": 9.7
+      }
+    ],
+    "explanations": [
+      "Both shutoffs 5 s and 6.6 km apart; both reappearances 43 s and 9.0 km apart after 41.8 h.",
+      "Within-cell permutation null (200 draws) produced no pair in this cell-month: p_cell = 0.005.",
+      "Cross-flag pair; Taiwan held an EU IUU yellow card on this date.",
+      "One other vessel went dark within 200 km and ±1 h (412329634, CHN).",
+      "Behaviour term not available: GFW loitering, encounter and port-visit events not pulled for these vessels.",
+      "Imagery: no VIIRS coverage checked for this window."
+    ],
+    "evidence": [
+      {
+        "id": "sync-off",
+        "claim": "Both vessels ceased AIS 5 s apart, 6.6 km apart",
+        "source": "GFW disabling corpus",
+        "observedAt": "2017-07-01T18:33:05Z",
+        "confidence": "high"
+      },
+      {
+        "id": "sync-on",
+        "claim": "Both reappeared 43 s apart, 9.0 km apart, after 41.8 h",
+        "source": "GFW disabling corpus",
+        "observedAt": "2017-07-03T12:19:32Z",
+        "confidence": "high"
+      },
+      {
+        "id": "null",
+        "claim": "Within-cell permutation null, 200 draws: p_cell = 0.005",
+        "source": "GapPair null model v1",
+        "observedAt": "2017-07-01T18:33:00Z",
+        "confidence": "medium"
+      },
+      {
+        "id": "card",
+        "claim": "Taiwan held an EU IUU yellow card on this date (2015-10-01 to 2019-06-27)",
+        "source": "EU carding history (hand-made table)",
+        "observedAt": "2017-07-01T18:33:00Z",
+        "confidence": "high"
+      },
+      {
+        "id": "density",
+        "claim": "1 other vessel dark within 200 km and ±1 h",
+        "source": "GapPair local context",
+        "observedAt": "2017-07-01T18:33:00Z",
+        "confidence": "high"
+      },
+      {
+        "id": "geometry",
+        "claim": "Feasible meeting point 161.96E 42.75N; joint dwell 38.6 h; required speed 0.9 kn",
+        "source": "Reachable-set heuristic (estimated)",
+        "observedAt": "2017-07-02T15:00:00Z",
+        "confidence": "low"
+      }
+    ],
+    "timeline": [
+      {
+        "time": "2017-07-01T18:33:00Z",
+        "title": "412331147 last AIS position",
+        "detail": "42.749N 161.983E"
+      },
+      {
+        "time": "2017-07-01T18:33:05Z",
+        "title": "416004105 last AIS position",
+        "detail": "42.795N 162.034E",
+        "emphasis": true
+      },
+      {
+        "time": "2017-07-03T12:18:49Z",
+        "title": "416004105 reappears",
+        "detail": "42.340N 161.423E"
+      },
+      {
+        "time": "2017-07-03T12:19:32Z",
+        "title": "412331147 reappears",
+        "detail": "42.399N 161.347E"
+      }
+    ],
+    "track": {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "properties": {"vessel": "A", "role": "off", "observationStatus": "observed", "time": "2017-07-01T18:33:00Z", "mmsi": "412331147"},
+          "geometry": {"type": "Point", "coordinates": [161.983, 42.749]}
+        },
+        {
+          "type": "Feature",
+          "properties": {"vessel": "B", "role": "off", "observationStatus": "observed", "time": "2017-07-01T18:33:05Z", "mmsi": "416004105"},
+          "geometry": {"type": "Point", "coordinates": [162.034, 42.795]}
+        },
+        {
+          "type": "Feature",
+          "properties": {"vessel": "B", "role": "on", "observationStatus": "observed", "time": "2017-07-03T12:18:49Z", "mmsi": "416004105"},
+          "geometry": {"type": "Point", "coordinates": [161.423, 42.34]}
+        },
+        {
+          "type": "Feature",
+          "properties": {"vessel": "A", "role": "on", "observationStatus": "observed", "time": "2017-07-03T12:19:32Z", "mmsi": "412331147"},
+          "geometry": {"type": "Point", "coordinates": [161.347, 42.399]}
+        },
+        {
+          "type": "Feature",
+          "properties": {"vessel": "A", "observationStatus": "estimated", "confidence": "low", "source": "reachable-set heuristic", "lineStyle": "dashed"},
+          "geometry": {"type": "LineString", "coordinates": [[161.983, 42.749], [161.958, 42.752], [161.347, 42.399]]}
+        },
+        {
+          "type": "Feature",
+          "properties": {"vessel": "B", "observationStatus": "estimated", "confidence": "low", "source": "reachable-set heuristic", "lineStyle": "dashed"},
+          "geometry": {"type": "LineString", "coordinates": [[162.034, 42.795], [161.958, 42.752], [161.423, 42.34]]}
+        },
+        {
+          "type": "Feature",
+          "properties": {"observationStatus": "estimated", "kind": "meetingPoint"},
+          "geometry": {"type": "Point", "coordinates": [161.958, 42.752]}
+        },
+        {
+          "type": "Feature",
+          "properties": {"vessel": "A", "observationStatus": "estimated", "kind": "reachableSet"},
+          "geometry": {"type": "Polygon", "coordinates": [[[157.226841, 40.131617], [157.570279, 39.821687], [157.953151, 39.538262], [158.371771, 39.284074], [158.822105, 39.061569], [159.299819, 38.872891], [159.80031, 38.719857], [160.31876, 38.60394], [160.850174, 38.526257], [161.389436, 38.487556], [161.931352, 38.48821], [162.470702, 38.528212], [163.002293, 38.607177], [163.521005, 38.724345], [164.021843, 38.878587], [164.499984, 39.068418], [164.950821, 39.29201], [165.370015, 39.547209], [165.753527, 39.831558], [166.097664, 40.142318], [166.399113, 40.476496], [166.654969, 40.830875], [166.862769, 41.20204], [167.020512, 41.586419], [167.126679, 41.980308], [167.180246, 42.379915], [167.180699, 42.781391], [167.128032, 43.18087], [167.022753, 43.574504], [166.865877, 43.958503], [166.658913, 44.329169], [166.403855, 44.682931], [166.103159, 45.016383], [165.759721, 45.326313], [165.376849, 45.609738], [164.958229, 45.863926], [164.507895, 46.086431], [164.030181, 46.275109], [163.52969, 46.428143], [163.01124, 46.54406], [162.479826, 46.621743], [161.940564, 46.660444], [161.398648, 46.65979], [160.859298, 46.619788], [160.327707, 46.540823], [159.808995, 46.423655], [159.308157, 46.269413], [158.830016, 46.079582], [158.379179, 45.85599], [157.959985, 45.600791], [157.576473, 45.316442], [157.232336, 45.005682], [156.930887, 44.671504], [156.675031, 44.317125], [156.467231, 43.94596], [156.309488, 43.561581], [156.203321, 43.167692], [156.149754, 42.768085], [156.149301, 42.366609], [156.201968, 41.96713], [156.307247, 41.573496], [156.464123, 41.189497], [156.671087, 40.818831], [156.926145, 40.465069], [157.226841, 40.131617]]]}
+        },
+        {
+          "type": "Feature",
+          "properties": {"vessel": "B", "observationStatus": "estimated", "kind": "reachableSet"},
+          "geometry": {"type": "Polygon", "coordinates": [[[157.830319, 39.664599], [158.23165, 39.396139], [158.666656, 39.158221], [159.131151, 38.953136], [159.620659, 38.78286], [160.130466, 38.649031], [160.655664, 38.55294], [161.191194, 38.495511], [161.731898, 38.477297], [162.272569, 38.498475], [162.808001, 38.558839], [163.333037, 38.657809], [163.84262, 38.794431], [164.331842, 38.96739], [164.795994, 39.17502], [165.230603, 39.415322], [165.631486, 39.685981], [165.99478, 39.98439], [166.316988, 40.307676], [166.595007, 40.652725], [166.826158, 41.016215], [167.008216, 41.394645], [167.139427, 41.784369], [167.218529, 42.181636], [167.244758, 42.582619], [167.217862, 42.983456], [167.138102, 43.380287], [167.006243, 43.769291], [166.823557, 44.146721], [166.591803, 44.508942], [166.313213, 44.852466], [165.990469, 45.173984], [165.626681, 45.470401], [165.22535, 45.738861], [164.790344, 45.976779], [164.325849, 46.181864], [163.836341, 46.35214], [163.326534, 46.485969], [162.801336, 46.58206], [162.265806, 46.639489], [161.725102, 46.657703], [161.184431, 46.636525], [160.648999, 46.576161], [160.123963, 46.477191], [159.61438, 46.340569], [159.125158, 46.16761], [158.661006, 45.95998], [158.226397, 45.719678], [157.825514, 45.449019], [157.46222, 45.15061], [157.140012, 44.827324], [156.861993, 44.482275], [156.630842, 44.118785], [156.448784, 43.740355], [156.317573, 43.350631], [156.238471, 42.953364], [156.212242, 42.552381], [156.239138, 42.151544], [156.318898, 41.754713], [156.450757, 41.365709], [156.633443, 40.988279], [156.865197, 40.626058], [157.143787, 40.282534], [157.466531, 39.961016], [157.830319, 39.664599]]]}
+        }
+      ]
+    },
+    "sources": [
+      {
+        "claim": "window.start",
+        "value": "2017-07-01T18:33:00Z",
+        "source": "GFW disabling corpus",
+        "asOf": "2022-08-08"
+      }
+    ],
+    "attribution": "Data: Global Fishing Watch AIS-disabling corpus (Welch et al. 2022), CC BY-NC 4.0",
+    "analystDisposition": null
+  },
+  {
+    "id": "t0-0a1b2c3d4e5f",
+    "tier": "paired-dark",
+    "label": "coordinated-fleet-pattern",
+    "evidenceTier": "coordinated_fleet_activity",
+    "priority": 0.1948,
+    "riskScore": 19,
+    "riskLevel": "review",
+    "eventKind": "dark-period",
+    "eventLabel": "Paired AIS dark period",
+    "name": "412345670 (CHN) × 412345671 (CHN)",
+    "imo": "MMSI 412345670 × 412345671",
+    "flag": "CHN / CHN",
+    "vesselType": "squid jigger / squid jigger",
+    "location": "NW Pacific high seas, 506 km from shore",
+    "lastSeen": "2018-10-12T14:04:00Z",
+    "coordinates": [141.08, 34.44],
+    "vessels": [
+      {
+        "mmsi": "412345670",
+        "imo": null,
+        "name": null,
+        "flag": "CHN",
+        "vesselClass": "squid_jigger",
+        "role": "fishing",
+        "identityStatus": "resolved",
+        "flagCard": "none",
+        "rfmoAuthorized": null,
+        "iuuListed": null,
+        "lengthM": 59.4,
+        "tonnageGt": 612.0,
+        "lengthEstimated": true,
+        "tonnageEstimated": true,
+        "gapsInCorpus": 19,
+        "pairsInQueue": 3
+      },
+      {
+        "mmsi": "412345671",
+        "imo": null,
+        "name": null,
+        "flag": "CHN",
+        "vesselClass": "squid_jigger",
+        "role": "fishing",
+        "identityStatus": "resolved",
+        "flagCard": "none",
+        "rfmoAuthorized": null,
+        "iuuListed": null,
+        "lengthM": 59.6,
+        "tonnageGt": 618.0,
+        "lengthEstimated": true,
+        "tonnageEstimated": true,
+        "gapsInCorpus": 21,
+        "pairsInQueue": 3
+      }
+    ],
+    "window": {
+      "start": "2018-10-11T04:00:00Z",
+      "end": "2018-10-12T14:04:00Z",
+      "overlapStart": "2018-10-11T04:05:00Z",
+      "overlapEnd": "2018-10-12T14:00:00Z",
+      "overlapHours": 33.92
+    },
+    "meetingPoint": {
+      "coordinates": [141.08, 34.44],
+      "kind": "inferred",
+      "method": "argmax joint dwell, 15×15 grid + refinement"
+    },
+    "jurisdiction": {
+      "zone": "high_seas",
+      "eez": null,
+      "rfmo": "NPFC",
+      "eezEntryWhileDark": null,
+      "shoreDistanceKm": 506.0,
+      "portDistanceKm": null
+    },
+    "scores": {
+      "geom": 0.82,
+      "kin": 0.96,
+      "beh": null,
+      "ctx": 0.45,
+      "cor": 0.0,
+      "den": 0.2,
+      "flt": 1.0,
+      "hab": 0.2,
+      "raw": 0.0635
+    },
+    "features": {
+      "startDistanceKm": 4.96,
+      "startDeltaMin": 5.0,
+      "endDistanceKm": 2.88,
+      "endDeltaMin": 4.0,
+      "durationRatio": 0.9995,
+      "requiredSpeedKn": 0.45,
+      "jointDwellHours": 31.5,
+      "kinPlausibility": 0.96,
+      "pCell": 0.0348,
+      "localDarkCount": 2,
+      "localUniqueVessels": 2,
+      "localSameFlagShare": 1.0,
+      "componentSize": 4,
+      "componentClass": "fleet_cluster",
+      "sequentialMmsi": true,
+      "identityTwin": false,
+      "crossFlag": false,
+      "gapUnusualness": 0.51,
+      "knownPartners": 2,
+      "loiterBracket": null,
+      "encounterBracket": null,
+      "portAfterGapRisk": null,
+      "possiblePortTransit": null
+    },
+    "corroboration": {
+      "viirsState": "no_coverage",
+      "viirsUncorrelatedCount": 0,
+      "viirsMinKmToMeetingPoint": null,
+      "viirsDetections": [],
+      "presenceSource": "corpus_endpoints"
+    },
+    "nullModel": {
+      "name": "within-cell permutation v1",
+      "draws": 200,
+      "cellDeg": 5,
+      "observed": 434,
+      "nullMean": 12.0,
+      "lift": 36.2
+    },
+    "neighbours": [
+      {"mmsi": "412345672", "flag": "CHN", "deltaMin": 11.0, "distanceKm": 13.5},
+      {"mmsi": "412345673", "flag": "CHN", "deltaMin": 17.0, "distanceKm": 18.1}
+    ],
+    "explanations": [
+      "Both shutoffs were 5.0 min and 5.0 km apart; both reappearances were 4.0 min and 2.9 km apart after 33.9 h.",
+      "The MMSIs are sequential (412345670 and 412345671) and sit in a four-vessel fleet cluster.",
+      "Two other CHN vessels went dark within 200 km and ±1 h.",
+      "Within-cell permutation null (200 draws) gives p_cell = 0.0348.",
+      "Fleet-pattern penalty is 1.00, so this pair is shown for review rather than investigation.",
+      "Imagery: no VIIRS coverage checked for this window."
+    ],
+    "evidence": [
+      {"id": "sync-off", "claim": "Both vessels ceased AIS 5.0 min apart, 5.0 km apart", "source": "GFW disabling corpus", "observedAt": "2018-10-11T04:05:00Z", "confidence": "high"},
+      {"id": "sync-on", "claim": "Both vessels reappeared 4.0 min apart, 2.9 km apart, after 33.9 h", "source": "GFW disabling corpus", "observedAt": "2018-10-12T14:04:00Z", "confidence": "high"},
+      {"id": "sequence", "claim": "MMSIs 412345670 and 412345671 are sequential", "source": "GapPair identity features", "observedAt": "2018-10-11T04:00:00Z", "confidence": "high"},
+      {"id": "component", "claim": "Pair belongs to a four-vessel fleet cluster", "source": "GapPair local context", "observedAt": "2018-10-11T04:00:00Z", "confidence": "high"},
+      {"id": "null", "claim": "Within-cell permutation null, 200 draws: p_cell = 0.0348", "source": "GapPair null model v1", "observedAt": "2018-10-11T04:00:00Z", "confidence": "medium"}
+    ],
+    "timeline": [
+      {"time": "2018-10-11T04:00:00Z", "title": "412345670 last AIS position", "detail": "34.500N 141.200E"},
+      {"time": "2018-10-11T04:05:00Z", "title": "412345671 last AIS position", "detail": "34.530N 141.240E", "emphasis": true},
+      {"time": "2018-10-12T14:00:00Z", "title": "412345670 reappears", "detail": "34.360N 140.970E"},
+      {"time": "2018-10-12T14:04:00Z", "title": "412345671 reappears", "detail": "34.340N 140.990E"}
+    ],
+    "track": {
+      "type": "FeatureCollection",
+      "features": [
+        {"type": "Feature", "properties": {"vessel": "A", "role": "off", "observationStatus": "observed", "time": "2018-10-11T04:00:00Z", "mmsi": "412345670"}, "geometry": {"type": "Point", "coordinates": [141.2, 34.5]}},
+        {"type": "Feature", "properties": {"vessel": "B", "role": "off", "observationStatus": "observed", "time": "2018-10-11T04:05:00Z", "mmsi": "412345671"}, "geometry": {"type": "Point", "coordinates": [141.24, 34.53]}},
+        {"type": "Feature", "properties": {"vessel": "A", "role": "on", "observationStatus": "observed", "time": "2018-10-12T14:00:00Z", "mmsi": "412345670"}, "geometry": {"type": "Point", "coordinates": [140.97, 34.36]}},
+        {"type": "Feature", "properties": {"vessel": "B", "role": "on", "observationStatus": "observed", "time": "2018-10-12T14:04:00Z", "mmsi": "412345671"}, "geometry": {"type": "Point", "coordinates": [140.99, 34.34]}},
+        {"type": "Feature", "properties": {"vessel": "A", "observationStatus": "estimated", "confidence": "low", "source": "reachable-set heuristic", "lineStyle": "dashed"}, "geometry": {"type": "LineString", "coordinates": [[141.2, 34.5], [141.08, 34.44], [140.97, 34.36]]}},
+        {"type": "Feature", "properties": {"vessel": "B", "observationStatus": "estimated", "confidence": "low", "source": "reachable-set heuristic", "lineStyle": "dashed"}, "geometry": {"type": "LineString", "coordinates": [[141.24, 34.53], [141.08, 34.44], [140.99, 34.34]]}},
+        {"type": "Feature", "properties": {"observationStatus": "estimated", "kind": "meetingPoint"}, "geometry": {"type": "Point", "coordinates": [141.08, 34.44]}},
+        {"type": "Feature", "properties": {"vessel": "A", "observationStatus": "estimated", "kind": "reachableSet"}, "geometry": {"type": "Polygon", "coordinates": [[[137.86396, 32.46937], [138.11074, 32.2168], [138.38617, 31.98554], [138.68759, 31.77783], [139.0121, 31.59566], [139.35657, 31.44079], [139.71769, 31.3147], [140.09197, 31.21862], [140.47582, 31.15346], [140.86554, 31.11986], [141.25736, 31.11814], [141.64753, 31.14831], [142.03228, 31.21009], [142.40791, 31.30287], [142.7708, 31.42577], [143.11745, 31.57761], [143.44453, 31.75691], [143.74889, 31.96196], [144.02759, 32.19078], [144.27795, 32.44116], [144.49756, 32.71069], [144.68431, 32.99678], [144.83639, 33.29668], [144.95235, 33.60749], [145.03106, 33.92622], [145.07177, 34.2498], [145.07408, 34.57512], [145.03798, 34.89904], [144.96381, 35.21844], [144.85228, 35.53025], [144.70447, 35.83147], [144.52181, 36.11919], [144.30604, 36.39063], [144.05926, 36.6432], [143.78383, 36.87446], [143.48241, 37.08217], [143.1579, 37.26434], [142.81343, 37.41921], [142.45231, 37.5453], [142.07803, 37.64138], [141.69418, 37.70654], [141.30446, 37.74014], [140.91264, 37.74186], [140.52247, 37.71169], [140.13772, 37.64991], [139.76209, 37.55713], [139.3992, 37.43423], [139.05255, 37.28239], [138.72547, 37.10309], [138.42111, 36.89804], [138.14241, 36.66922], [137.89205, 36.41884], [137.67244, 36.14931], [137.48569, 35.86322], [137.33361, 35.56332], [137.21765, 35.25251], [137.13894, 34.93378], [137.09823, 34.6102], [137.09592, 34.28488], [137.13202, 33.96096], [137.20619, 33.64156], [137.31772, 33.32975], [137.46553, 33.02853], [137.64819, 32.74081], [137.86396, 32.46937]]]}},
+        {"type": "Feature", "properties": {"vessel": "B", "observationStatus": "estimated", "kind": "reachableSet"}, "geometry": {"type": "Polygon", "coordinates": [[[138.17028, 32.19701], [138.4484, 31.96834], [138.7522, 31.76342], [139.07875, 31.58422], [139.42491, 31.43248], [139.78735, 31.30966], [140.16257, 31.21694], [140.54697, 31.1552], [140.93684, 31.12506], [141.32842, 31.12679], [141.71795, 31.16038], [142.10167, 31.22551], [142.47589, 31.32154], [142.83701, 31.44756], [143.18153, 31.60235], [143.50616, 31.78442], [143.80776, 31.99202], [144.08343, 32.22314], [144.33051, 32.47557], [144.54662, 32.74687], [144.72968, 33.03442], [144.87793, 33.33546], [144.98995, 33.64709], [145.06464, 33.96631], [145.1013, 34.29005], [145.09957, 34.61518], [145.05946, 34.93857], [144.98137, 35.25711], [144.86604, 35.56774], [144.71459, 35.86746], [144.52847, 36.15338], [144.30947, 36.42276], [144.05972, 36.67299], [143.7816, 36.90166], [143.4778, 37.10658], [143.15125, 37.28578], [142.80509, 37.43752], [142.44265, 37.56034], [142.06743, 37.65306], [141.68303, 37.7148], [141.29316, 37.74494], [140.90158, 37.74321], [140.51205, 37.70962], [140.12833, 37.64449], [139.75411, 37.54846], [139.39299, 37.42244], [139.04847, 37.26765], [138.72384, 37.08558], [138.42224, 36.87798], [138.14657, 36.64686], [137.89949, 36.39443], [137.68338, 36.12313], [137.50032, 35.83558], [137.35207, 35.53454], [137.24005, 35.22291], [137.16536, 34.90369], [137.1287, 34.57995], [137.13043, 34.25482], [137.17054, 33.93143], [137.24863, 33.61289], [137.36396, 33.30226], [137.51541, 33.00254], [137.70153, 32.71662], [137.92053, 32.44724], [138.17028, 32.19701]]]}}
+      ]
+    },
+    "sources": [{"claim": "window.start", "value": "2018-10-11T04:00:00Z", "source": "P0 hand-built frontend fixture", "asOf": "2026-09-05"}],
+    "attribution": "Data: Global Fishing Watch AIS-disabling corpus (Welch et al. 2022), CC BY-NC 4.0",
+    "analystDisposition": null
+  },
+  {
+    "id": "t0-5f4e3d2c1b0a",
+    "tier": "paired-dark",
+    "label": "likely-coverage-or-cluster-artifact",
+    "evidenceTier": "coincidence_or_artifact",
+    "priority": 0.2304,
+    "riskScore": 23,
+    "riskLevel": "watch",
+    "eventKind": "dark-period",
+    "eventLabel": "Paired AIS dark period",
+    "name": "413789012 (CHN) × 413789345 (CHN)",
+    "imo": "MMSI 413789012 × 413789345",
+    "flag": "CHN / CHN",
+    "vesselType": "squid jigger / squid jigger",
+    "location": "East China Sea, 121 km from shore",
+    "lastSeen": "2019-04-04T18:20:00Z",
+    "coordinates": [133.97, 30.03],
+    "vessels": [
+      {"mmsi": "413789012", "imo": null, "name": null, "flag": "CHN", "vesselClass": "squid_jigger", "role": "fishing", "identityStatus": "resolved", "flagCard": "none", "rfmoAuthorized": null, "iuuListed": null, "lengthM": 36.2, "tonnageGt": 311.0, "lengthEstimated": true, "tonnageEstimated": true, "gapsInCorpus": 7, "pairsInQueue": 1},
+      {"mmsi": "413789345", "imo": null, "name": null, "flag": "CHN", "vesselClass": "squid_jigger", "role": "fishing", "identityStatus": "resolved", "flagCard": "none", "rfmoAuthorized": null, "iuuListed": null, "lengthM": 37.1, "tonnageGt": 329.0, "lengthEstimated": true, "tonnageEstimated": true, "gapsInCorpus": 8, "pairsInQueue": 1}
+    ],
+    "window": {
+      "start": "2019-04-04T10:00:00Z",
+      "end": "2019-04-04T18:20:00Z",
+      "overlapStart": "2019-04-04T10:30:00Z",
+      "overlapEnd": "2019-04-04T18:00:00Z",
+      "overlapHours": 7.5
+    },
+    "meetingPoint": {"coordinates": [133.97, 30.03], "kind": "inferred", "method": "argmax joint dwell, 15×15 grid + refinement"},
+    "jurisdiction": {"zone": "unknown", "eez": null, "rfmo": null, "eezEntryWhileDark": null, "shoreDistanceKm": 121.0, "portDistanceKm": null},
+    "scores": {"geom": 0.69, "kin": 0.98, "beh": null, "ctx": 0.1, "cor": 0.0, "den": 0.74, "flt": 0.0, "hab": 0.12, "raw": 0.099},
+    "features": {
+      "startDistanceKm": 4.45,
+      "startDeltaMin": 30.0,
+      "endDistanceKm": 4.45,
+      "endDeltaMin": 20.0,
+      "durationRatio": 0.9792,
+      "requiredSpeedKn": 0.55,
+      "jointDwellHours": 7.1,
+      "kinPlausibility": 0.98,
+      "pCell": 0.5075,
+      "localDarkCount": 30,
+      "localUniqueVessels": 22,
+      "localSameFlagShare": 0.91,
+      "componentSize": 31,
+      "componentClass": "regional_blackout",
+      "sequentialMmsi": false,
+      "identityTwin": false,
+      "crossFlag": false,
+      "gapUnusualness": 0.14,
+      "knownPartners": null,
+      "loiterBracket": null,
+      "encounterBracket": null,
+      "portAfterGapRisk": null,
+      "possiblePortTransit": null
+    },
+    "corroboration": {"viirsState": "no_coverage", "viirsUncorrelatedCount": 0, "viirsMinKmToMeetingPoint": null, "viirsDetections": [], "presenceSource": "corpus_endpoints"},
+    "nullModel": {"name": "within-cell permutation v1", "draws": 200, "cellDeg": 5, "observed": 434, "nullMean": 12.0, "lift": 36.2},
+    "neighbours": [
+      {"mmsi": "413789678", "flag": "CHN", "deltaMin": 3.0, "distanceKm": 7.1},
+      {"mmsi": "413789901", "flag": "CHN", "deltaMin": 7.0, "distanceKm": 11.4}
+    ],
+    "explanations": [
+      "Both shutoffs were 30.0 min and 4.5 km apart; both reappearances were 20.0 min and 4.5 km apart after 7.5 h.",
+      "Thirty other dark events from 22 vessels began within 200 km and ±1 h.",
+      "The regional-blackout component has 31 members and the density penalty is 0.74.",
+      "Within-cell permutation null (200 draws) gives p_cell = 0.5075.",
+      "The dominant density pattern makes this a watch item rather than an investigation.",
+      "Imagery: no VIIRS coverage checked for this window."
+    ],
+    "evidence": [
+      {"id": "sync-off", "claim": "Both vessels ceased AIS 30.0 min apart, 4.5 km apart", "source": "GFW disabling corpus", "observedAt": "2019-04-04T10:30:00Z", "confidence": "high"},
+      {"id": "sync-on", "claim": "Both vessels reappeared 20.0 min apart, 4.5 km apart, after 7.5 h", "source": "GFW disabling corpus", "observedAt": "2019-04-04T18:20:00Z", "confidence": "high"},
+      {"id": "density", "claim": "30 other dark events from 22 vessels began within 200 km and ±1 h", "source": "GapPair local context", "observedAt": "2019-04-04T10:00:00Z", "confidence": "high"},
+      {"id": "component", "claim": "Pair belongs to a 31-member regional-blackout component", "source": "GapPair local context", "observedAt": "2019-04-04T10:00:00Z", "confidence": "high"},
+      {"id": "null", "claim": "Within-cell permutation null, 200 draws: p_cell = 0.5075", "source": "GapPair null model v1", "observedAt": "2019-04-04T10:00:00Z", "confidence": "medium"}
+    ],
+    "timeline": [
+      {"time": "2019-04-04T10:00:00Z", "title": "413789012 last AIS position", "detail": "30.000N 134.000E"},
+      {"time": "2019-04-04T10:30:00Z", "title": "413789345 last AIS position", "detail": "29.980N 134.040E", "emphasis": true},
+      {"time": "2019-04-04T18:00:00Z", "title": "413789012 reappears", "detail": "30.080N 133.900E"},
+      {"time": "2019-04-04T18:20:00Z", "title": "413789345 reappears", "detail": "30.060N 133.940E"}
+    ],
+    "track": {
+      "type": "FeatureCollection",
+      "features": [
+        {"type": "Feature", "properties": {"vessel": "A", "role": "off", "observationStatus": "observed", "time": "2019-04-04T10:00:00Z", "mmsi": "413789012"}, "geometry": {"type": "Point", "coordinates": [134.0, 30.0]}},
+        {"type": "Feature", "properties": {"vessel": "B", "role": "off", "observationStatus": "observed", "time": "2019-04-04T10:30:00Z", "mmsi": "413789345"}, "geometry": {"type": "Point", "coordinates": [134.04, 29.98]}},
+        {"type": "Feature", "properties": {"vessel": "A", "role": "on", "observationStatus": "observed", "time": "2019-04-04T18:00:00Z", "mmsi": "413789012"}, "geometry": {"type": "Point", "coordinates": [133.9, 30.08]}},
+        {"type": "Feature", "properties": {"vessel": "B", "role": "on", "observationStatus": "observed", "time": "2019-04-04T18:20:00Z", "mmsi": "413789345"}, "geometry": {"type": "Point", "coordinates": [133.94, 30.06]}},
+        {"type": "Feature", "properties": {"vessel": "A", "observationStatus": "estimated", "confidence": "low", "source": "reachable-set heuristic", "lineStyle": "dashed"}, "geometry": {"type": "LineString", "coordinates": [[134.0, 30.0], [133.97, 30.03], [133.9, 30.08]]}},
+        {"type": "Feature", "properties": {"vessel": "B", "observationStatus": "estimated", "confidence": "low", "source": "reachable-set heuristic", "lineStyle": "dashed"}, "geometry": {"type": "LineString", "coordinates": [[134.04, 29.98], [133.97, 30.03], [133.94, 30.06]]}},
+        {"type": "Feature", "properties": {"observationStatus": "estimated", "kind": "meetingPoint"}, "geometry": {"type": "Point", "coordinates": [133.97, 30.03]}},
+        {"type": "Feature", "properties": {"vessel": "A", "observationStatus": "estimated", "kind": "reachableSet"}, "geometry": {"type": "Polygon", "coordinates": [[[133.35536, 30.51571], [133.30492, 30.4628], [133.26068, 30.40582], [133.22309, 30.34532], [133.19249, 30.28187], [133.16919, 30.2161], [133.15341, 30.14863], [133.1453, 30.08012], [133.14494, 30.01121], [133.15234, 29.94259], [133.16741, 29.8749], [133.19002, 29.80881], [133.21996, 29.74494], [133.25692, 29.68391], [133.30055, 29.62631], [133.35045, 29.5727], [133.40611, 29.52358], [133.46702, 29.47944], [133.53257, 29.4407], [133.60215, 29.40773], [133.67507, 29.38085], [133.75064, 29.36031], [133.82814, 29.34632], [133.9068, 29.33902], [133.98588, 29.33846], [134.06462, 29.34466], [134.14225, 29.35756], [134.21804, 29.37702], [134.29124, 29.40288], [134.36115, 29.43487], [134.4271, 29.47268], [134.48846, 29.51596], [134.54464, 29.56429], [134.59508, 29.6172], [134.63932, 29.67418], [134.67691, 29.73468], [134.70751, 29.79813], [134.73081, 29.8639], [134.74659, 29.93137], [134.7547, 29.99988], [134.75506, 30.06879], [134.74766, 30.13741], [134.73259, 30.2051], [134.70998, 30.27119], [134.68004, 30.33506], [134.64308, 30.39609], [134.59945, 30.45369], [134.54955, 30.5073], [134.49389, 30.55642], [134.43298, 30.60056], [134.36743, 30.6393], [134.29785, 30.67227], [134.22493, 30.69915], [134.14936, 30.71969], [134.07186, 30.73368], [133.9932, 30.74098], [133.91412, 30.74154], [133.83538, 30.73534], [133.75775, 30.72244], [133.68196, 30.70298], [133.60876, 30.67712], [133.53885, 30.64513], [133.4729, 30.60732], [133.41154, 30.56404], [133.35536, 30.51571]]]}},
+        {"type": "Feature", "properties": {"vessel": "B", "observationStatus": "estimated", "kind": "reachableSet"}, "geometry": {"type": "Polygon", "coordinates": [[[133.40959, 30.48433], [133.36036, 30.43269], [133.31721, 30.37707], [133.28053, 30.31801], [133.25068, 30.25608], [133.22796, 30.19188], [133.21257, 30.12603], [133.20467, 30.05915], [133.20434, 29.99189], [133.21157, 29.92491], [133.22629, 29.85884], [133.24838, 29.79433], [133.2776, 29.73198], [133.31369, 29.67241], [133.35628, 29.61619], [133.40499, 29.56386], [133.45932, 29.51592], [133.51877, 29.47283], [133.58275, 29.43502], [133.65066, 29.40284], [133.72183, 29.3766], [133.79559, 29.35656], [133.87122, 29.3429], [133.94799, 29.33577], [134.02517, 29.33523], [134.10201, 29.34128], [134.17777, 29.35387], [134.25172, 29.37287], [134.32315, 29.39811], [134.39137, 29.42934], [134.45573, 29.46625], [134.5156, 29.5085], [134.57041, 29.55567], [134.61964, 29.60731], [134.66279, 29.66293], [134.69947, 29.72199], [134.72932, 29.78392], [134.75204, 29.84812], [134.76743, 29.91397], [134.77533, 29.98085], [134.77566, 30.04811], [134.76843, 30.11509], [134.75371, 30.18116], [134.73162, 30.24567], [134.7024, 30.30802], [134.66631, 30.36759], [134.62372, 30.42381], [134.57501, 30.47614], [134.52068, 30.52408], [134.46123, 30.56717], [134.39725, 30.60498], [134.32934, 30.63716], [134.25817, 30.6634], [134.18441, 30.68344], [134.10878, 30.6971], [134.03201, 30.70423], [133.95483, 30.70477], [133.87799, 30.69872], [133.80223, 30.68613], [133.72828, 30.66713], [133.65685, 30.64189], [133.58863, 30.61066], [133.52427, 30.57375], [133.4644, 30.5315], [133.40959, 30.48433]]]}}
+      ]
+    },
+    "sources": [{"claim": "window.start", "value": "2019-04-04T10:00:00Z", "source": "P0 hand-built frontend fixture", "asOf": "2026-09-05"}],
+    "attribution": "Data: Global Fishing Watch AIS-disabling corpus (Welch et al. 2022), CC BY-NC 4.0",
+    "analystDisposition": null
+  }
+]

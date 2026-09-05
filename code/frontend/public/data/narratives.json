@@ -1,0 +1,40 @@
+{
+  "t0-dd805cfef382": {
+    "model": "claude-opus-5",
+    "promptVersion": "v1",
+    "generatedAt": "2026-09-05T17:30:00Z",
+    "recommendation": "investigate",
+    "caveat": "AIS absence does not establish a transfer; the meeting point is inferred.",
+    "segments": [
+      {"kind": "text", "text": "The two vessels began their gaps ", "claimKey": null, "value": null, "unit": null, "estimated": false, "nullName": "", "status": "verified"},
+      {"kind": "claim", "text": "0.083 min apart", "claimKey": "features.startDeltaMin", "value": "0.083", "unit": "min", "estimated": false, "nullName": "", "status": "verified"},
+      {"kind": "text", "text": " and their last observed positions were ", "claimKey": null, "value": null, "unit": null, "estimated": false, "nullName": "", "status": "verified"},
+      {"kind": "claim", "text": "6.6 km apart", "claimKey": "features.startDistanceKm", "value": "6.6", "unit": "km", "estimated": false, "nullName": "", "status": "verified"},
+      {"kind": "text", "text": ". Their AIS-dark windows overlapped for ", "claimKey": null, "value": null, "unit": null, "estimated": false, "nullName": "", "status": "verified"},
+      {"kind": "claim", "text": "41.76 h", "claimKey": "window.overlapHours", "value": "41.76", "unit": "h", "estimated": false, "nullName": "", "status": "verified"},
+      {"kind": "text", "text": ". The within-cell permutation result is ", "claimKey": null, "value": null, "unit": null, "estimated": false, "nullName": "", "status": "verified"},
+      {"kind": "claim", "text": "p_cell 0.005", "claimKey": "features.pCell", "value": "0.005", "unit": "probability", "estimated": true, "nullName": "within-cell permutation v1", "status": "verified"},
+      {"kind": "text", "text": ". The second vessel is flagged ", "claimKey": null, "value": null, "unit": null, "estimated": false, "nullName": "", "status": "verified"},
+      {"kind": "claim", "text": "TWN", "claimKey": "vessels.1.flag", "value": "TWN", "unit": "id", "estimated": false, "nullName": "", "status": "verified"},
+      {"kind": "text", "text": ", and the local context contains ", "claimKey": null, "value": null, "unit": null, "estimated": false, "nullName": "", "status": "verified"},
+      {"kind": "claim", "text": "1 other dark vessel", "claimKey": "features.localDarkCount", "value": "1", "unit": "count", "estimated": false, "nullName": "", "status": "verified"},
+      {"kind": "text", "text": ". Imagery status is ", "claimKey": null, "value": null, "unit": null, "estimated": false, "nullName": "", "status": "verified"},
+      {"kind": "claim", "text": "no_coverage", "claimKey": "corroboration.viirsState", "value": "no_coverage", "unit": "id", "estimated": false, "nullName": "", "status": "verified"},
+      {"kind": "text", "text": ".", "claimKey": null, "value": null, "unit": null, "estimated": false, "nullName": "", "status": "verified"}
+    ],
+    "verifierSummary": {"verified": 7, "contradicted": 0, "unverifiable": 0},
+    "adversarial": {
+      "corruptedKeys": ["features.startDistanceKm", "window.overlapHours"],
+      "segments": [
+        {"kind": "text", "text": "A corrupted replay states that the start positions were ", "claimKey": null, "value": null, "unit": null, "estimated": false, "nullName": "", "status": "verified"},
+        {"kind": "claim", "text": "19.8 km apart", "claimKey": "features.startDistanceKm", "value": "19.8", "unit": "km", "estimated": false, "nullName": "", "status": "contradicted"},
+        {"kind": "text", "text": " and that overlap lasted ", "claimKey": null, "value": null, "unit": null, "estimated": false, "nullName": "", "status": "verified"},
+        {"kind": "claim", "text": "51.76 h", "claimKey": "window.overlapHours", "value": "51.76", "unit": "h", "estimated": false, "nullName": "", "status": "contradicted"},
+        {"kind": "text", "text": ". The original null result remains ", "claimKey": null, "value": null, "unit": null, "estimated": false, "nullName": "", "status": "verified"},
+        {"kind": "claim", "text": "p_cell 0.005", "claimKey": "features.pCell", "value": "0.005", "unit": "probability", "estimated": true, "nullName": "within-cell permutation v1", "status": "verified"},
+        {"kind": "text", "text": ".", "claimKey": null, "value": null, "unit": null, "estimated": false, "nullName": "", "status": "verified"}
+      ],
+      "verifierSummary": {"verified": 1, "contradicted": 2, "unverifiable": 0}
+    }
+  }
+}

@@ -1,0 +1,3015 @@
+{
+ "generatedAt": "2026-09-05T22:31:19.418040+00:00",
+ "status": "PROBE, unscored",
+ "schema": "candidate request record per docs/targeted-raw-ais-plan.md \u00a71, plus presence_days_utc for gfw-presence",
+ "source": "operating-rule pairs on Andrew's complete 2021 GFW GAP pull retrieval_id=20260905T200519Z; vessel.type in {fishing, carrier}; valid MMSI; gear dropped; 465 pairs total",
+ "howToUse": "For each eez_candidates entry: gfw-presence per day in presence_days_utc with --region-dataset public-eez-areas --region-id <region.presence_region_id>. Entries with provider_hints containing noaa_marine_cadastre are also NOAA ingest-noaa candidates (bbox_wgs84, UTC days of window). high_seas_candidates need an RFMO/FAO region id if 4Wings accepts one. The scored list from pipeline stage 'bridge' replaces this file.",
+ "eez_candidates": [
+  {
+   "candidate_id": "t0-3c87133e5c67",
+   "trigger_type": "gfw_gap_pair",
+   "trigger_source_ids": [
+    "28772af1d07bde1c562995fef7758b90",
+    "1b7be04e1bdf904e287c0d4987c482bf"
+   ],
+   "window_start_utc": "2021-04-13T17:12:01Z",
+   "window_end_utc": "2021-04-16T17:37:07Z",
+   "gap_start_utc": "2021-04-13T23:12:01Z",
+   "gap_end_utc": "2021-04-16T11:37:07Z",
+   "overlap_hours": 59.73,
+   "vessel_aliases": [
+    {
+     "mmsi": "735057819",
+     "gfw_vessel_id": "24294f316-6db7-c6ad-1bbc-169e86252913",
+     "name": "HELICOPTER RAFFAELLO",
+     "flag": "ECU"
+    },
+    {
+     "mmsi": "369253000",
+     "gfw_vessel_id": "bf3311e6d-d4ce-b406-c9b9-250263a57066",
+     "name": "RAFFAELLO",
+     "flag": "USA"
+    }
+   ],
+   "region": {
+    "kind": "eez",
+    "eez_ids": [
+     "8432"
+    ],
+    "presence_region_dataset": "public-eez-areas",
+    "presence_region_id": 8432
+   },
+   "presence_days_utc": [
+    "2021-04-12",
+    "2021-04-13",
+    "2021-04-14",
+    "2021-04-15",
+    "2021-04-16",
+    "2021-04-17"
+   ],
+   "provider_hints": [
+    "gfw_presence",
+    "noaa_marine_cadastre"
+   ],
+   "coverage_hypothesis": "US-flag vessels; NOAA terrestrial AIS may cover the endpoints if within receiver range, else insufficient_coverage_evidence",
+   "request_reason": "operating-rule pair: shutoffs 3.4 km apart, reappearances 3.1 km apart, overlap 59.7 h",
+   "flags": {
+    "sequential_mmsi": false,
+    "cross_flag": true,
+    "us_flag": true
+   },
+   "bbox_wgs84": [
+    -82.882,
+    -9.42,
+    -81.395,
+    -7.764
+   ],
+   "dateline": false,
+   "endpoints_lonlat": {
+    "a_off": [
+     -81.89460666666666,
+     -8.26362
+    ],
+    "a_on": [
+     -82.38226,
+     -8.9199966667
+    ],
+    "b_off": [
+     -81.92419333333333,
+     -8.273281666666668
+    ],
+    "b_on": [
+     -82.3591,
+     -8.903838333333333
+    ]
+   }
+  },
+  {
+   "candidate_id": "t0-1a34d1880ab1",
+   "trigger_type": "gfw_gap_pair",
+   "trigger_source_ids": [
+    "e2f76251d0b89ddd11cbd3cffa557b53",
+    "607cd4ccb8f07e1c7b582cd32a8c7d67"
+   ],
+   "window_start_utc": "2021-07-07T11:54:13Z",
+   "window_end_utc": "2021-07-10T20:46:23Z",
+   "gap_start_utc": "2021-07-07T17:54:13Z",
+   "gap_end_utc": "2021-07-10T14:46:23Z",
+   "overlap_hours": 67.51,
+   "vessel_aliases": [
+    {
+     "mmsi": "668879556",
+     "gfw_vessel_id": "46f636e38-89db-3550-850d-dbc47b5e5eb0",
+     "name": "RONGDAYZNG28-03",
+     "flag": "STP"
+    },
+    {
+     "mmsi": "412328796",
+     "gfw_vessel_id": "4ff1fac3b-b744-8614-58e2-eb8042acb68c",
+     "name": "RONG DA YANG 28",
+     "flag": "CHN"
+    }
+   ],
+   "region": {
+    "kind": "eez",
+    "eez_ids": [
+     "8449"
+    ],
+    "presence_region_dataset": "public-eez-areas",
+    "presence_region_id": 8449
+   },
+   "presence_days_utc": [
+    "2021-07-06",
+    "2021-07-07",
+    "2021-07-08",
+    "2021-07-09",
+    "2021-07-10",
+    "2021-07-11"
+   ],
+   "provider_hints": [
+    "gfw_presence"
+   ],
+   "coverage_hypothesis": "GFW Presence hourly grid centres only; no raw AIS source identified",
+   "request_reason": "operating-rule pair: shutoffs 8.4 km apart, reappearances 7.2 km apart, overlap 67.5 h",
+   "flags": {
+    "sequential_mmsi": false,
+    "cross_flag": true,
+    "us_flag": false
+   },
+   "bbox_wgs84": [
+    -175.883,
+    -8.441,
+    -166.181,
+    -6.696
+   ],
+   "dateline": false,
+   "endpoints_lonlat": {
+    "a_off": [
+     -175.3833666667,
+     -7.94113
+    ],
+    "a_on": [
+     -166.74518,
+     -7.19615
+    ],
+    "b_off": [
+     -175.30717333333334,
+     -7.934163333333333
+    ],
+    "b_on": [
+     -166.68081333333333,
+     -7.208923333333333
+    ]
+   }
+  },
+  {
+   "candidate_id": "t0-d23db5ae0782",
+   "trigger_type": "gfw_gap_pair",
+   "trigger_source_ids": [
+    "5187641913a5b4bb01d41591bc22db7b",
+    "880bf62be9da57749a3ab088abfd6f55"
+   ],
+   "window_start_utc": "2021-02-05T21:55:07Z",
+   "window_end_utc": "2021-02-06T23:04:18Z",
+   "gap_start_utc": "2021-02-06T03:55:07Z",
+   "gap_end_utc": "2021-02-06T17:04:18Z",
+   "overlap_hours": 12.11,
+   "vessel_aliases": [
+    {
+     "mmsi": "366860000",
+     "gfw_vessel_id": "01c796c24-42a6-5932-8f05-702800cfafec",
+     "name": "ARCTIC FJORD",
+     "flag": "USA"
+    },
+    {
+     "mmsi": "368555000",
+     "gfw_vessel_id": "e05594fb2-20f2-3aba-083a-44be954535d2",
+     "name": "ARCTIC STORM",
+     "flag": "USA"
+    }
+   ],
+   "region": {
+    "kind": "eez",
+    "eez_ids": [
+     "8463"
+    ],
+    "presence_region_dataset": "public-eez-areas",
+    "presence_region_id": 8463
+   },
+   "presence_days_utc": [
+    "2021-02-05",
+    "2021-02-06",
+    "2021-02-07"
+   ],
+   "provider_hints": [
+    "gfw_presence",
+    "noaa_marine_cadastre"
+   ],
+   "coverage_hypothesis": "US-flag vessels; NOAA terrestrial AIS may cover the endpoints if within receiver range, else insufficient_coverage_evidence",
+   "request_reason": "operating-rule pair: shutoffs 4.2 km apart, reappearances 7.2 km apart, overlap 12.1 h",
+   "flags": {
+    "sequential_mmsi": false,
+    "cross_flag": false,
+    "us_flag": true
+   },
+   "bbox_wgs84": [
+    -165.561,
+    55.061,
+    -163.343,
+    56.247
+   ],
+   "dateline": false,
+   "endpoints_lonlat": {
+    "a_off": [
+     -165.060575,
+     55.74708833333333
+    ],
+    "a_on": [
+     -163.84332666666666,
+     55.576231666666665
+    ],
+    "b_off": [
+     -165.02869166666667,
+     55.714171666666665
+    ],
+    "b_on": [
+     -163.95384333333334,
+     55.560826666666664
+    ]
+   }
+  },
+  {
+   "candidate_id": "t0-c71abd196c81",
+   "trigger_type": "gfw_gap_pair",
+   "trigger_source_ids": [
+    "ae28922948f92d7f0d6c56781d1c65e3",
+    "e0ebf6ba320bb39163ad3b1ae59e146a"
+   ],
+   "window_start_utc": "2021-02-21T21:41:58Z",
+   "window_end_utc": "2021-02-22T23:06:02Z",
+   "gap_start_utc": "2021-02-22T03:41:58Z",
+   "gap_end_utc": "2021-02-22T17:06:02Z",
+   "overlap_hours": 12.43,
+   "vessel_aliases": [
+    {
+     "mmsi": "601708000",
+     "gfw_vessel_id": "5b7f8891a-a011-0643-ff18-021659e9e6dd",
+     "name": "SNEEUBERG",
+     "flag": "ZAF"
+    },
+    {
+     "mmsi": "601677000",
+     "gfw_vessel_id": "f7b7dbe9a-aa69-d86f-6ce5-024bce7430aa",
+     "name": "SOUTHERN TIGER",
+     "flag": "ZAF"
+    }
+   ],
+   "region": {
+    "kind": "eez",
+    "eez_ids": [
+     "8396"
+    ],
+    "presence_region_dataset": "public-eez-areas",
+    "presence_region_id": 8396
+   },
+   "presence_days_utc": [
+    "2021-02-21",
+    "2021-02-22",
+    "2021-02-23"
+   ],
+   "provider_hints": [
+    "gfw_presence"
+   ],
+   "coverage_hypothesis": "GFW Presence hourly grid centres only; no raw AIS source identified",
+   "request_reason": "operating-rule pair: shutoffs 7.3 km apart, reappearances 5.6 km apart, overlap 12.4 h",
+   "flags": {
+    "sequential_mmsi": false,
+    "cross_flag": false,
+    "us_flag": false
+   },
+   "bbox_wgs84": [
+    15.791,
+    -32.261,
+    16.919,
+    -31.195
+   ],
+   "dateline": false,
+   "endpoints_lonlat": {
+    "a_off": [
+     16.291325,
+     -31.7607366667
+    ],
+    "a_on": [
+     16.418536666666668,
+     -31.74541
+    ],
+    "b_off": [
+     16.298758333333332,
+     -31.695376666666668
+    ],
+    "b_on": [
+     16.360213333333334,
+     -31.755633333333332
+    ]
+   }
+  },
+  {
+   "candidate_id": "t0-72fdb5fe95cd",
+   "trigger_type": "gfw_gap_pair",
+   "trigger_source_ids": [
+    "386fe3c9aeb3904231cf9c7d87eeb1ee",
+    "34b63e9448742e1e47aae9467e319a37"
+   ],
+   "window_start_utc": "2021-03-03T22:13:11Z",
+   "window_end_utc": "2021-03-04T23:47:27Z",
+   "gap_start_utc": "2021-03-04T04:13:11Z",
+   "gap_end_utc": "2021-03-04T17:47:27Z",
+   "overlap_hours": 13.32,
+   "vessel_aliases": [
+    {
+     "mmsi": "601899900",
+     "gfw_vessel_id": "4b0dd2ff6-6209-deb5-b479-af269632b4aa",
+     "name": "THORFIN",
+     "flag": "ZAF"
+    },
+    {
+     "mmsi": "601062400",
+     "gfw_vessel_id": "0c35bf862-2eca-1cfc-a075-d669c0c4def0",
+     "name": "NICKY B",
+     "flag": "ZAF"
+    }
+   ],
+   "region": {
+    "kind": "eez",
+    "eez_ids": [
+     "8396"
+    ],
+    "presence_region_dataset": "public-eez-areas",
+    "presence_region_id": 8396
+   },
+   "presence_days_utc": [
+    "2021-03-03",
+    "2021-03-04",
+    "2021-03-05"
+   ],
+   "provider_hints": [
+    "gfw_presence"
+   ],
+   "coverage_hypothesis": "GFW Presence hourly grid centres only; no raw AIS source identified",
+   "request_reason": "operating-rule pair: shutoffs 4.5 km apart, reappearances 9.6 km apart, overlap 13.3 h",
+   "flags": {
+    "sequential_mmsi": false,
+    "cross_flag": false,
+    "us_flag": false
+   },
+   "bbox_wgs84": [
+    15.236,
+    -32.115,
+    16.846,
+    -30.31
+   ],
+   "dateline": false,
+   "endpoints_lonlat": {
+    "a_off": [
+     15.7638566667,
+     -30.8425183333
+    ],
+    "a_on": [
+     16.34642,
+     -31.529493333333335
+    ],
+    "b_off": [
+     15.7358666667,
+     -30.8103233333
+    ],
+    "b_on": [
+     16.332156666666666,
+     -31.61527
+    ]
+   }
+  },
+  {
+   "candidate_id": "t0-215f9a0d1d81",
+   "trigger_type": "gfw_gap_pair",
+   "trigger_source_ids": [
+    "6ad3f916126af35911274133a69edb56",
+    "4e017d4a5a1fe41b689c67205a78fd6a"
+   ],
+   "window_start_utc": "2021-12-27T21:44:21Z",
+   "window_end_utc": "2021-12-29T00:03:10Z",
+   "gap_start_utc": "2021-12-28T03:44:21Z",
+   "gap_end_utc": "2021-12-28T18:03:10Z",
+   "overlap_hours": 13.39,
+   "vessel_aliases": [
+    {
+     "mmsi": "601482700",
+     "gfw_vessel_id": "9382b0b54-4f5d-c6e4-e0c1-7219c46bf873",
+     "name": "PUFFIN",
+     "flag": "ZAF"
+    },
+    {
+     "mmsi": "601097500",
+     "gfw_vessel_id": "db8727e97-7d44-45fd-ad0c-631832500f56",
+     "name": "COMMON WEALTH",
+     "flag": "ZAF"
+    }
+   ],
+   "region": {
+    "kind": "eez",
+    "eez_ids": [
+     "8396"
+    ],
+    "presence_region_dataset": "public-eez-areas",
+    "presence_region_id": 8396
+   },
+   "presence_days_utc": [
+    "2021-12-27",
+    "2021-12-28",
+    "2021-12-29"
+   ],
+   "provider_hints": [
+    "gfw_presence"
+   ],
+   "coverage_hypothesis": "GFW Presence hourly grid centres only; no raw AIS source identified",
+   "request_reason": "operating-rule pair: shutoffs 2.6 km apart, reappearances 8.1 km apart, overlap 13.4 h",
+   "flags": {
+    "sequential_mmsi": false,
+    "cross_flag": false,
+    "us_flag": false
+   },
+   "bbox_wgs84": [
+    15.967,
+    -33.578,
+    17.102,
+    -32.408
+   ],
+   "dateline": false,
+   "endpoints_lonlat": {
+    "a_off": [
+     16.49438333333333,
+     -32.9113
+    ],
+    "a_on": [
+     16.601823333333332,
+     -33.02296166666667
+    ],
+    "b_off": [
+     16.4665566667,
+     -32.9075083333
+    ],
+    "b_on": [
+     16.5447,
+     -33.0784016667
+    ]
+   }
+  },
+  {
+   "candidate_id": "t0-bb30794536ad",
+   "trigger_type": "gfw_gap_pair",
+   "trigger_source_ids": [
+    "0584308e77167c685fab5bbbbc8804a5",
+    "4e017d4a5a1fe41b689c67205a78fd6a"
+   ],
+   "window_start_utc": "2021-12-27T21:59:28Z",
+   "window_end_utc": "2021-12-29T00:02:11Z",
+   "gap_start_utc": "2021-12-28T03:59:28Z",
+   "gap_end_utc": "2021-12-28T18:02:11Z",
+   "overlap_hours": 13.39,
+   "vessel_aliases": [
+    {
+     "mmsi": "601677000",
+     "gfw_vessel_id": "f7b7dbe9a-aa69-d86f-6ce5-024bce7430aa",
+     "name": "SOUTHERN TIGER",
+     "flag": "ZAF"
+    },
+    {
+     "mmsi": "601097500",
+     "gfw_vessel_id": "db8727e97-7d44-45fd-ad0c-631832500f56",
+     "name": "COMMON WEALTH",
+     "flag": "ZAF"
+    }
+   ],
+   "region": {
+    "kind": "eez",
+    "eez_ids": [
+     "8396"
+    ],
+    "presence_region_dataset": "public-eez-areas",
+    "presence_region_id": 8396
+   },
+   "presence_days_utc": [
+    "2021-12-27",
+    "2021-12-28",
+    "2021-12-29"
+   ],
+   "provider_hints": [
+    "gfw_presence"
+   ],
+   "coverage_hypothesis": "GFW Presence hourly grid centres only; no raw AIS source identified",
+   "request_reason": "operating-rule pair: shutoffs 4.5 km apart, reappearances 2.0 km apart, overlap 13.4 h",
+   "flags": {
+    "sequential_mmsi": false,
+    "cross_flag": false,
+    "us_flag": false
+   },
+   "bbox_wgs84": [
+    15.931,
+    -33.589,
+    17.045,
+    -32.408
+   ],
+   "dateline": false,
+   "endpoints_lonlat": {
+    "a_off": [
+     16.4309033333,
+     -32.93535
+    ],
+    "a_on": [
+     16.527231666666665,
+     -33.08918166666667
+    ],
+    "b_off": [
+     16.4665566667,
+     -32.9075083333
+    ],
+    "b_on": [
+     16.5447,
+     -33.0784016667
+    ]
+   }
+  },
+  {
+   "candidate_id": "t0-a202c69fcd01",
+   "trigger_type": "gfw_gap_pair",
+   "trigger_source_ids": [
+    "882bff72b9e4cf56ebb846350dc4af95",
+    "a29d1e237dd7f7ad4473b8af7578cba1"
+   ],
+   "window_start_utc": "2021-11-18T14:20:08Z",
+   "window_end_utc": "2021-11-19T17:21:38Z",
+   "gap_start_utc": "2021-11-18T20:20:08Z",
+   "gap_end_utc": "2021-11-19T11:21:38Z",
+   "overlap_hours": 13.97,
+   "vessel_aliases": [
+    {
+     "mmsi": "775993123",
+     "gfw_vessel_id": "23884dc64-402f-7965-31f5-736f9625079d",
+     "name": "DON GABRIEL",
+     "flag": "VEN"
+    },
+    {
+     "mmsi": "775993342",
+     "gfw_vessel_id": "faa7e2016-67e4-2491-e9e9-c0634c1b9be0",
+     "name": "GIORDANA",
+     "flag": "VEN"
+    }
+   ],
+   "region": {
+    "kind": "eez",
+    "eez_ids": [
+     "8462"
+    ],
+    "presence_region_dataset": "public-eez-areas",
+    "presence_region_id": 8462
+   },
+   "presence_days_utc": [
+    "2021-11-17",
+    "2021-11-18",
+    "2021-11-19",
+    "2021-11-20"
+   ],
+   "provider_hints": [
+    "gfw_presence"
+   ],
+   "coverage_hypothesis": "GFW Presence hourly grid centres only; no raw AIS source identified",
+   "request_reason": "operating-rule pair: shutoffs 9.0 km apart, reappearances 3.8 km apart, overlap 14.0 h",
+   "flags": {
+    "sequential_mmsi": false,
+    "cross_flag": false,
+    "us_flag": false
+   },
+   "bbox_wgs84": [
+    -53.305,
+    6.053,
+    -52.266,
+    7.207
+   ],
+   "dateline": false,
+   "endpoints_lonlat": {
+    "a_off": [
+     -52.7849283333,
+     6.70747
+    ],
+    "a_on": [
+     -52.766045,
+     6.55307
+    ],
+    "b_off": [
+     -52.8053616667,
+     6.6293383333
+    ],
+    "b_on": [
+     -52.77438333333333,
+     6.58658
+    ]
+   }
+  },
+  {
+   "candidate_id": "t0-c232dd31c908",
+   "trigger_type": "gfw_gap_pair",
+   "trigger_source_ids": [
+    "06f5ca52131dde980fe324d5d4c365fe",
+    "d867b2ea623d199d24e4ee05949d3893"
+   ],
+   "window_start_utc": "2021-01-30T21:45:00Z",
+   "window_end_utc": "2021-02-01T00:32:04Z",
+   "gap_start_utc": "2021-01-31T03:45:00Z",
+   "gap_end_utc": "2021-01-31T18:32:04Z",
+   "overlap_hours": 14.2,
+   "vessel_aliases": [
+    {
+     "mmsi": "601613900",
+     "gfw_vessel_id": "1e82ad411-1ab9-7095-bdb6-ea2a869baacd",
+     "name": "DR.FISH",
+     "flag": "ZAF"
+    },
+    {
+     "mmsi": "601062400",
+     "gfw_vessel_id": "0c35bf862-2eca-1cfc-a075-d669c0c4def0",
+     "name": "NICKY B",
+     "flag": "ZAF"
+    }
+   ],
+   "region": {
+    "kind": "eez",
+    "eez_ids": [
+     "8396"
+    ],
+    "presence_region_dataset": "public-eez-areas",
+    "presence_region_id": 8396
+   },
+   "presence_days_utc": [
+    "2021-01-30",
+    "2021-01-31",
+    "2021-02-01"
+   ],
+   "provider_hints": [
+    "gfw_presence"
+   ],
+   "coverage_hypothesis": "GFW Presence hourly grid centres only; no raw AIS source identified",
+   "request_reason": "operating-rule pair: shutoffs 3.4 km apart, reappearances 8.4 km apart, overlap 14.2 h",
+   "flags": {
+    "sequential_mmsi": false,
+    "cross_flag": false,
+    "us_flag": false
+   },
+   "bbox_wgs84": [
+    15.439,
+    -32.908,
+    17.003,
+    -31.294
+   ],
+   "dateline": false,
+   "endpoints_lonlat": {
+    "a_off": [
+     15.957596666666667,
+     -31.820181666666667
+    ],
+    "a_on": [
+     16.44339666666667,
+     -32.35214166666667
+    ],
+    "b_off": [
+     15.938666666666666,
+     -31.794215
+    ],
+    "b_on": [
+     16.503493333333335,
+     -32.407696666666666
+    ]
+   }
+  },
+  {
+   "candidate_id": "t0-62d94cae1f2c",
+   "trigger_type": "gfw_gap_pair",
+   "trigger_source_ids": [
+    "9dfce0dfbb12625388cb3eba4b749528",
+    "c4e8550c583f4b519f5d79afb77591c6"
+   ],
+   "window_start_utc": "2021-01-16T20:39:58Z",
+   "window_end_utc": "2021-01-18T01:13:07Z",
+   "gap_start_utc": "2021-01-17T02:39:58Z",
+   "gap_end_utc": "2021-01-17T19:13:07Z",
+   "overlap_hours": 15.32,
+   "vessel_aliases": [
+    {
+     "mmsi": "601025100",
+     "gfw_vessel_id": "756bf1214-4dd1-c8ba-9c66-62195e72477f",
+     "name": "BALUGURU",
+     "flag": "ZAF"
+    },
+    {
+     "mmsi": "601062400",
+     "gfw_vessel_id": "0c35bf862-2eca-1cfc-a075-d669c0c4def0",
+     "name": "NICKY B",
+     "flag": "ZAF"
+    }
+   ],
+   "region": {
+    "kind": "eez",
+    "eez_ids": [
+     "8396"
+    ],
+    "presence_region_dataset": "public-eez-areas",
+    "presence_region_id": 8396
+   },
+   "presence_days_utc": [
+    "2021-01-16",
+    "2021-01-17",
+    "2021-01-18"
+   ],
+   "provider_hints": [
+    "gfw_presence"
+   ],
+   "coverage_hypothesis": "GFW Presence hourly grid centres only; no raw AIS source identified",
+   "request_reason": "operating-rule pair: shutoffs 4.0 km apart, reappearances 2.1 km apart, overlap 15.3 h",
+   "flags": {
+    "sequential_mmsi": false,
+    "cross_flag": false,
+    "us_flag": false
+   },
+   "bbox_wgs84": [
+    15.47,
+    -32.61,
+    16.618,
+    -31.386
+   ],
+   "dateline": false,
+   "endpoints_lonlat": {
+    "a_off": [
+     16.117868333333334,
+     -32.107225
+    ],
+    "a_on": [
+     15.970495,
+     -31.899891666666665
+    ],
+    "b_off": [
+     16.0750533333,
+     -32.109855
+    ],
+    "b_on": [
+     15.9863266667,
+     -31.886265
+    ]
+   }
+  },
+  {
+   "candidate_id": "t0-58bce72b8a97",
+   "trigger_type": "gfw_gap_pair",
+   "trigger_source_ids": [
+    "75a583a094c106860b0794262625be4f",
+    "1a1dcbcffc645846285aabd3bfc6c378"
+   ],
+   "window_start_utc": "2021-01-17T21:03:31Z",
+   "window_end_utc": "2021-01-19T01:19:39Z",
+   "gap_start_utc": "2021-01-18T03:03:31Z",
+   "gap_end_utc": "2021-01-18T19:19:39Z",
+   "overlap_hours": 15.49,
+   "vessel_aliases": [
+    {
+     "mmsi": "601613900",
+     "gfw_vessel_id": "1e82ad411-1ab9-7095-bdb6-ea2a869baacd",
+     "name": "DR.FISH",
+     "flag": "ZAF"
+    },
+    {
+     "mmsi": "601062400",
+     "gfw_vessel_id": "0c35bf862-2eca-1cfc-a075-d669c0c4def0",
+     "name": "NICKY B",
+     "flag": "ZAF"
+    }
+   ],
+   "region": {
+    "kind": "eez",
+    "eez_ids": [
+     "8396"
+    ],
+    "presence_region_dataset": "public-eez-areas",
+    "presence_region_id": 8396
+   },
+   "presence_days_utc": [
+    "2021-01-17",
+    "2021-01-18",
+    "2021-01-19"
+   ],
+   "provider_hints": [
+    "gfw_presence"
+   ],
+   "coverage_hypothesis": "GFW Presence hourly grid centres only; no raw AIS source identified",
+   "request_reason": "operating-rule pair: shutoffs 7.5 km apart, reappearances 5.7 km apart, overlap 15.5 h",
+   "flags": {
+    "sequential_mmsi": false,
+    "cross_flag": false,
+    "us_flag": false
+   },
+   "bbox_wgs84": [
+    15.381,
+    -32.362,
+    16.536,
+    -31.274
+   ],
+   "dateline": false,
+   "endpoints_lonlat": {
+    "a_off": [
+     15.933296666666667,
+     -31.811965
+    ],
+    "a_on": [
+     16.00138,
+     -31.814855
+    ],
+    "b_off": [
+     15.8810466667,
+     -31.8622116667
+    ],
+    "b_on": [
+     16.0363933333,
+     -31.7735283333
+    ]
+   }
+  },
+  {
+   "candidate_id": "t0-6041746096a7",
+   "trigger_type": "gfw_gap_pair",
+   "trigger_source_ids": [
+    "4eb16417233b4764d3c941ab885e03ca",
+    "9a9fca7b51e470ffd6dc28f5ae2ecaa3"
+   ],
+   "window_start_utc": "2021-01-04T17:57:10Z",
+   "window_end_utc": "2021-01-06T15:20:56Z",
+   "gap_start_utc": "2021-01-04T23:57:10Z",
+   "gap_end_utc": "2021-01-06T09:20:56Z",
+   "overlap_hours": 32.93,
+   "vessel_aliases": [
+    {
+     "mmsi": "512005035",
+     "gfw_vessel_id": "50c9cf914-4858-2e1f-610c-847879325ba9",
+     "name": "ALEATHA T",
+     "flag": "NZL"
+    },
+    {
+     "mmsi": "512454000",
+     "gfw_vessel_id": "c6678b97d-da38-52e9-77c4-f75058a61fe9",
+     "name": "SOUTHERN PRIDE",
+     "flag": "NZL"
+    }
+   ],
+   "region": {
+    "kind": "eez",
+    "eez_ids": [
+     "8455"
+    ],
+    "presence_region_dataset": "public-eez-areas",
+    "presence_region_id": 8455
+   },
+   "presence_days_utc": [
+    "2021-01-03",
+    "2021-01-04",
+    "2021-01-05",
+    "2021-01-06",
+    "2021-01-07"
+   ],
+   "provider_hints": [
+    "gfw_presence"
+   ],
+   "coverage_hypothesis": "GFW Presence hourly grid centres only; no raw AIS source identified",
+   "request_reason": "operating-rule pair: shutoffs 0.9 km apart, reappearances 2.7 km apart, overlap 32.9 h",
+   "flags": {
+    "sequential_mmsi": false,
+    "cross_flag": false,
+    "us_flag": false
+   },
+   "bbox_wgs84": [
+    172.67,
+    -38.989,
+    173.706,
+    -37.866
+   ],
+   "dateline": false,
+   "endpoints_lonlat": {
+    "a_off": [
+     173.17691833333333,
+     -38.36628833333334
+    ],
+    "a_on": [
+     173.1821966667,
+     -38.473245
+    ],
+    "b_off": [
+     173.17034833333332,
+     -38.37224833333333
+    ],
+    "b_on": [
+     173.205575,
+     -38.48871333333334
+    ]
+   }
+  },
+  {
+   "candidate_id": "t0-22857d2b47e8",
+   "trigger_type": "gfw_gap_pair",
+   "trigger_source_ids": [
+    "36e6466a0ae296e5b64caad81cba3920",
+    "73a08a1d158b1aab630a67d506003d45"
+   ],
+   "window_start_utc": "2021-02-16T00:29:24Z",
+   "window_end_utc": "2021-02-17T03:41:34Z",
+   "gap_start_utc": "2021-02-16T06:29:24Z",
+   "gap_end_utc": "2021-02-16T21:41:34Z",
+   "overlap_hours": 14.39,
+   "vessel_aliases": [
+    {
+     "mmsi": "431016428",
+     "gfw_vessel_id": "f6289b265-5836-d043-58c0-2c268b9d6af0",
+     "name": "GENPUKUMARU NO.11",
+     "flag": "JPN"
+    },
+    {
+     "mmsi": "431016429",
+     "gfw_vessel_id": "63f64e16c-c776-5e4e-76ea-a25e84ca4c3f",
+     "name": "GENPUKU NO.22",
+     "flag": "JPN"
+    }
+   ],
+   "region": {
+    "kind": "eez",
+    "eez_ids": [
+     "8324"
+    ],
+    "presence_region_dataset": "public-eez-areas",
+    "presence_region_id": 8324
+   },
+   "presence_days_utc": [
+    "2021-02-15",
+    "2021-02-16",
+    "2021-02-17"
+   ],
+   "provider_hints": [
+    "gfw_presence"
+   ],
+   "coverage_hypothesis": "GFW Presence hourly grid centres only; no raw AIS source identified",
+   "request_reason": "operating-rule pair: shutoffs 0.5 km apart, reappearances 1.0 km apart, overlap 14.4 h",
+   "flags": {
+    "sequential_mmsi": true,
+    "cross_flag": false,
+    "us_flag": false
+   },
+   "bbox_wgs84": [
+    147.663,
+    -2.106,
+    151.653,
+    -0.064
+   ],
+   "dateline": false,
+   "endpoints_lonlat": {
+    "a_off": [
+     148.16299833333332,
+     -0.5642616666666667
+    ],
+    "a_on": [
+     151.1532833333,
+     -1.5986883333
+    ],
+    "b_off": [
+     148.16381666666666,
+     -0.5683033333333334
+    ],
+    "b_on": [
+     151.14756833333334,
+     -1.6057266666666667
+    ]
+   }
+  },
+  {
+   "candidate_id": "t0-a297d9b7b4a4",
+   "trigger_type": "gfw_gap_pair",
+   "trigger_source_ids": [
+    "99e6d4e6c59586c7db907775b780cbac",
+    "f9af8bbe22ec176da7ed8163ae814c9b"
+   ],
+   "window_start_utc": "2021-03-18T23:16:01Z",
+   "window_end_utc": "2021-03-20T03:12:18Z",
+   "gap_start_utc": "2021-03-19T05:16:01Z",
+   "gap_end_utc": "2021-03-19T21:12:18Z",
+   "overlap_hours": 15.44,
+   "vessel_aliases": [
+    {
+     "mmsi": "431016429",
+     "gfw_vessel_id": "63f64e16c-c776-5e4e-76ea-a25e84ca4c3f",
+     "name": "GENPUKU NO.22",
+     "flag": "JPN"
+    },
+    {
+     "mmsi": "431016428",
+     "gfw_vessel_id": "f6289b265-5836-d043-58c0-2c268b9d6af0",
+     "name": "GENPUKUMARU NO.11",
+     "flag": "JPN"
+    }
+   ],
+   "region": {
+    "kind": "eez",
+    "eez_ids": [
+     "8324"
+    ],
+    "presence_region_dataset": "public-eez-areas",
+    "presence_region_id": 8324
+   },
+   "presence_days_utc": [
+    "2021-03-18",
+    "2021-03-19",
+    "2021-03-20"
+   ],
+   "provider_hints": [
+    "gfw_presence"
+   ],
+   "coverage_hypothesis": "GFW Presence hourly grid centres only; no raw AIS source identified",
+   "request_reason": "operating-rule pair: shutoffs 0.0 km apart, reappearances 1.7 km apart, overlap 15.4 h",
+   "flags": {
+    "sequential_mmsi": true,
+    "cross_flag": false,
+    "us_flag": false
+   },
+   "bbox_wgs84": [
+    148.297,
+    0.119,
+    152.132,
+    2.165
+   ],
+   "dateline": false,
+   "endpoints_lonlat": {
+    "a_off": [
+     148.79703333333333,
+     1.6652749999999998
+    ],
+    "a_on": [
+     151.62879833333332,
+     0.6194016666666666
+    ],
+    "b_off": [
+     148.79729833333334,
+     1.6652533333333333
+    ],
+    "b_on": [
+     151.63206,
+     0.6338833333
+    ]
+   }
+  },
+  {
+   "candidate_id": "t0-5b06e78139f6",
+   "trigger_type": "gfw_gap_pair",
+   "trigger_source_ids": [
+    "7c3e8e485a9f2bb33896490b6bc574f0",
+    "bf5f091fd06478e51865ea1571a5a86e"
+   ],
+   "window_start_utc": "2021-02-12T21:40:58Z",
+   "window_end_utc": "2021-02-14T03:27:05Z",
+   "gap_start_utc": "2021-02-13T03:40:58Z",
+   "gap_end_utc": "2021-02-13T21:27:05Z",
+   "overlap_hours": 16.27,
+   "vessel_aliases": [
+    {
+     "mmsi": "431016429",
+     "gfw_vessel_id": "63f64e16c-c776-5e4e-76ea-a25e84ca4c3f",
+     "name": "GENPUKU NO.22",
+     "flag": "JPN"
+    },
+    {
+     "mmsi": "431016428",
+     "gfw_vessel_id": "f6289b265-5836-d043-58c0-2c268b9d6af0",
+     "name": "GENPUKUMARU NO.11",
+     "flag": "JPN"
+    }
+   ],
+   "region": {
+    "kind": "eez",
+    "eez_ids": [
+     "8324"
+    ],
+    "presence_region_dataset": "public-eez-areas",
+    "presence_region_id": 8324
+   },
+   "presence_days_utc": [
+    "2021-02-12",
+    "2021-02-13",
+    "2021-02-14"
+   ],
+   "provider_hints": [
+    "gfw_presence"
+   ],
+   "coverage_hypothesis": "GFW Presence hourly grid centres only; no raw AIS source identified",
+   "request_reason": "operating-rule pair: shutoffs 0.6 km apart, reappearances 2.1 km apart, overlap 16.3 h",
+   "flags": {
+    "sequential_mmsi": true,
+    "cross_flag": false,
+    "us_flag": false
+   },
+   "bbox_wgs84": [
+    148.211,
+    -1.575,
+    149.252,
+    -0.506
+   ],
+   "dateline": false,
+   "endpoints_lonlat": {
+    "a_off": [
+     148.71506333333335,
+     -1.009585
+    ],
+    "a_on": [
+     148.73334333333332,
+     -1.0746266666666666
+    ],
+    "b_off": [
+     148.7111016667,
+     -1.0060483333
+    ],
+    "b_on": [
+     148.7524433333,
+     -1.0727466667
+    ]
+   }
+  },
+  {
+   "candidate_id": "t0-6be22b0ab52d",
+   "trigger_type": "gfw_gap_pair",
+   "trigger_source_ids": [
+    "958ef2a6af4f52e9483fe5c99cca0177",
+    "285ff088935e366973df4bafa08d660e"
+   ],
+   "window_start_utc": "2021-01-29T00:46:09Z",
+   "window_end_utc": "2021-01-30T05:31:31Z",
+   "gap_start_utc": "2021-01-29T06:46:09Z",
+   "gap_end_utc": "2021-01-29T23:31:31Z",
+   "overlap_hours": 16.39,
+   "vessel_aliases": [
+    {
+     "mmsi": "431016429",
+     "gfw_vessel_id": "63f64e16c-c776-5e4e-76ea-a25e84ca4c3f",
+     "name": "GENPUKU NO.22",
+     "flag": "JPN"
+    },
+    {
+     "mmsi": "431016428",
+     "gfw_vessel_id": "f6289b265-5836-d043-58c0-2c268b9d6af0",
+     "name": "GENPUKUMARU NO.11",
+     "flag": "JPN"
+    }
+   ],
+   "region": {
+    "kind": "eez",
+    "eez_ids": [
+     "8324"
+    ],
+    "presence_region_dataset": "public-eez-areas",
+    "presence_region_id": 8324
+   },
+   "presence_days_utc": [
+    "2021-01-28",
+    "2021-01-29",
+    "2021-01-30"
+   ],
+   "provider_hints": [
+    "gfw_presence"
+   ],
+   "coverage_hypothesis": "GFW Presence hourly grid centres only; no raw AIS source identified",
+   "request_reason": "operating-rule pair: shutoffs 0.1 km apart, reappearances 0.3 km apart, overlap 16.4 h",
+   "flags": {
+    "sequential_mmsi": true,
+    "cross_flag": false,
+    "us_flag": false
+   },
+   "bbox_wgs84": [
+    143.042,
+    0.192,
+    144.189,
+    1.283
+   ],
+   "dateline": false,
+   "endpoints_lonlat": {
+    "a_off": [
+     143.54250333333334,
+     0.69162
+    ],
+    "a_on": [
+     143.68673166666667,
+     0.782815
+    ],
+    "b_off": [
+     143.54175333333333,
+     0.69268
+    ],
+    "b_on": [
+     143.68935833333333,
+     0.781975
+    ]
+   }
+  },
+  {
+   "candidate_id": "t0-a809e5c1f343",
+   "trigger_type": "gfw_gap_pair",
+   "trigger_source_ids": [
+    "ce9d229f92d91a2934f4336386094319",
+    "9de83106e5ef77e77ebb42d066b001e5"
+   ],
+   "window_start_utc": "2021-05-23T23:14:30Z",
+   "window_end_utc": "2021-05-25T04:23:30Z",
+   "gap_start_utc": "2021-05-24T05:14:30Z",
+   "gap_end_utc": "2021-05-24T22:23:30Z",
+   "overlap_hours": 16.83,
+   "vessel_aliases": [
+    {
+     "mmsi": "431016429",
+     "gfw_vessel_id": "63f64e16c-c776-5e4e-76ea-a25e84ca4c3f",
+     "name": "GENPUKU NO.22",
+     "flag": "JPN"
+    },
+    {
+     "mmsi": "431016428",
+     "gfw_vessel_id": "f6289b265-5836-d043-58c0-2c268b9d6af0",
+     "name": "GENPUKUMARU NO.11",
+     "flag": "JPN"
+    }
+   ],
+   "region": {
+    "kind": "eez",
+    "eez_ids": [
+     "8316"
+    ],
+    "presence_region_dataset": "public-eez-areas",
+    "presence_region_id": 8316
+   },
+   "presence_days_utc": [
+    "2021-05-23",
+    "2021-05-24",
+    "2021-05-25"
+   ],
+   "provider_hints": [
+    "gfw_presence"
+   ],
+   "coverage_hypothesis": "GFW Presence hourly grid centres only; no raw AIS source identified",
+   "request_reason": "operating-rule pair: shutoffs 0.5 km apart, reappearances 0.2 km apart, overlap 16.8 h",
+   "flags": {
+    "sequential_mmsi": true,
+    "cross_flag": false,
+    "us_flag": false
+   },
+   "bbox_wgs84": [
+    142.606,
+    3.074,
+    144.213,
+    5.022
+   ],
+   "dateline": false,
+   "endpoints_lonlat": {
+    "a_off": [
+     143.712655,
+     3.579095
+    ],
+    "a_on": [
+     143.10761166666666,
+     4.52166
+    ],
+    "b_off": [
+     143.71245833333333,
+     3.5744966666666667
+    ],
+    "b_on": [
+     143.10567833333334,
+     4.52066
+    ]
+   }
+  },
+  {
+   "candidate_id": "t0-f0c1382d7e1d",
+   "trigger_type": "gfw_gap_pair",
+   "trigger_source_ids": [
+    "7a0513b3d6569a4a67c702b5bdffdd65",
+    "4117cc1c34fd947482ae0fedc59f8c58"
+   ],
+   "window_start_utc": "2021-05-26T02:57:00Z",
+   "window_end_utc": "2021-05-27T08:58:46Z",
+   "gap_start_utc": "2021-05-26T08:57:00Z",
+   "gap_end_utc": "2021-05-27T02:58:46Z",
+   "overlap_hours": 17.28,
+   "vessel_aliases": [
+    {
+     "mmsi": "431016428",
+     "gfw_vessel_id": "f6289b265-5836-d043-58c0-2c268b9d6af0",
+     "name": "GENPUKUMARU NO.11",
+     "flag": "JPN"
+    },
+    {
+     "mmsi": "431016429",
+     "gfw_vessel_id": "63f64e16c-c776-5e4e-76ea-a25e84ca4c3f",
+     "name": "GENPUKU NO.22",
+     "flag": "JPN"
+    }
+   ],
+   "region": {
+    "kind": "eez",
+    "eez_ids": [
+     "8316"
+    ],
+    "presence_region_dataset": "public-eez-areas",
+    "presence_region_id": 8316
+   },
+   "presence_days_utc": [
+    "2021-05-25",
+    "2021-05-26",
+    "2021-05-27",
+    "2021-05-28"
+   ],
+   "provider_hints": [
+    "gfw_presence"
+   ],
+   "coverage_hypothesis": "GFW Presence hourly grid centres only; no raw AIS source identified",
+   "request_reason": "operating-rule pair: shutoffs 0.7 km apart, reappearances 1.1 km apart, overlap 17.3 h",
+   "flags": {
+    "sequential_mmsi": true,
+    "cross_flag": false,
+    "us_flag": false
+   },
+   "bbox_wgs84": [
+    141.771,
+    3.512,
+    143.322,
+    4.545
+   ],
+   "dateline": false,
+   "endpoints_lonlat": {
+    "a_off": [
+     142.27053666666666,
+     4.041801666666666
+    ],
+    "a_on": [
+     142.8220066667,
+     4.021725
+    ],
+    "b_off": [
+     142.27600333333334,
+     4.0448466666666665
+    ],
+    "b_on": [
+     142.82249,
+     4.012111666666667
+    ]
+   }
+  },
+  {
+   "candidate_id": "t0-16e6c2f1eadf",
+   "trigger_type": "gfw_gap_pair",
+   "trigger_source_ids": [
+    "c3696df370f390d9cb0cc29d994e9003",
+    "5f713509ab955e8d821814f0b2f0a13d"
+   ],
+   "window_start_utc": "2021-03-18T00:30:29Z",
+   "window_end_utc": "2021-03-19T07:17:16Z",
+   "gap_start_utc": "2021-03-18T06:30:29Z",
+   "gap_end_utc": "2021-03-19T01:17:16Z",
+   "overlap_hours": 18.76,
+   "vessel_aliases": [
+    {
+     "mmsi": "431016429",
+     "gfw_vessel_id": "63f64e16c-c776-5e4e-76ea-a25e84ca4c3f",
+     "name": "GENPUKU NO.22",
+     "flag": "JPN"
+    },
+    {
+     "mmsi": "431016428",
+     "gfw_vessel_id": "f6289b265-5836-d043-58c0-2c268b9d6af0",
+     "name": "GENPUKUMARU NO.11",
+     "flag": "JPN"
+    }
+   ],
+   "region": {
+    "kind": "eez",
+    "eez_ids": [
+     "8324"
+    ],
+    "presence_region_dataset": "public-eez-areas",
+    "presence_region_id": 8324
+   },
+   "presence_days_utc": [
+    "2021-03-17",
+    "2021-03-18",
+    "2021-03-19",
+    "2021-03-20"
+   ],
+   "provider_hints": [
+    "gfw_presence"
+   ],
+   "coverage_hypothesis": "GFW Presence hourly grid centres only; no raw AIS source identified",
+   "request_reason": "operating-rule pair: shutoffs 0.3 km apart, reappearances 0.4 km apart, overlap 18.8 h",
+   "flags": {
+    "sequential_mmsi": true,
+    "cross_flag": false,
+    "us_flag": false
+   },
+   "bbox_wgs84": [
+    148.151,
+    1.017,
+    149.288,
+    2.161
+   ],
+   "dateline": false,
+   "endpoints_lonlat": {
+    "a_off": [
+     148.651285,
+     1.517465
+    ],
+    "a_on": [
+     148.78771,
+     1.6608833333333333
+    ],
+    "b_off": [
+     148.65192166666668,
+     1.520385
+    ],
+    "b_on": [
+     148.78804666666667,
+     1.657555
+    ]
+   }
+  },
+  {
+   "candidate_id": "t0-0a2d00f8c108",
+   "trigger_type": "gfw_gap_pair",
+   "trigger_source_ids": [
+    "2d62c12b17ce0866d029b9301c8725d6",
+    "24ff7c0016140f4305dff611d03f5442"
+   ],
+   "window_start_utc": "2021-04-10T05:27:51Z",
+   "window_end_utc": "2021-04-11T12:41:18Z",
+   "gap_start_utc": "2021-04-10T11:27:51Z",
+   "gap_end_utc": "2021-04-11T06:41:18Z",
+   "overlap_hours": 18.76,
+   "vessel_aliases": [
+    {
+     "mmsi": "731008004",
+     "gfw_vessel_id": "01f3838e1-1be1-f714-bfbb-dbdad7ffd96a",
+     "name": "731008-4-40%",
+     "flag": NaN
+    },
+    {
+     "mmsi": "731008002",
+     "gfw_vessel_id": "bdb9a9168-8635-a32c-a11e-fbc2913db6ce",
+     "name": "731008-2-90%",
+     "flag": NaN
+    }
+   ],
+   "region": {
+    "kind": "eez",
+    "eez_ids": [
+     "8448"
+    ],
+    "presence_region_dataset": "public-eez-areas",
+    "presence_region_id": 8448
+   },
+   "presence_days_utc": [
+    "2021-04-09",
+    "2021-04-10",
+    "2021-04-11",
+    "2021-04-12"
+   ],
+   "provider_hints": [
+    "gfw_presence"
+   ],
+   "coverage_hypothesis": "GFW Presence hourly grid centres only; no raw AIS source identified",
+   "request_reason": "operating-rule pair: shutoffs 3.5 km apart, reappearances 0.6 km apart, overlap 18.8 h",
+   "flags": {
+    "sequential_mmsi": true,
+    "cross_flag": false,
+    "us_flag": false
+   },
+   "bbox_wgs84": [
+    -176.799,
+    -19.578,
+    -173.948,
+    -18.14
+   ],
+   "dateline": false,
+   "endpoints_lonlat": {
+    "a_off": [
+     -176.2992066667,
+     -18.669895
+    ],
+    "a_on": [
+     -174.45343333333332,
+     -19.076711666666668
+    ],
+    "b_off": [
+     -176.28936,
+     -18.639801666666667
+    ],
+    "b_on": [
+     -174.44827333333333,
+     -19.077693333333333
+    ]
+   }
+  },
+  {
+   "candidate_id": "t0-c6745187ca06",
+   "trigger_type": "gfw_gap_pair",
+   "trigger_source_ids": [
+    "2d62c12b17ce0866d029b9301c8725d6",
+    "a4ca857c6d340d8a0fa1e92c0bd364f3"
+   ],
+   "window_start_utc": "2021-04-10T05:27:51Z",
+   "window_end_utc": "2021-04-11T13:22:07Z",
+   "gap_start_utc": "2021-04-10T11:27:51Z",
+   "gap_end_utc": "2021-04-11T07:22:07Z",
+   "overlap_hours": 18.77,
+   "vessel_aliases": [
+    {
+     "mmsi": "731008004",
+     "gfw_vessel_id": "01f3838e1-1be1-f714-bfbb-dbdad7ffd96a",
+     "name": "731008-4-40%",
+     "flag": NaN
+    },
+    {
+     "mmsi": "731008003",
+     "gfw_vessel_id": "e57b97dbf-f9ae-3f63-06ed-d6f89f2adfa6",
+     "name": "731008-3-90%",
+     "flag": NaN
+    }
+   ],
+   "region": {
+    "kind": "eez",
+    "eez_ids": [
+     "8448"
+    ],
+    "presence_region_dataset": "public-eez-areas",
+    "presence_region_id": 8448
+   },
+   "presence_days_utc": [
+    "2021-04-09",
+    "2021-04-10",
+    "2021-04-11",
+    "2021-04-12"
+   ],
+   "provider_hints": [
+    "gfw_presence"
+   ],
+   "coverage_hypothesis": "GFW Presence hourly grid centres only; no raw AIS source identified",
+   "request_reason": "operating-rule pair: shutoffs 3.4 km apart, reappearances 8.5 km apart, overlap 18.8 h",
+   "flags": {
+    "sequential_mmsi": true,
+    "cross_flag": false,
+    "us_flag": false
+   },
+   "bbox_wgs84": [
+    -176.799,
+    -19.591,
+    -173.874,
+    -18.14
+   ],
+   "dateline": false,
+   "endpoints_lonlat": {
+    "a_off": [
+     -176.2992066667,
+     -18.669895
+    ],
+    "a_on": [
+     -174.45343333333332,
+     -19.076711666666668
+    ],
+    "b_off": [
+     -176.28965333333332,
+     -18.64035
+    ],
+    "b_on": [
+     -174.37412,
+     -19.0912283333
+    ]
+   }
+  },
+  {
+   "candidate_id": "t0-77e4a4025886",
+   "trigger_type": "gfw_gap_pair",
+   "trigger_source_ids": [
+    "a4ca857c6d340d8a0fa1e92c0bd364f3",
+    "24ff7c0016140f4305dff611d03f5442"
+   ],
+   "window_start_utc": "2021-04-10T05:52:21Z",
+   "window_end_utc": "2021-04-11T13:22:07Z",
+   "gap_start_utc": "2021-04-10T11:52:21Z",
+   "gap_end_utc": "2021-04-11T07:22:07Z",
+   "overlap_hours": 18.81,
+   "vessel_aliases": [
+    {
+     "mmsi": "731008003",
+     "gfw_vessel_id": "e57b97dbf-f9ae-3f63-06ed-d6f89f2adfa6",
+     "name": "731008-3-90%",
+     "flag": NaN
+    },
+    {
+     "mmsi": "731008002",
+     "gfw_vessel_id": "bdb9a9168-8635-a32c-a11e-fbc2913db6ce",
+     "name": "731008-2-90%",
+     "flag": NaN
+    }
+   ],
+   "region": {
+    "kind": "eez",
+    "eez_ids": [
+     "8448"
+    ],
+    "presence_region_dataset": "public-eez-areas",
+    "presence_region_id": 8448
+   },
+   "presence_days_utc": [
+    "2021-04-09",
+    "2021-04-10",
+    "2021-04-11",
+    "2021-04-12"
+   ],
+   "provider_hints": [
+    "gfw_presence"
+   ],
+   "coverage_hypothesis": "GFW Presence hourly grid centres only; no raw AIS source identified",
+   "request_reason": "operating-rule pair: shutoffs 0.1 km apart, reappearances 7.9 km apart, overlap 18.8 h",
+   "flags": {
+    "sequential_mmsi": true,
+    "cross_flag": false,
+    "us_flag": false
+   },
+   "bbox_wgs84": [
+    -176.79,
+    -19.591,
+    -173.874,
+    -18.14
+   ],
+   "dateline": false,
+   "endpoints_lonlat": {
+    "a_off": [
+     -176.28965333333332,
+     -18.64035
+    ],
+    "a_on": [
+     -174.37412,
+     -19.0912283333
+    ],
+    "b_off": [
+     -176.28936,
+     -18.639801666666667
+    ],
+    "b_on": [
+     -174.44827333333333,
+     -19.077693333333333
+    ]
+   }
+  },
+  {
+   "candidate_id": "t0-6c2043520a2a",
+   "trigger_type": "gfw_gap_pair",
+   "trigger_source_ids": [
+    "96eae19c289c73e63905392917e018e1",
+    "7e317bb7320e0e0d3306974cbeecc306"
+   ],
+   "window_start_utc": "2021-04-02T06:58:27Z",
+   "window_end_utc": "2021-04-03T21:10:49Z",
+   "gap_start_utc": "2021-04-02T12:58:27Z",
+   "gap_end_utc": "2021-04-03T15:10:49Z",
+   "overlap_hours": 26.13,
+   "vessel_aliases": [
+    {
+     "mmsi": "731008003",
+     "gfw_vessel_id": "04606f661-12ad-70b9-53a3-67c97cfdde10",
+     "name": "731008-3-40%",
+     "flag": NaN
+    },
+    {
+     "mmsi": "731008002",
+     "gfw_vessel_id": "a0b231182-20ff-bbab-d424-5f743cf64d4f",
+     "name": "731008-2-90%",
+     "flag": NaN
+    }
+   ],
+   "region": {
+    "kind": "eez",
+    "eez_ids": [
+     "8448"
+    ],
+    "presence_region_dataset": "public-eez-areas",
+    "presence_region_id": 8448
+   },
+   "presence_days_utc": [
+    "2021-04-01",
+    "2021-04-02",
+    "2021-04-03",
+    "2021-04-04"
+   ],
+   "provider_hints": [
+    "gfw_presence"
+   ],
+   "coverage_hypothesis": "GFW Presence hourly grid centres only; no raw AIS source identified",
+   "request_reason": "operating-rule pair: shutoffs 0.4 km apart, reappearances 0.0 km apart, overlap 26.1 h",
+   "flags": {
+    "sequential_mmsi": true,
+    "cross_flag": false,
+    "us_flag": false
+   },
+   "bbox_wgs84": [
+    -176.612,
+    -18.701,
+    -175.244,
+    -15.762
+   ],
+   "dateline": false,
+   "endpoints_lonlat": {
+    "a_off": [
+     -175.74398,
+     -18.196681666666667
+    ],
+    "a_on": [
+     -176.11232666666666,
+     -16.262491666666666
+    ],
+    "b_off": [
+     -175.74392,
+     -18.2006583333
+    ],
+    "b_on": [
+     -176.11225333333334,
+     -16.26237666666667
+    ]
+   }
+  },
+  {
+   "candidate_id": "t0-8b69a34c6af6",
+   "trigger_type": "gfw_gap_pair",
+   "trigger_source_ids": [
+    "1f049373004da296c092b5f7781cac10",
+    "19f26b552f5652c7173a70cccdb6a151"
+   ],
+   "window_start_utc": "2021-03-19T17:14:08Z",
+   "window_end_utc": "2021-03-21T08:33:29Z",
+   "gap_start_utc": "2021-03-19T23:14:08Z",
+   "gap_end_utc": "2021-03-21T02:33:29Z",
+   "overlap_hours": 26.72,
+   "vessel_aliases": [
+    {
+     "mmsi": "431016429",
+     "gfw_vessel_id": "63f64e16c-c776-5e4e-76ea-a25e84ca4c3f",
+     "name": "GENPUKU NO.22",
+     "flag": "JPN"
+    },
+    {
+     "mmsi": "431016428",
+     "gfw_vessel_id": "f6289b265-5836-d043-58c0-2c268b9d6af0",
+     "name": "GENPUKUMARU NO.11",
+     "flag": "JPN"
+    }
+   ],
+   "region": {
+    "kind": "eez",
+    "eez_ids": [
+     "8324"
+    ],
+    "presence_region_dataset": "public-eez-areas",
+    "presence_region_id": 8324
+   },
+   "presence_days_utc": [
+    "2021-03-18",
+    "2021-03-19",
+    "2021-03-20",
+    "2021-03-21",
+    "2021-03-22"
+   ],
+   "provider_hints": [
+    "gfw_presence"
+   ],
+   "coverage_hypothesis": "GFW Presence hourly grid centres only; no raw AIS source identified",
+   "request_reason": "operating-rule pair: shutoffs 0.3 km apart, reappearances 1.7 km apart, overlap 26.7 h",
+   "flags": {
+    "sequential_mmsi": true,
+    "cross_flag": false,
+    "us_flag": false
+   },
+   "bbox_wgs84": [
+    147.464,
+    0.13,
+    152.132,
+    1.18
+   ],
+   "dateline": false,
+   "endpoints_lonlat": {
+    "a_off": [
+     151.63237833333332,
+     0.6298883333333334
+    ],
+    "a_on": [
+     147.97887666666668,
+     0.6778966666666667
+    ],
+    "b_off": [
+     151.63012666666665,
+     0.6308816666666667
+    ],
+    "b_on": [
+     147.96393666666663,
+     0.6801433333333333
+    ]
+   }
+  },
+  {
+   "candidate_id": "t0-72949d8ffcee",
+   "trigger_type": "gfw_gap_pair",
+   "trigger_source_ids": [
+    "5b50728e8a5141ecea7c53773649d040",
+    "80e9dac7fce9af02c97431b7c32b7bfd"
+   ],
+   "window_start_utc": "2021-07-30T11:41:08Z",
+   "window_end_utc": "2021-08-01T09:07:07Z",
+   "gap_start_utc": "2021-07-30T17:41:08Z",
+   "gap_end_utc": "2021-08-01T03:07:07Z",
+   "overlap_hours": 33.02,
+   "vessel_aliases": [
+    {
+     "mmsi": "208000005",
+     "gfw_vessel_id": "7176caa3e-e4f4-915b-fbf5-218a1f7ffe87",
+     "name": "XSJ208-5 90%",
+     "flag": "VAT"
+    },
+    {
+     "mmsi": "208000004",
+     "gfw_vessel_id": "7ba866199-90ac-3eb9-a723-4f0effd7d53b",
+     "name": "XSJ208-4 90%",
+     "flag": "VAT"
+    }
+   ],
+   "region": {
+    "kind": "eez",
+    "eez_ids": [
+     "8440"
+    ],
+    "presence_region_dataset": "public-eez-areas",
+    "presence_region_id": 8440
+   },
+   "presence_days_utc": [
+    "2021-07-29",
+    "2021-07-30",
+    "2021-07-31",
+    "2021-08-01",
+    "2021-08-02"
+   ],
+   "provider_hints": [
+    "gfw_presence"
+   ],
+   "coverage_hypothesis": "GFW Presence hourly grid centres only; no raw AIS source identified",
+   "request_reason": "operating-rule pair: shutoffs 3.6 km apart, reappearances 3.2 km apart, overlap 33.0 h",
+   "flags": {
+    "sequential_mmsi": true,
+    "cross_flag": false,
+    "us_flag": false
+   },
+   "bbox_wgs84": [
+    -141.795,
+    -14.384,
+    -136.05,
+    -11.455
+   ],
+   "dateline": false,
+   "endpoints_lonlat": {
+    "a_off": [
+     -141.29533333333333,
+     -11.955051666666666
+    ],
+    "a_on": [
+     -136.57765333333333,
+     -13.87306
+    ],
+    "b_off": [
+     -141.26617333333334,
+     -11.969643333333334
+    ],
+    "b_on": [
+     -136.5503533333,
+     -13.8840816667
+    ]
+   }
+  },
+  {
+   "candidate_id": "t0-b4f8bf7d5762",
+   "trigger_type": "gfw_gap_pair",
+   "trigger_source_ids": [
+    "0e6677fe871380285e819fd1697a8c62",
+    "80e9dac7fce9af02c97431b7c32b7bfd"
+   ],
+   "window_start_utc": "2021-07-30T11:43:35Z",
+   "window_end_utc": "2021-08-01T09:07:07Z",
+   "gap_start_utc": "2021-07-30T17:43:35Z",
+   "gap_end_utc": "2021-08-01T03:07:07Z",
+   "overlap_hours": 33.16,
+   "vessel_aliases": [
+    {
+     "mmsi": "208000003",
+     "gfw_vessel_id": "8c3c84bec-c1d5-8ecb-6ef6-73c16f39947c",
+     "name": "XSJ208-3 90%",
+     "flag": "VAT"
+    },
+    {
+     "mmsi": "208000004",
+     "gfw_vessel_id": "7ba866199-90ac-3eb9-a723-4f0effd7d53b",
+     "name": "XSJ208-4 90%",
+     "flag": "VAT"
+    }
+   ],
+   "region": {
+    "kind": "eez",
+    "eez_ids": [
+     "8440"
+    ],
+    "presence_region_dataset": "public-eez-areas",
+    "presence_region_id": 8440
+   },
+   "presence_days_utc": [
+    "2021-07-29",
+    "2021-07-30",
+    "2021-07-31",
+    "2021-08-01",
+    "2021-08-02"
+   ],
+   "provider_hints": [
+    "gfw_presence"
+   ],
+   "coverage_hypothesis": "GFW Presence hourly grid centres only; no raw AIS source identified",
+   "request_reason": "operating-rule pair: shutoffs 3.0 km apart, reappearances 0.8 km apart, overlap 33.2 h",
+   "flags": {
+    "sequential_mmsi": true,
+    "cross_flag": false,
+    "us_flag": false
+   },
+   "bbox_wgs84": [
+    -141.791,
+    -14.384,
+    -136.05,
+    -11.457
+   ],
+   "dateline": false,
+   "endpoints_lonlat": {
+    "a_off": [
+     -141.29068666666666,
+     -11.957398333333334
+    ],
+    "a_on": [
+     -136.5574266667,
+     -13.8813283333
+    ],
+    "b_off": [
+     -141.26617333333334,
+     -11.969643333333334
+    ],
+    "b_on": [
+     -136.5503533333,
+     -13.8840816667
+    ]
+   }
+  },
+  {
+   "candidate_id": "t0-b41947d9f845",
+   "trigger_type": "gfw_gap_pair",
+   "trigger_source_ids": [
+    "5b50728e8a5141ecea7c53773649d040",
+    "0e6677fe871380285e819fd1697a8c62"
+   ],
+   "window_start_utc": "2021-07-30T11:41:08Z",
+   "window_end_utc": "2021-08-01T09:04:20Z",
+   "gap_start_utc": "2021-07-30T17:41:08Z",
+   "gap_end_utc": "2021-08-01T03:04:20Z",
+   "overlap_hours": 33.21,
+   "vessel_aliases": [
+    {
+     "mmsi": "208000005",
+     "gfw_vessel_id": "7176caa3e-e4f4-915b-fbf5-218a1f7ffe87",
+     "name": "XSJ208-5 90%",
+     "flag": "VAT"
+    },
+    {
+     "mmsi": "208000003",
+     "gfw_vessel_id": "8c3c84bec-c1d5-8ecb-6ef6-73c16f39947c",
+     "name": "XSJ208-3 90%",
+     "flag": "VAT"
+    }
+   ],
+   "region": {
+    "kind": "eez",
+    "eez_ids": [
+     "8440"
+    ],
+    "presence_region_dataset": "public-eez-areas",
+    "presence_region_id": 8440
+   },
+   "presence_days_utc": [
+    "2021-07-29",
+    "2021-07-30",
+    "2021-07-31",
+    "2021-08-01",
+    "2021-08-02"
+   ],
+   "provider_hints": [
+    "gfw_presence"
+   ],
+   "coverage_hypothesis": "GFW Presence hourly grid centres only; no raw AIS source identified",
+   "request_reason": "operating-rule pair: shutoffs 0.6 km apart, reappearances 2.4 km apart, overlap 33.2 h",
+   "flags": {
+    "sequential_mmsi": true,
+    "cross_flag": false,
+    "us_flag": false
+   },
+   "bbox_wgs84": [
+    -141.795,
+    -14.381,
+    -136.057,
+    -11.455
+   ],
+   "dateline": false,
+   "endpoints_lonlat": {
+    "a_off": [
+     -141.29533333333333,
+     -11.955051666666666
+    ],
+    "a_on": [
+     -136.57765333333333,
+     -13.87306
+    ],
+    "b_off": [
+     -141.29068666666666,
+     -11.957398333333334
+    ],
+    "b_on": [
+     -136.5574266667,
+     -13.8813283333
+    ]
+   }
+  },
+  {
+   "candidate_id": "t0-b7b408e88c37",
+   "trigger_type": "gfw_gap_pair",
+   "trigger_source_ids": [
+    "97d98b61c0d27029bee2b13a4ac1f366",
+    "3ab415228a1c85a741777bfa6aa691a7"
+   ],
+   "window_start_utc": "2021-01-31T23:27:32Z",
+   "window_end_utc": "2021-02-05T04:52:25Z",
+   "gap_start_utc": "2021-02-01T05:27:32Z",
+   "gap_end_utc": "2021-02-04T22:52:25Z",
+   "overlap_hours": 89.36,
+   "vessel_aliases": [
+    {
+     "mmsi": "431016429",
+     "gfw_vessel_id": "63f64e16c-c776-5e4e-76ea-a25e84ca4c3f",
+     "name": "GENPUKU NO.22",
+     "flag": "JPN"
+    },
+    {
+     "mmsi": "431016428",
+     "gfw_vessel_id": "f6289b265-5836-d043-58c0-2c268b9d6af0",
+     "name": "GENPUKUMARU NO.11",
+     "flag": "JPN"
+    }
+   ],
+   "region": {
+    "kind": "eez",
+    "eez_ids": [
+     "8324"
+    ],
+    "presence_region_dataset": "public-eez-areas",
+    "presence_region_id": 8324
+   },
+   "presence_days_utc": [
+    "2021-01-31",
+    "2021-02-01",
+    "2021-02-02",
+    "2021-02-03",
+    "2021-02-04",
+    "2021-02-05"
+   ],
+   "provider_hints": [
+    "gfw_presence"
+   ],
+   "coverage_hypothesis": "GFW Presence hourly grid centres only; no raw AIS source identified",
+   "request_reason": "operating-rule pair: shutoffs 0.4 km apart, reappearances 0.0 km apart, overlap 89.4 h",
+   "flags": {
+    "sequential_mmsi": true,
+    "cross_flag": false,
+    "us_flag": false
+   },
+   "bbox_wgs84": [
+    142.161,
+    -0.972,
+    146.274,
+    1.657
+   ],
+   "dateline": false,
+   "endpoints_lonlat": {
+    "a_off": [
+     142.66294,
+     1.1565116666666666
+    ],
+    "a_on": [
+     145.77363,
+     -0.4722733333333333
+    ],
+    "b_off": [
+     142.66100166666666,
+     1.153385
+    ],
+    "b_on": [
+     145.77365333333333,
+     -0.4722433333333333
+    ]
+   }
+  }
+ ],
+ "high_seas_candidates": [
+  {
+   "candidate_id": "t0-eb28afe7bc10",
+   "trigger_type": "gfw_gap_pair",
+   "trigger_source_ids": [
+    "3c41642fac05d64fcb9dc042ca107763",
+    "bd15717ed1c77550e20b8a0c09ee4687"
+   ],
+   "window_start_utc": "2021-08-17T23:26:05Z",
+   "window_end_utc": "2021-08-19T00:53:34Z",
+   "gap_start_utc": "2021-08-18T05:26:05Z",
+   "gap_end_utc": "2021-08-18T18:53:34Z",
+   "overlap_hours": 11.89,
+   "vessel_aliases": [
+    {
+     "mmsi": "416005531",
+     "gfw_vessel_id": "f92fdcf34-409d-2684-3dc4-996bd729fa97",
+     "name": "YUH SHENG NO.1",
+     "flag": "TWN"
+    },
+    {
+     "mmsi": "412549087",
+     "gfw_vessel_id": "6553dfc0d-db2c-f644-017c-127caf72180b",
+     "name": "ZHAN HAI 003",
+     "flag": "CHN"
+    }
+   ],
+   "region": {
+    "kind": "high_seas",
+    "eez_ids": [],
+    "presence_region_dataset": null,
+    "presence_region_id": null
+   },
+   "presence_days_utc": [
+    "2021-08-17",
+    "2021-08-18",
+    "2021-08-19"
+   ],
+   "provider_hints": [
+    "gfw_presence"
+   ],
+   "coverage_hypothesis": "GFW Presence hourly grid centres only; no raw AIS source identified",
+   "request_reason": "operating-rule pair: shutoffs 6.6 km apart, reappearances 6.8 km apart, overlap 11.9 h",
+   "flags": {
+    "sequential_mmsi": false,
+    "cross_flag": true,
+    "us_flag": false
+   },
+   "bbox_wgs84": [
+    159.422,
+    41.234,
+    160.724,
+    42.622
+   ],
+   "dateline": false,
+   "endpoints_lonlat": {
+    "a_off": [
+     159.92201833333334,
+     42.10557
+    ],
+    "a_on": [
+     160.16941333333332,
+     41.77933
+    ],
+    "b_off": [
+     159.99927333333332,
+     42.12167
+    ],
+    "b_on": [
+     160.22412,
+     41.7335016667
+    ]
+   }
+  },
+  {
+   "candidate_id": "t0-e8a4da39fb8a",
+   "trigger_type": "gfw_gap_pair",
+   "trigger_source_ids": [
+    "30721568ff3adb8c1ff85ec00c882d7f",
+    "e7c6e4189bb5e8bc7bb8753b85955ab7"
+   ],
+   "window_start_utc": "2021-09-01T23:40:10Z",
+   "window_end_utc": "2021-09-03T00:44:11Z",
+   "gap_start_utc": "2021-09-02T05:40:10Z",
+   "gap_end_utc": "2021-09-02T18:44:11Z",
+   "overlap_hours": 11.92,
+   "vessel_aliases": [
+    {
+     "mmsi": "416005531",
+     "gfw_vessel_id": "f92fdcf34-409d-2684-3dc4-996bd729fa97",
+     "name": "YUH SHENG NO.1",
+     "flag": "TWN"
+    },
+    {
+     "mmsi": "412440654",
+     "gfw_vessel_id": "eb36f399a-a40a-ba9f-375c-a03b19fa9ac8",
+     "name": "FUYUANYU196",
+     "flag": "CHN"
+    }
+   ],
+   "region": {
+    "kind": "high_seas",
+    "eez_ids": [],
+    "presence_region_dataset": null,
+    "presence_region_id": null
+   },
+   "presence_days_utc": [
+    "2021-09-01",
+    "2021-09-02",
+    "2021-09-03"
+   ],
+   "provider_hints": [
+    "gfw_presence"
+   ],
+   "coverage_hypothesis": "GFW Presence hourly grid centres only; no raw AIS source identified",
+   "request_reason": "operating-rule pair: shutoffs 8.2 km apart, reappearances 9.9 km apart, overlap 11.9 h",
+   "flags": {
+    "sequential_mmsi": false,
+    "cross_flag": true,
+    "us_flag": false
+   },
+   "bbox_wgs84": [
+    155.92,
+    41.621,
+    157.283,
+    42.827
+   ],
+   "dateline": false,
+   "endpoints_lonlat": {
+    "a_off": [
+     156.419695,
+     42.32744833333334
+    ],
+    "a_on": [
+     156.78321333333332,
+     42.121475
+    ],
+    "b_off": [
+     156.48774666666668,
+     42.27361
+    ],
+    "b_on": [
+     156.66428,
+     42.1365
+    ]
+   }
+  },
+  {
+   "candidate_id": "t0-76f5ac9b4ba0",
+   "trigger_type": "gfw_gap_pair",
+   "trigger_source_ids": [
+    "3e879cda64a3b731f82d64a8733298d9",
+    "de66e02c0d9360a7a4e19f102911ff73"
+   ],
+   "window_start_utc": "2021-08-03T22:49:20Z",
+   "window_end_utc": "2021-08-04T23:36:23Z",
+   "gap_start_utc": "2021-08-04T04:49:20Z",
+   "gap_end_utc": "2021-08-04T17:36:23Z",
+   "overlap_hours": 12.08,
+   "vessel_aliases": [
+    {
+     "mmsi": "577079000",
+     "gfw_vessel_id": "79486b313-340f-e448-956a-bfac321818d7",
+     "name": "OCEAN VENTURE II",
+     "flag": "VUT"
+    },
+    {
+     "mmsi": "416242500",
+     "gfw_vessel_id": "79bf570a6-6a18-9467-49c5-9cf5fb4c0bee",
+     "name": "FU SHEN NO.212",
+     "flag": "TWN"
+    }
+   ],
+   "region": {
+    "kind": "high_seas",
+    "eez_ids": [],
+    "presence_region_dataset": null,
+    "presence_region_id": null
+   },
+   "presence_days_utc": [
+    "2021-08-03",
+    "2021-08-04",
+    "2021-08-05"
+   ],
+   "provider_hints": [
+    "gfw_presence"
+   ],
+   "coverage_hypothesis": "GFW Presence hourly grid centres only; no raw AIS source identified",
+   "request_reason": "operating-rule pair: shutoffs 3.3 km apart, reappearances 4.5 km apart, overlap 12.1 h",
+   "flags": {
+    "sequential_mmsi": false,
+    "cross_flag": true,
+    "us_flag": false
+   },
+   "bbox_wgs84": [
+    159.573,
+    41.652,
+    160.746,
+    42.807
+   ],
+   "dateline": false,
+   "endpoints_lonlat": {
+    "a_off": [
+     160.11102333333332,
+     42.16326
+    ],
+    "a_on": [
+     160.24551166666666,
+     42.26763666666667
+    ],
+    "b_off": [
+     160.0732783333,
+     42.1524116667
+    ],
+    "b_on": [
+     160.23361,
+     42.306805
+    ]
+   }
+  },
+  {
+   "candidate_id": "t0-588e94f58a1e",
+   "trigger_type": "gfw_gap_pair",
+   "trigger_source_ids": [
+    "079a9af26a89ffcbc53ad79d694eab51",
+    "934a5c7a6da962d2afa433a0d485c002"
+   ],
+   "window_start_utc": "2021-09-30T00:05:04Z",
+   "window_end_utc": "2021-10-01T01:20:21Z",
+   "gap_start_utc": "2021-09-30T06:05:04Z",
+   "gap_end_utc": "2021-09-30T19:20:21Z",
+   "overlap_hours": 12.11,
+   "vessel_aliases": [
+    {
+     "mmsi": "577100000",
+     "gfw_vessel_id": "2a8a815da-ae79-08ef-4eec-a448cf71b50b",
+     "name": "FONG HAI NO.11",
+     "flag": "VUT"
+    },
+    {
+     "mmsi": "416004842",
+     "gfw_vessel_id": "0c4f4d9bf-f8ef-e5c7-7068-0bc2cdc9772b",
+     "name": "JYI YANG",
+     "flag": "TWN"
+    }
+   ],
+   "region": {
+    "kind": "high_seas",
+    "eez_ids": [],
+    "presence_region_dataset": null,
+    "presence_region_id": null
+   },
+   "presence_days_utc": [
+    "2021-09-29",
+    "2021-09-30",
+    "2021-10-01"
+   ],
+   "provider_hints": [
+    "gfw_presence"
+   ],
+   "coverage_hypothesis": "GFW Presence hourly grid centres only; no raw AIS source identified",
+   "request_reason": "operating-rule pair: shutoffs 5.3 km apart, reappearances 7.6 km apart, overlap 12.1 h",
+   "flags": {
+    "sequential_mmsi": false,
+    "cross_flag": true,
+    "us_flag": false
+   },
+   "bbox_wgs84": [
+    151.998,
+    42.147,
+    153.174,
+    43.554
+   ],
+   "dateline": false,
+   "endpoints_lonlat": {
+    "a_off": [
+     152.51667833333335,
+     42.646755
+    ],
+    "a_on": [
+     152.58144833333333,
+     43.04451666666667
+    ],
+    "b_off": [
+     152.498095,
+     42.692205
+    ],
+    "b_on": [
+     152.67363833333334,
+     43.053925
+    ]
+   }
+  },
+  {
+   "candidate_id": "t0-e5e6c3de41fc",
+   "trigger_type": "gfw_gap_pair",
+   "trigger_source_ids": [
+    "fa1c4732122eca84b958ec306d128f74",
+    "9a23804da75e42871d4b6e5f44073483"
+   ],
+   "window_start_utc": "2021-08-28T23:24:02Z",
+   "window_end_utc": "2021-08-30T00:40:31Z",
+   "gap_start_utc": "2021-08-29T05:24:02Z",
+   "gap_end_utc": "2021-08-29T18:40:31Z",
+   "overlap_hours": 12.11,
+   "vessel_aliases": [
+    {
+     "mmsi": "416253700",
+     "gfw_vessel_id": "29b193f9a-a44f-a570-3dac-f720a9e98f21",
+     "name": "ZI DA HSIN",
+     "flag": "TWN"
+    },
+    {
+     "mmsi": "412440384",
+     "gfw_vessel_id": "a2edd17ef-fd23-f567-a9fe-237f396938e9",
+     "name": "FU YUAN YU 198",
+     "flag": "CHN"
+    }
+   ],
+   "region": {
+    "kind": "high_seas",
+    "eez_ids": [],
+    "presence_region_dataset": null,
+    "presence_region_id": null
+   },
+   "presence_days_utc": [
+    "2021-08-28",
+    "2021-08-29",
+    "2021-08-30"
+   ],
+   "provider_hints": [
+    "gfw_presence"
+   ],
+   "coverage_hypothesis": "GFW Presence hourly grid centres only; no raw AIS source identified",
+   "request_reason": "operating-rule pair: shutoffs 5.9 km apart, reappearances 4.8 km apart, overlap 12.1 h",
+   "flags": {
+    "sequential_mmsi": false,
+    "cross_flag": true,
+    "us_flag": false
+   },
+   "bbox_wgs84": [
+    159.136,
+    41.98,
+    160.79,
+    43.42
+   ],
+   "dateline": false,
+   "endpoints_lonlat": {
+    "a_off": [
+     159.64166666666668,
+     42.86725333333333
+    ],
+    "a_on": [
+     160.29,
+     42.48
+    ],
+    "b_off": [
+     159.63613333333333,
+     42.92031333333333
+    ],
+    "b_on": [
+     160.285,
+     42.52333333333333
+    ]
+   }
+  },
+  {
+   "candidate_id": "t0-c290e9643cd7",
+   "trigger_type": "gfw_gap_pair",
+   "trigger_source_ids": [
+    "66b32a7c081050a606a16ad3a61c9bba",
+    "3923a58b6be61b110a6d544b3bbc3b28"
+   ],
+   "window_start_utc": "2021-08-28T23:56:39Z",
+   "window_end_utc": "2021-08-30T00:39:57Z",
+   "gap_start_utc": "2021-08-29T05:56:39Z",
+   "gap_end_utc": "2021-08-29T18:39:57Z",
+   "overlap_hours": 12.17,
+   "vessel_aliases": [
+    {
+     "mmsi": "412329654",
+     "gfw_vessel_id": "d697f7dd4-4d6e-a828-ecda-47be9d5daf8c",
+     "name": "LUPENGYUANYU027",
+     "flag": "CHN"
+    },
+    {
+     "mmsi": "416251800",
+     "gfw_vessel_id": "74e3ed2dd-d559-8df3-f75a-dda66c498864",
+     "name": "ZIDAHONG",
+     "flag": "TWN"
+    }
+   ],
+   "region": {
+    "kind": "high_seas",
+    "eez_ids": [],
+    "presence_region_dataset": null,
+    "presence_region_id": null
+   },
+   "presence_days_utc": [
+    "2021-08-28",
+    "2021-08-29",
+    "2021-08-30"
+   ],
+   "provider_hints": [
+    "gfw_presence"
+   ],
+   "coverage_hypothesis": "GFW Presence hourly grid centres only; no raw AIS source identified",
+   "request_reason": "operating-rule pair: shutoffs 6.4 km apart, reappearances 7.8 km apart, overlap 12.2 h",
+   "flags": {
+    "sequential_mmsi": false,
+    "cross_flag": true,
+    "us_flag": false
+   },
+   "bbox_wgs84": [
+    158.888,
+    42.087,
+    160.436,
+    43.425
+   ],
+   "dateline": false,
+   "endpoints_lonlat": {
+    "a_off": [
+     159.9363183333,
+     42.9248533333
+    ],
+    "a_on": [
+     159.48,
+     42.586666666666666
+    ],
+    "b_off": [
+     159.92098666666666,
+     42.86846666666667
+    ],
+    "b_on": [
+     159.3875066667,
+     42.6031666667
+    ]
+   }
+  },
+  {
+   "candidate_id": "t0-f8d68a5d8380",
+   "trigger_type": "gfw_gap_pair",
+   "trigger_source_ids": [
+    "66b32a7c081050a606a16ad3a61c9bba",
+    "0551a6a805cbb68ed0436ee7f103af0a"
+   ],
+   "window_start_utc": "2021-08-28T23:56:39Z",
+   "window_end_utc": "2021-08-30T01:01:38Z",
+   "gap_start_utc": "2021-08-29T05:56:39Z",
+   "gap_end_utc": "2021-08-29T19:01:38Z",
+   "overlap_hours": 12.28,
+   "vessel_aliases": [
+    {
+     "mmsi": "412329654",
+     "gfw_vessel_id": "d697f7dd4-4d6e-a828-ecda-47be9d5daf8c",
+     "name": "LUPENGYUANYU027",
+     "flag": "CHN"
+    },
+    {
+     "mmsi": "416005510",
+     "gfw_vessel_id": "26f0afda4-40a2-62cb-8bed-b409847fe88b",
+     "name": "JIA LONG",
+     "flag": "TWN"
+    }
+   ],
+   "region": {
+    "kind": "high_seas",
+    "eez_ids": [],
+    "presence_region_dataset": null,
+    "presence_region_id": null
+   },
+   "presence_days_utc": [
+    "2021-08-28",
+    "2021-08-29",
+    "2021-08-30"
+   ],
+   "provider_hints": [
+    "gfw_presence"
+   ],
+   "coverage_hypothesis": "GFW Presence hourly grid centres only; no raw AIS source identified",
+   "request_reason": "operating-rule pair: shutoffs 6.2 km apart, reappearances 3.2 km apart, overlap 12.3 h",
+   "flags": {
+    "sequential_mmsi": false,
+    "cross_flag": true,
+    "us_flag": false
+   },
+   "bbox_wgs84": [
+    158.98,
+    42.064,
+    160.436,
+    43.425
+   ],
+   "dateline": false,
+   "endpoints_lonlat": {
+    "a_off": [
+     159.9363183333,
+     42.9248533333
+    ],
+    "a_on": [
+     159.48,
+     42.586666666666666
+    ],
+    "b_off": [
+     159.87866333333332,
+     42.887773333333335
+    ],
+    "b_on": [
+     159.504015,
+     42.564495
+    ]
+   }
+  },
+  {
+   "candidate_id": "t0-c019d9ea6c8b",
+   "trigger_type": "gfw_gap_pair",
+   "trigger_source_ids": [
+    "3e10d22290083aad9f67ab1f582a0a64",
+    "9a23804da75e42871d4b6e5f44073483"
+   ],
+   "window_start_utc": "2021-08-28T23:47:03Z",
+   "window_end_utc": "2021-08-30T00:40:31Z",
+   "gap_start_utc": "2021-08-29T05:47:03Z",
+   "gap_end_utc": "2021-08-29T18:40:31Z",
+   "overlap_hours": 12.34,
+   "vessel_aliases": [
+    {
+     "mmsi": "416005752",
+     "gfw_vessel_id": "e8ba28764-423d-ba0c-ed4d-4a2fe6acf5fe",
+     "name": "GUO TONG 101",
+     "flag": "TWN"
+    },
+    {
+     "mmsi": "412440384",
+     "gfw_vessel_id": "a2edd17ef-fd23-f567-a9fe-237f396938e9",
+     "name": "FU YUAN YU 198",
+     "flag": "CHN"
+    }
+   ],
+   "region": {
+    "kind": "high_seas",
+    "eez_ids": [],
+    "presence_region_dataset": null,
+    "presence_region_id": null
+   },
+   "presence_days_utc": [
+    "2021-08-28",
+    "2021-08-29",
+    "2021-08-30"
+   ],
+   "provider_hints": [
+    "gfw_presence"
+   ],
+   "coverage_hypothesis": "GFW Presence hourly grid centres only; no raw AIS source identified",
+   "request_reason": "operating-rule pair: shutoffs 7.3 km apart, reappearances 8.8 km apart, overlap 12.3 h",
+   "flags": {
+    "sequential_mmsi": false,
+    "cross_flag": true,
+    "us_flag": false
+   },
+   "bbox_wgs84": [
+    159.094,
+    41.948,
+    160.785,
+    43.42
+   ],
+   "dateline": false,
+   "endpoints_lonlat": {
+    "a_off": [
+     159.594195,
+     42.86264166666667
+    ],
+    "a_on": [
+     160.25243333333333,
+     42.448301666666666
+    ],
+    "b_off": [
+     159.63613333333333,
+     42.92031333333333
+    ],
+    "b_on": [
+     160.285,
+     42.52333333333333
+    ]
+   }
+  },
+  {
+   "candidate_id": "t0-cf766674635a",
+   "trigger_type": "gfw_gap_pair",
+   "trigger_source_ids": [
+    "a8fd7c5bb95a946cf76012c91a02958e",
+    "35b787a81d5dac204d3f0f162ad62fbe"
+   ],
+   "window_start_utc": "2021-08-17T22:27:16Z",
+   "window_end_utc": "2021-08-18T23:59:19Z",
+   "gap_start_utc": "2021-08-18T04:27:16Z",
+   "gap_end_utc": "2021-08-18T17:59:19Z",
+   "overlap_hours": 12.39,
+   "vessel_aliases": [
+    {
+     "mmsi": "577079000",
+     "gfw_vessel_id": "79486b313-340f-e448-956a-bfac321818d7",
+     "name": "OCEAN VENTURE II",
+     "flag": "VUT"
+    },
+    {
+     "mmsi": "416005752",
+     "gfw_vessel_id": "e8ba28764-423d-ba0c-ed4d-4a2fe6acf5fe",
+     "name": "GUO TONG 101",
+     "flag": "TWN"
+    }
+   ],
+   "region": {
+    "kind": "high_seas",
+    "eez_ids": [],
+    "presence_region_dataset": null,
+    "presence_region_id": null
+   },
+   "presence_days_utc": [
+    "2021-08-17",
+    "2021-08-18",
+    "2021-08-19"
+   ],
+   "provider_hints": [
+    "gfw_presence"
+   ],
+   "coverage_hypothesis": "GFW Presence hourly grid centres only; no raw AIS source identified",
+   "request_reason": "operating-rule pair: shutoffs 7.4 km apart, reappearances 9.5 km apart, overlap 12.4 h",
+   "flags": {
+    "sequential_mmsi": false,
+    "cross_flag": true,
+    "us_flag": false
+   },
+   "bbox_wgs84": [
+    159.353,
+    41.233,
+    160.678,
+    42.534
+   ],
+   "dateline": false,
+   "endpoints_lonlat": {
+    "a_off": [
+     159.852595,
+     42.034005
+    ],
+    "a_on": [
+     160.17826,
+     41.786065
+    ],
+    "b_off": [
+     159.93804,
+     42.01271666666667
+    ],
+    "b_on": [
+     160.08851833333333,
+     41.73306
+    ]
+   }
+  },
+  {
+   "candidate_id": "t0-4b1c184a307d",
+   "trigger_type": "gfw_gap_pair",
+   "trigger_source_ids": [
+    "a8fd7c5bb95a946cf76012c91a02958e",
+    "3c41642fac05d64fcb9dc042ca107763"
+   ],
+   "window_start_utc": "2021-08-17T22:27:16Z",
+   "window_end_utc": "2021-08-19T00:00:45Z",
+   "gap_start_utc": "2021-08-18T04:27:16Z",
+   "gap_end_utc": "2021-08-18T18:00:45Z",
+   "overlap_hours": 12.39,
+   "vessel_aliases": [
+    {
+     "mmsi": "577079000",
+     "gfw_vessel_id": "79486b313-340f-e448-956a-bfac321818d7",
+     "name": "OCEAN VENTURE II",
+     "flag": "VUT"
+    },
+    {
+     "mmsi": "416005531",
+     "gfw_vessel_id": "f92fdcf34-409d-2684-3dc4-996bd729fa97",
+     "name": "YUH SHENG NO.1",
+     "flag": "TWN"
+    }
+   ],
+   "region": {
+    "kind": "high_seas",
+    "eez_ids": [],
+    "presence_region_dataset": null,
+    "presence_region_id": null
+   },
+   "presence_days_utc": [
+    "2021-08-17",
+    "2021-08-18",
+    "2021-08-19"
+   ],
+   "provider_hints": [
+    "gfw_presence"
+   ],
+   "coverage_hypothesis": "GFW Presence hourly grid centres only; no raw AIS source identified",
+   "request_reason": "operating-rule pair: shutoffs 9.8 km apart, reappearances 1.0 km apart, overlap 12.4 h",
+   "flags": {
+    "sequential_mmsi": false,
+    "cross_flag": true,
+    "us_flag": false
+   },
+   "bbox_wgs84": [
+    159.353,
+    41.279,
+    160.678,
+    42.606
+   ],
+   "dateline": false,
+   "endpoints_lonlat": {
+    "a_off": [
+     159.852595,
+     42.034005
+    ],
+    "a_on": [
+     160.17826,
+     41.786065
+    ],
+    "b_off": [
+     159.92201833333334,
+     42.10557
+    ],
+    "b_on": [
+     160.16941333333332,
+     41.77933
+    ]
+   }
+  },
+  {
+   "candidate_id": "t0-017ce3999b1a",
+   "trigger_type": "gfw_gap_pair",
+   "trigger_source_ids": [
+    "5a826234042de33128ae7518e1cffb4c",
+    "2aa74460dfbdd507cd83b5581274eab1"
+   ],
+   "window_start_utc": "2021-08-03T22:22:25Z",
+   "window_end_utc": "2021-08-04T23:39:25Z",
+   "gap_start_utc": "2021-08-04T04:22:25Z",
+   "gap_end_utc": "2021-08-04T17:39:25Z",
+   "overlap_hours": 12.55,
+   "vessel_aliases": [
+    {
+     "mmsi": "412329654",
+     "gfw_vessel_id": "d697f7dd4-4d6e-a828-ecda-47be9d5daf8c",
+     "name": "LUPENGYUANYU027",
+     "flag": "CHN"
+    },
+    {
+     "mmsi": "416241900",
+     "gfw_vessel_id": "b86cf6d6d-d617-181a-5dfa-cab21c1a7cf6",
+     "name": "WIN FAR FU NO 1",
+     "flag": "TWN"
+    }
+   ],
+   "region": {
+    "kind": "high_seas",
+    "eez_ids": [],
+    "presence_region_dataset": null,
+    "presence_region_id": null
+   },
+   "presence_days_utc": [
+    "2021-08-03",
+    "2021-08-04",
+    "2021-08-05"
+   ],
+   "provider_hints": [
+    "gfw_presence"
+   ],
+   "coverage_hypothesis": "GFW Presence hourly grid centres only; no raw AIS source identified",
+   "request_reason": "operating-rule pair: shutoffs 2.6 km apart, reappearances 5.0 km apart, overlap 12.6 h",
+   "flags": {
+    "sequential_mmsi": false,
+    "cross_flag": true,
+    "us_flag": false
+   },
+   "bbox_wgs84": [
+    159.584,
+    41.728,
+    160.741,
+    42.778
+   ],
+   "dateline": false,
+   "endpoints_lonlat": {
+    "a_off": [
+     160.083535,
+     42.241868333333336
+    ],
+    "a_on": [
+     160.23897166666666,
+     42.27775833333333
+    ],
+    "b_off": [
+     160.10895666666667,
+     42.22761
+    ],
+    "b_on": [
+     160.241065,
+     42.232885
+    ]
+   }
+  },
+  {
+   "candidate_id": "t0-a3c97446d2b5",
+   "trigger_type": "gfw_gap_pair",
+   "trigger_source_ids": [
+    "3e879cda64a3b731f82d64a8733298d9",
+    "2aa74460dfbdd507cd83b5581274eab1"
+   ],
+   "window_start_utc": "2021-08-03T22:49:20Z",
+   "window_end_utc": "2021-08-04T23:36:23Z",
+   "gap_start_utc": "2021-08-04T04:49:20Z",
+   "gap_end_utc": "2021-08-04T17:36:23Z",
+   "overlap_hours": 12.55,
+   "vessel_aliases": [
+    {
+     "mmsi": "577079000",
+     "gfw_vessel_id": "79486b313-340f-e448-956a-bfac321818d7",
+     "name": "OCEAN VENTURE II",
+     "flag": "VUT"
+    },
+    {
+     "mmsi": "416241900",
+     "gfw_vessel_id": "b86cf6d6d-d617-181a-5dfa-cab21c1a7cf6",
+     "name": "WIN FAR FU NO 1",
+     "flag": "TWN"
+    }
+   ],
+   "region": {
+    "kind": "high_seas",
+    "eez_ids": [],
+    "presence_region_dataset": null,
+    "presence_region_id": null
+   },
+   "presence_days_utc": [
+    "2021-08-03",
+    "2021-08-04",
+    "2021-08-05"
+   ],
+   "provider_hints": [
+    "gfw_presence"
+   ],
+   "coverage_hypothesis": "GFW Presence hourly grid centres only; no raw AIS source identified",
+   "request_reason": "operating-rule pair: shutoffs 7.2 km apart, reappearances 3.9 km apart, overlap 12.6 h",
+   "flags": {
+    "sequential_mmsi": false,
+    "cross_flag": true,
+    "us_flag": false
+   },
+   "bbox_wgs84": [
+    159.609,
+    41.663,
+    160.746,
+    42.768
+   ],
+   "dateline": false,
+   "endpoints_lonlat": {
+    "a_off": [
+     160.11102333333332,
+     42.16326
+    ],
+    "a_on": [
+     160.24551166666666,
+     42.26763666666667
+    ],
+    "b_off": [
+     160.10895666666667,
+     42.22761
+    ],
+    "b_on": [
+     160.241065,
+     42.232885
+    ]
+   }
+  }
+ ]
+}
