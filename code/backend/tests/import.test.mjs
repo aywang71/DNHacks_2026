@@ -8,21 +8,30 @@ import { exportPresence } from '../src/presence/export.mjs'
 import { workspace, fixture, row, canonical, digest } from './fixtures.mjs'
 
 const read = async filename => JSON.parse(await readFile(filename, 'utf8'))
-test('real Bronze reports export 33,452 observations, 25 covered hours, correct first frame', async t => {
+test('real Bronze reports export every discovered day and preserve known frames', async t => {
   const { output } = await workspace(t)
   const input = fileURLToPath(new URL('../../../data/bronze/gfw_presence', import.meta.url))
   const catalog = await exportPresence({ input, output })
-  assert.equal(catalog.observationCount, 33452)
-  assert.equal(catalog.coveredHourCount, 25)
-  assert.equal(catalog.days.length, 2)
-  assert.deepEqual(catalog.days[0].coveredHours, [0])
-  const latest = catalog.days[1]
-  assert.equal(latest.vesselCount, 1973)
-  assert.equal(latest.hourlyCounts[0], 1184)
-  assert.equal(latest.hourlyCounts[23], 1280)
-  const observations = (await read(path.join(output, latest.observationsUrl))).observations
-  assert.equal(observations.length, 31477)
-  assert.ok(observations.every((entry, index) => !index || observations[index - 1].ts <= entry.ts))
+  assert.ok(catalog.observationCount >= 33452)
+  assert.ok(catalog.coveredHourCount >= 25)
+  assert.ok(catalog.days.length >= 2)
+  const january = catalog.days.find(day => day.date === '2022-01-01')
+  const august = catalog.days.find(day => day.date === '2026-08-01')
+  assert.deepEqual(january?.coveredHours, [0])
+  assert.equal(january?.observationCount, 1975)
+  assert.equal(august?.vesselCount, 1973)
+  assert.equal(august?.hourlyCounts[0], 1184)
+  assert.equal(august?.hourlyCounts[23], 1280)
+  assert.equal(catalog.days.at(-1)?.date, '2026-09-04')
+  assert.ok(catalog.days.some(day => day.observationCount === 0 && day.coveredHours.length === 24))
+  let exportedCount = 0
+  for (const day of catalog.days) {
+    const observations = (await read(path.join(output, day.observationsUrl))).observations
+    assert.equal(observations.length, day.observationCount)
+    assert.ok(observations.every((entry, index) => !index || observations[index - 1].ts <= entry.ts))
+    exportedCount += observations.length
+  }
+  assert.equal(exportedCount, catalog.observationCount)
 })
 
 test('identical/reordered reports dedupe; latest metadata wins; distinct cells survive', async t => {
@@ -49,6 +58,14 @@ test('imported empty hours preserve coverage; missing hours stay uncovered', asy
   assert.deepEqual(catalog.days[0].coveredHours, [4, 5])
   assert.deepEqual(catalog.days[0].hourlyCounts, Array(24).fill(0))
   assert.equal(catalog.days[0].bounds, null)
+})
+
+test('null dataset values represent successfully imported empty coverage', async t => {
+  const options = await workspace(t)
+  await fixture(options.input, 'empty-null', [], { envelope: { entries: [{ 'public-global-presence:v4.0': null }] } })
+  const catalog = await exportPresence(options)
+  assert.equal(catalog.observationCount, 0)
+  assert.deepEqual(catalog.days[0].coveredHours, Array.from({ length: 24 }, (_, hour) => hour))
 })
 
 test('new report extends catalog and published immutable assets are not rewritten', async t => {
