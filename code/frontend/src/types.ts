@@ -29,6 +29,7 @@ export interface Vessel {
   eventLabel: string
   location: string
   lastSeen: string
+  coordinates: [number, number]
   evidence: Evidence[]
   timeline: TimelineEvent[]
 }

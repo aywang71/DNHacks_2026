@@ -1,7 +1,7 @@
-.investigation-shell { color: #e6f0f2; background: #07161f; display: grid; grid-template-columns: minmax(225px, 0.75fr) minmax(0, 2.25fr); min-height: 100%; font-family: Inter, ui-sans-serif, system-ui, sans-serif; }.investigation-shell.is-collapsed { display:block; }.investigation-shell.is-collapsed .risk-queue { height:100%; }.investigation-shell.is-collapsed .investigation-detail,.investigation-shell.is-collapsed .print-report { display:none; }
+.investigation-shell { color: var(--text); background: var(--abyss); display: grid; grid-template-columns: minmax(225px, 0.75fr) minmax(0, 2.25fr); min-height: 100%; font-family: var(--font-sans); }.investigation-shell.is-collapsed { display:block; }.investigation-shell.is-collapsed .risk-queue { height:100%; }.investigation-shell.is-collapsed .investigation-detail,.investigation-shell.is-collapsed .print-report { display:none; }
 .risk-queue { border-right: 1px solid #20404b; background: #091b26; padding: 22px 14px; }
 .eyebrow { color: #76b9c6; font-size: .68rem; font-weight: 700; letter-spacing: .12em; margin: 0 0 7px; text-transform: uppercase; }
-.queue-heading h2, .vessel-header h1, .case-heading h2 { font-family: Georgia, 'Times New Roman', serif; letter-spacing: -.02em; margin: 0; }
+.queue-heading h2, .vessel-header h1, .case-heading h2 { font-family: var(--font-sans); font-weight: 500; letter-spacing: -.035em; margin: 0; }
 .queue-heading h2 { font-size: 1.25rem; line-height: 1.1; }.queue-heading span { color: #91aeb6; display: block; font-size: .78rem; margin-top: 8px; }
 .risk-filters { display: flex; flex-wrap: wrap; gap: 6px; margin: 20px 0 12px; }.risk-filters button { background: transparent; border: 1px solid #34515b; border-radius: 999px; color: #adc4c9; cursor: pointer; font-size: .71rem; padding: 5px 8px; }.risk-filters button.is-active { background: #16404b; border-color: #56b5c4; color: #e7fbff; }
 .queue-list { display: grid; gap: 7px; }.queue-item { align-items: center; background: transparent; border: 1px solid transparent; color: inherit; cursor: pointer; display: grid; gap: 8px; grid-template-columns: 8px 1fr auto; padding: 11px 8px; text-align: left; width: 100%; }.queue-item:hover, .queue-item.is-selected { background: #102b37; border-color: #2b6472; }.queue-item-main { display: grid; gap: 3px; }.queue-item strong { font-size: .86rem; }.queue-item small { color: #98b3b9; font-size: .7rem; }.risk-dot { border-radius: 50%; height: 7px; width: 7px; }.risk-high { background: #eb725d; }.risk-review { background: #e2b854; }.risk-watch { background: #5fa9b8; }.risk-score { color: #d5e6e9; font-size: .8rem; font-variant-numeric: tabular-nums; }.empty-queue { color: #91aeb6; font-size: .82rem; padding: 8px; }
@@ -14,3 +14,21 @@ button:focus-visible, textarea:focus-visible { outline: 2px solid #8ee3ea; outli
 @media print { .investigation-shell > :not(.print-report) { display:none!important; } #root .print-report { color: #0d1d26; display: block !important; font-family: Georgia, serif; padding: 12mm; } .print-report h1 { font-size: 22pt; }.print-report h2 { border-bottom: 1px solid #777; font-size: 13pt; margin-top: 18pt; padding-bottom: 3pt; }.print-report li, .print-report p { font-size: 10pt; line-height: 1.45; }.report-caveat { border-left: 2px solid #333; padding-left: 8pt; } }
 
 .close-investigation { background:transparent; border:1px solid #315d68; color:#a6cbd0; cursor:pointer; font-size:.72rem; padding:6px 8px; }
+
+/* Altitude-inspired operational surface: muted stone layers, hairline rules, and verdant action. */
+.risk-queue { background:var(--deep); border-color:var(--line); }
+.queue-heading span,.queue-item small,.empty-queue,.vessel-meta,.case-description,.timeline-heading p,.evidence-row p,.timeline-list p,.timeline-list time,.action-notice { color:var(--muted); }
+.eyebrow { color:var(--cyan); font-family:var(--font-mono); font-weight:500; letter-spacing:.1em; }
+.risk-filters button,.watch-button,.print-button,.close-investigation { border-color:var(--line); color:var(--text); border-radius:0; }
+.risk-filters button.is-active,.watch-button.is-watching { background:#292524; border-color:var(--cyan); color:var(--text); }
+.queue-item:hover,.queue-item.is-selected { background:#292524; border-color:#57534e; }
+.risk-score,.confidence,.case-status { color:#d6d3d1; border-color:#57534e; font-family:var(--font-mono); }
+.investigation-detail,.case-section { background:var(--abyss); }
+.vessel-header,.tab-row,.evidence-row,.case-section { border-color:var(--line); }
+.tab-row button { color:var(--muted); font-family:var(--font-mono); letter-spacing:.03em; }
+.tab-row button.is-active { border-color:var(--cyan); color:var(--text); }
+.uncertainty-note { background:#292524; border-left-color:var(--amber); color:#d6d3d1; }
+.timeline-list li { border-left-color:#57534e; }.timeline-list li::before { background:var(--cyan); border-color:var(--abyss); }
+.case-section { border-color:var(--line); }.case-action { background:var(--cyan); border-color:var(--cyan); color:#052e16; border-radius:0; }
+.case-action:disabled { background:#292524; border-color:#57534e; color:var(--muted); }.case-section textarea { background:var(--deep); border-color:var(--line); color:var(--text); border-radius:0; }
+.risk-high { background:var(--red); }.risk-review { background:var(--amber); }.risk-watch { background:var(--cyan); }
