@@ -189,7 +189,12 @@ def main() -> None:
         print(output)
         return
     token = _gfw_api_token()
-    client = GfwClient(token)
+    # A 4Wings report may take longer than ordinary GFW lookups to start
+    # streaming its daily, vessel-grouped response.  Keep the shorter default
+    # for other endpoints while allowing the bounded Presence request enough
+    # time to complete.
+    timeout_seconds = 180.0 if args.command == "gfw-presence" else 30.0
+    client = GfwClient(token, timeout_seconds=timeout_seconds)
     if args.command == "gfw-gaps":
         response = client.gap_events(
             start_date=args.start_date.isoformat(),

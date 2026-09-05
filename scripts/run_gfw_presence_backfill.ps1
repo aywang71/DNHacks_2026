@@ -176,12 +176,25 @@ while ($cursor -lt $EndDate.Date) {
     }
 
     Write-BackfillLog "loading day=$dayKey retrieval_id=$retrievalId"
-    & $python @arguments 2>&1 | ForEach-Object {
+    # Python writes tracebacks to stderr.  Treat those lines as loader output
+    # long enough to capture the native exit code and write resumable state;
+    # the script's normal Stop preference would otherwise terminate the
+    # PowerShell pipeline before its failure handler runs.
+    $priorErrorActionPreference = $ErrorActionPreference
+    try {
+        $ErrorActionPreference = 'Continue'
+        $loaderOutput = & $python @arguments 2>&1
+        $loaderExitCode = $LASTEXITCODE
+    }
+    finally {
+        $ErrorActionPreference = $priorErrorActionPreference
+    }
+    $loaderOutput | ForEach-Object {
         $message = $_.ToString()
         Write-Host $message
         Add-Content -LiteralPath $logPath -Value "$(Get-Date -Format o) loader $message"
     }
-    if ($LASTEXITCODE -ne 0) {
+    if ($loaderExitCode -ne 0) {
         $state = [ordered]@{
             status = 'failed'
             stopped_at = (Get-Date).ToUniversalTime().ToString('o')
@@ -191,8 +204,8 @@ while ($cursor -lt $EndDate.Date) {
             log_path = $logPath
         } | ConvertTo-Json
         Set-Content -LiteralPath $statePath -Value $state -Encoding utf8
-        Write-BackfillLog "failed day=$dayKey exit_code=$LASTEXITCODE; preserve_artifacts=true; rerun_the_same_command_to_resume"
-        exit $LASTEXITCODE
+        Write-BackfillLog "failed day=$dayKey exit_code=$loaderExitCode; preserve_artifacts=true; rerun_the_same_command_to_resume"
+        exit $loaderExitCode
     }
     $loadedDays++
     [void]$completedDays.Add($dayKey)
