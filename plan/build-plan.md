@@ -22,6 +22,7 @@
 | Local prior work? | `pipeline/load.py` done; `pipeline/pair.py` written, never run; nulls/features not written. Skylight UI screenshots saved to `tmp/skylight-ref/`. Paper Figure 1 at `tmp/pdfs/dark-page-11.png`. | this session |
 | Is there a fisheries analog to the paper's "sanctioned country" list? | Yes. The EU IUU carding list. Taiwan held a yellow card from Oct 2015 to 27 Jun 2019, spanning the whole corpus and the TWN vessel in the showcase pair. Vietnam carded 2017; Cambodia red. | ec.europa.eu/commission/presscorner/detail/en/ip_19_3397 |
 | Is the showcase water managed by an RFMO with a registry and IUU list? | Yes. 42.7°N 162°E is inside the North Pacific Fisheries Commission area, which manages neon flying squid, keeps a vessel registry, and has kept an IUU vessel list under CMM 2017-02. | npfc.int/npfc-iuu-vessel-list |
+| Does Skylight publish any of its AIS behaviour code? | Yes. `allenai/atlantes` (Apache-2.0, pushed Jul 2026) holds the ATLAS activity and vessel-type models with weights, the changepoint detector (2 h gap rule), and the one-sided-rendezvous label script. No rendezvous model or weights are public. Details in §4. | github.com/allenai/atlantes |
 
 The showcase pair is two **squid jiggers**. Squid jiggers fish under lights so bright they are the single most detectable vessel class in VIIRS night imagery. That is the luckiest fact in this project and the plan is built around it.
 
@@ -50,19 +51,66 @@ Appendix A gives four algorithms. Our corpus has only gap endpoints (no headings
 | Skylight asset | Verdict | How we use it |
 |---|---|---|
 | **Event taxonomy** Standard Rendezvous (2 of 2 on AIS) / Dark Rendezvous (1 of 2) | **Reuse as framing.** | Our event type is the missing row: **Paired-Dark Rendezvous candidate (0 of 2)**. Show all three tiers in the "how it works" panel, using our own illustrations in the style of Skylight's explainer cards (`tmp/skylight-ref/02`, `03`). |
-| **UI layout** full-bleed map, floating event cards anchored at location, teal header, two-column label/value grid, "Vessels in the Vicinity" list, event-history count, thumbs up/down feedback | **Reuse the pattern.** | Wireframe in §5. Thumbs feedback becomes our `analyst_disposition` capture, which is the label the data spec says we need. |
+| **UI layout** full-bleed map, floating event cards anchored at location, teal header, two-column label/value grid, "Vessels in the Vicinity" list, event-history count, thumbs up/down feedback | **Reuse the pattern.** | Wireframe in §6. Thumbs feedback becomes our `analyst_disposition` capture, which is the label the data spec says we need. |
 | Icon convention black = AIS-corroborated, red = not | **Reuse.** | Filled endpoint = AIS fact; hollow red = inferred (meeting point, projected paths). |
 | Speed-coloured tracks with chevrons | **Drop.** | No tracks. Replace with dashed red "dark window" projections and solid short stubs. |
 | "Night Lights" event type and glow icon | **Reuse.** | VIIRS detections render as glowing dots, like Skylight's Night Lights illustration (`04`). |
 | **`allenai/vessel-detection-viirs`** Docker, CPU | **Run it.** | Stretch but high-value: run Skylight's own detector on the archival VIIRS DNB granule over the showcase pair's night. "Skylight's model sees a lit vessel where AIS is silent" is the line. |
-| Light basemap (pale cyan water, grey land) | **Reuse the look** via CARTO Positron (free, no key). | A dark basemap reads as "hacker"; Skylight's light one reads as "analyst tool". Decide in §7. |
+| Light basemap (pale cyan water, grey land) | **Reuse the look** via CARTO Positron (free, no key). | A dark basemap reads as "hacker"; Skylight's light one reads as "analyst tool". Decide in §8. |
 | **Areas of Interest + Entry events** (rule-based: vessel crosses into a user AOI) | **Reuse as `eez_entry_while_dark`.** | Gap starts on the high seas and ends inside an EEZ, computed from the end coordinates against public EEZ polygons (Marine Regions). Also names the jurisdiction on the card. RFMO convention areas are the second AOI layer, and feed the Level 1 authorization check. |
 | **Detection–AIS correlation** (black icon = a broadcasting vessel explains the detection, red = it does not) | **Reuse for VIIRS.** | A night-light counts as corroboration only if no broadcasting vessel explains it. Correlate against GFW's AIS presence layer for that day and cell; fallback is the corpus' own broadcasting endpoints within ±1 h. Uncorrelated lights render red, correlated black, exactly Skylight's convention. |
 | **Dark Rendezvous single-vessel kinematic model** (ML on one visible vessel's speed and course, ≥15 min) | **Substitute.** | We cannot run it and have no tracks. GFW LOITERING events (a vessel under 2 kn for an extended period away from port) are the closest public analog and enter Detector 3 as a scored input, not as context text. |
 
 ---
 
-## 4. The model: a transparent three-family ensemble
+## 4. Atlantes, and the rendezvous rules we cite instead of inventing
+
+### 4.1 What `allenai/atlantes` actually contains
+
+Apache-2.0, last push July 2026, described by AI2 as Skylight's AIS backbone since fall 2024 (paper: arXiv 2504.19036, ICLR CCAI 2025).
+
+| Item | Finding | Use for us |
+|---|---|---|
+| ATLAS activity model | Weights in-repo, not LFS (19 MB). Classifies the end of a track as fishing / anchored / moored / transiting (+ other, unknown). Input columns: lat, lon, sog, cog, send, nav, mmsi, trackId, dist2coast, name, flag_code, category. | Needs raw tracks. Our corpus has endpoints only and GFW's API serves no tracks, so it cannot run on our vessels. Citable architecture; optional 20-minute demo on the repo's NOAA sample track to show "what Skylight's backbone sees". |
+| ATLAS entity models | Vessel type (fishing, cargo, tanker, ...) and buoy-vs-vessel, weights in-repo. | Same track limitation. |
+| Changepoint detector (`cpd/constants.py`) | `MIN_TIME_GAP = 2 h` splits a track into subpaths; `MAX_DURATION = 24 h`; `MAX_NUM_MESSAGES = 500`; SOG-distribution changepoints. | Skylight's own documented definition of an AIS gap. Cite it next to GFW's 12 h corpus threshold. |
+| **One-sided rendezvous (OSR) dataset script** (`gen_dataset_label_files/create_osr_dataset.py`, config label `one_sided_rendezvous`) | Training data for the one-visible-vessel model is made by taking **two-sided Standard Rendezvous events**, keeping only vessel 0's track for that day with a week of context, and labelling the messages inside the event window as `one_sided_rendezvous`. Docs: "we have an OSR model branch but it has not been merged." No OSR model or weights are public. | **This is the documented Dark Rendezvous recipe: learn the one-sided signature from two-sided events.** See 4.3. |
+| Branch `henryh/tutorials` | Adds `ais/tutorials/eval.ipynb` running `AtlasActivityClassifier` on public NOAA coastal AIS, plus NOAA-to-Atlantes converters. References a Hugging Face dataset `hherzog/atlantes-noaa-dataset` that the HF API did not resolve; verify before relying on it. | The only path to run ATLAS without AI2's cloud. NOAA data is US-coastal, so still not our vessels. |
+| Other branches | `mike/atlas-sidecar` (53 commits, inference refactor), `mike/bump-cpd-timegap` (changes the 2 h constant), `debug-int-vs-prod`, dependabot, and several `josh/claude/*` buoy-pattern branches. No branch contains rendezvous model code. | Nothing further to mine. |
+| Docker inference | `docker-compose.yml` mounts GCP credentials; the notebook path loads in-repo weights directly and `main_activity.py` has no GCS references. | Local inference likely works without GCP. Verify only if the demo in row 1 is wanted. |
+
+### 4.2 Documented thresholds, quoted, and where each enters our model
+
+| Source | Rule, as published | Where it enters GapPair |
+|---|---|---|
+| Skylight Standard Rendezvous | Two AIS signals within **250 m**, together **≥30 min**, speeds **<4 kn**, **>10 km** from coast; buoys excluded. | The 2-of-2 tier in the "how it works" panel. |
+| Skylight Dark Rendezvous | One transmitting vessel shows rendezvous-like behaviour for **≥15 min**; not generated within **100 km** of shore; "ground truth data to create such a machine learning model is limited". | The 1-of-2 tier. The 100 km exclusion matches our corpus, whose gaps all start ≥93 km offshore. |
+| GFW encounter (Miller et al. 2018; GFW FAQ) | Within **500 m** for **≥2 h**, median speed **<2 kn**, **≥10 km** from an anchorage, on a 10-minute interpolated grid. Sensitivity ranges tested: 250–1000 m, 2–12 h, 1–6 kn. | Detector 3 "known partners" feature, and the lineage for Detector 1's endpoint thresholds (below). |
+| GFW loitering (Miller et al. 2018) | Average speed **<2 kn**, **≥20 nm** from shore, **≥8 h** for a reefer. The API's loitering dataset uses the same speed and shore rule with a shorter minimum duration; confirm the value when the token arrives. | Detector 3's single-vessel behaviour input, the public analog of Skylight's one-sided model. |
+| Welch et al. 2022 (our corpus) | Reception **>10 positions/day**, gap **≥12 h**, **≥50 nm** from shore, boosted-regression-tree split of intentional vs coverage loss. | Provenance of every input event; quoted in the methods drawer. |
+| Atlantes CPD | Time gap **≥2 h** splits a subpath. | Cited alongside the 12 h corpus threshold to show our gaps are 6× Skylight's own cut. |
+| Ballinger 2024 (arXiv 2404.07607) | Dark STS in the Kerch Strait from satellite detections cross-referenced with AIS gaps; STS defined as **500 m, ≥2 h, SOG <1 kn**. | Precedent for imagery-plus-gap corroboration; cited beside our VIIRS layer. |
+| Fernández-Villaverde et al. 2025 | Two vessels dark simultaneously in close proximity, required-speed plausibility (Alg. A.2). | Detector 2, and the only published precedent for reasoning about two simultaneously dark vessels. |
+| OFAC / State / USCG 2020 maritime advisory | Deceptive practices list: AIS disabling or manipulation, illicit STS, extended transmission gaps, abnormal voyage patterns, MMSI manipulation. | Language for the context block and the deck's "why this matters" line. |
+
+**Why Detector 1 uses 10 km / 1 h and not 500 m / 2 h.** Encounter rules apply to positions during the meeting. Our endpoints are the last fix before and the first fix after a gap of 12 to 40 hours, during which both vessels move. Ten kilometres and one hour at each end is the endpoint analog of the encounter rule, and the permutation null is what calibrates it. The threshold ladder in the methods drawer shows the same signal at 5 km / 1 h and 25 km / 3 h.
+
+### 4.3 The lineage we can state on one slide
+
+Skylight built its one-sided detector from two-sided events: take a Standard Rendezvous, hide one vessel, learn what the other looks like. GapPair takes the next step in the same direction: take the paired gap where both vessels are hidden, and calibrate it against the same two-sided events. Concretely, Detector 3 checks whether a paired gap is bracketed by a published GFW encounter or loitering event involving either vessel. That is convergent validation using the very event type Skylight trains from, and it is the honest answer to "where are your labels".
+
+Both research agents confirm the same thing: **no published rule set exists for a zero-visible-vessel paired gap.** Skylight and GFW pair a dark or loitering vessel against a visible one; the Oxford paper is the only precedent for two simultaneously dark vessels. Gap-to-gap pairing with a permutation null is our synthesis, and the deck should say so plainly rather than claim it is replicated from anywhere.
+
+### 4.4 Open-source code worth borrowing
+
+- `GlobalFishingWatch/pipe-encounters` (Apache-2.0): distance and duration matching logic with `max_encounter_dist_km` and `min_encounter_time_minutes`; adapt from position pairs to endpoint pairs, and keep its parameter names.
+- `GlobalFishingWatch/pipe-gaps` (Apache-2.0): gap object schema (OFF = last position, ON = first resumed position); adopt its field names for the evidence ledger.
+- `GlobalFishingWatch/AIS-disabling-high-seas`: the corpus's own thresholds and reception model, for the provenance section.
+- `allenai/atlantes`: CPD constants and the OSR label recipe, cited; ATLAS weights only for the optional NOAA demo.
+
+---
+
+## 5. The model: a transparent three-family ensemble
 
 No labels exist, so the "ensemble" is a scorecard with a calibrated null, not a trained classifier. Every component is displayed as its own bar on the card.
 
@@ -93,7 +141,7 @@ Evaluation we can honestly show: the lift ladder against null C (prior run: 35×
 
 ---
 
-## 5. UI wireframe (Skylight pattern, our content)
+## 6. UI wireframe (Skylight pattern, our content)
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -135,7 +183,7 @@ Also: a **Challenge panel** tab ("what would make this innocent?") and a **Metho
 
 ---
 
-## 6. Options evaluated
+## 7. Options evaluated
 
 **Product shape**
 - **A. Standalone GapPair, Skylight-pattern UI, Oxford-adapted scoring, VIIRS corroboration.** Recommended. Every piece is public data or open code; nothing is mocked; the Skylight tie-in is real (their open detector) and honest (their event taxonomy has a hole we fill).
@@ -163,7 +211,7 @@ Also: a **Challenge panel** tab ("what would make this innocent?") and a **Metho
 
 ---
 
-## 7. Decisions needed from the team
+## 8. Decisions needed from the team
 
 1. Light basemap (Skylight look, CARTO Positron) or dark (CARTO Dark Matter)? Recommendation: light.
 2. Single-HTML or Vite + React? Recommendation: single-HTML unless the UI owner is a React dev.
