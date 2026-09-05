@@ -13,6 +13,8 @@ export interface InvestigationPanelProps {
   onSetNotes: (notes: string) => void
   watching: boolean
   onWatch: () => void
+  isOpen: boolean
+  onClose: () => void
   filter: RiskFilter
   onFilter: (filter: RiskFilter) => void
 }
@@ -31,7 +33,7 @@ const statusCopy: Record<CaseStatus, { label: string; detail: string; action: st
 }
 
 export function InvestigationPanel({
-  vessels, selected, onSelect, caseRecord, onOpenCase, onSetNotes, watching, onWatch, filter, onFilter,
+  vessels, selected, onSelect, caseRecord, onOpenCase, onSetNotes, watching, onWatch, isOpen, onClose, filter, onFilter,
 }: InvestigationPanelProps) {
   const notesId = useId()
   const [activeTab, setActiveTab] = useState<'evidence' | 'timeline'>('evidence')
@@ -47,7 +49,7 @@ export function InvestigationPanel({
   }
 
   return (
-    <section className="investigation-shell" aria-label="Risk investigation">
+    <section className={`investigation-shell ${isOpen ? 'is-open' : 'is-collapsed'}`} aria-label="Risk investigation">
       <aside className="risk-queue" aria-label="Risk queue">
         <div className="queue-heading">
           <p className="eyebrow">Analyst queue</p>
@@ -81,6 +83,7 @@ export function InvestigationPanel({
             <p className="vessel-meta">{selected.imo} · {selected.flag} · {selected.vesselType}</p>
           </div>
           <div className="header-actions">
+            <button className="close-investigation" onClick={onClose} aria-label="Close vessel investigation">Close</button>
             <span className={`risk-badge risk-${selected.riskLevel}`}>{selected.riskScore} / 100</span>
             <button className={`watch-button ${watching ? 'is-watching' : ''}`} onClick={onWatch} aria-pressed={watching}>
               {watching ? 'Watching' : 'Add watchlist'}

@@ -3,3 +3,12 @@
 @media (min-width: 1451px) { .workspace { grid-template-columns: 180px minmax(520px, 1fr) minmax(600px, .65fr); } }
 @media (min-width: 761px) and (max-width: 1450px) { .workspace { grid-template-columns: 180px minmax(0, 1fr); } .rail { grid-row: 1 / span 2; } .map-region { min-height: 560px; } .workspace > .investigation-shell { grid-column: 2; } }
 @media (min-width: 761px) and (max-width: 1050px) { .workspace { grid-template-columns: minmax(0, 1fr); } .rail { display: none; } .workspace > .investigation-shell { grid-column: 1; } }
+
+@media (min-width: 1051px) {
+  .workspace.inspector-closed { grid-template-columns:180px minmax(0,1fr) 280px; }
+  .workspace.inspector-open { grid-template-columns:180px minmax(420px,1fr) minmax(620px,.7fr); }
+  .workspace.inspector-closed .rail,.workspace.inspector-open .rail { grid-row:1; }
+  .workspace.inspector-closed .map-region,.workspace.inspector-open .map-region { grid-column:2; min-height:calc(100vh - 64px); }
+  .workspace.inspector-closed>.investigation-shell,.workspace.inspector-open>.investigation-shell { grid-column:3; }
+  .workspace.inspector-closed>.investigation-shell { min-height:calc(100vh - 64px); }
+}
