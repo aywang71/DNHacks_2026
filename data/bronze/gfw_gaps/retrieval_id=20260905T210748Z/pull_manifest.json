@@ -1,0 +1,18 @@
+{
+  "bronze_output_root": "data\\bronze\\gfw_gaps\\retrieval_id=20260905T210748Z",
+  "complete": true,
+  "created_at": "2026-09-05T21:09:09.443971+00:00",
+  "endpoints_written": 0,
+  "events_written": 29538,
+  "intentional_disabling": true,
+  "next_offset": null,
+  "next_window_start": null,
+  "page_size": 500,
+  "pages_written": 60,
+  "request_end": "2026-09-01",
+  "request_start": "2026-08-01",
+  "retrieval_id": "20260905T210748Z",
+  "silver_output_root": null,
+  "time_filter_mode": "START-DATE",
+  "window_days": 31
+}

@@ -1,0 +1,8 @@
+format=2026-09-05 17:36:45,093 loglevel=INFO   logger=atlantes.atlas.ais_dataset <module>() L53   Setting warnings to ignore FutureWarnings
+format=2026-09-05 17:36:45,102 loglevel=INFO   logger=atlas_activity_classifier _get_device() L121  No GPU detected, using CPU
+format=2026-09-05 17:36:45,103 loglevel=DEBUG  logger=atlantes.atlas.atlas_net __init__() L76   Using CPE layers
+format=2026-09-05 17:36:45,239 loglevel=DEBUG  logger=atlas_activity_classifier _load_atlas_activity_model() L108  Number of parameters in model: 4742196
+format=2026-09-05 17:36:45,240 loglevel=DEBUG  logger=atlas_activity_classifier _load_atlas_activity_model() L109  model memory size (MB): 18.090042114257812
+format=2026-09-05 17:36:45,286 loglevel=INFO   logger=atlas_activity_classifier run_inference() L161  Running inference on the ATLAS activity model
+format=2026-09-05 17:36:45,287 loglevel=INFO   logger=atlas_activity_classifier run_inference() L174  Running inference on batch of 1 items
+data\silver\atlantes_presence_experimental\berezina_activity_predictions.json

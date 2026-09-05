@@ -1,4 +1,5 @@
-from dark_rendezvous.providers.gfw import GFW_GAP_ENDPOINT_COLUMNS, normalize_gap_endpoints
+from dark_rendezvous.cli import _gfw_api_token
+from dark_rendezvous.providers.gfw import GFW_GAP_ENDPOINT_COLUMNS, GfwClient, normalize_gap_endpoints
 from dark_rendezvous.providers.gfw_presence import (
     GFW_PRESENCE_COLUMNS,
     PRESENCE_POSITION_SEMANTICS,
@@ -6,6 +7,21 @@ from dark_rendezvous.providers.gfw_presence import (
     report_dataset_version,
 )
 from dark_rendezvous.providers.gfw_tracks import normalize_track_lines
+
+
+def test_gfw_token_loads_ignored_local_env_without_overriding_process_env(tmp_path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.delenv("GFW_API_TOKEN", raising=False)
+    (tmp_path / ".env").write_text("GFW_API_TOKEN=local-token\n", encoding="utf-8")
+
+    assert _gfw_api_token() == "local-token"
+
+    monkeypatch.setenv("GFW_API_TOKEN", "process-token")
+    assert _gfw_api_token() == "process-token"
+
+
+def test_gfw_client_accepts_a_presence_report_timeout() -> None:
+    assert GfwClient("test-token", timeout_seconds=180.0)._timeout_seconds == 180.0
 
 
 def test_gap_events_expand_to_two_distinct_endpoint_rows() -> None:

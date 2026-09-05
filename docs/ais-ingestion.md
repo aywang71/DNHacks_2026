@@ -208,6 +208,36 @@ GFW's AIS-disabling repository provides useful gap/reception methodology and a
 final event dataset, but its raw AIS message tables are license-restricted. It
 is a validation and method reference, not a raw-AIS provider.
 
+### Experimental ATLAS activity run from Presence
+
+`prepare-atlantes-presence` is an adapter for evaluating AllenAI Atlantes'
+published **activity** model against a long enough GFW Presence trajectory. It
+does not turn Presence into raw AIS and it is not a rendezvous detector. It
+calculates speed and course from successive hourly grid-cell centres, estimates
+distance to coast from a supplied local coastline GeoJSON, and uses explicit
+``not available`` placeholders for AIS navigation status and ship category.
+
+    dark-rendezvous prepare-atlantes-presence \
+        --input data/silver/gfw_presence_hourly/retrieval_id=<run>/region_dataset=public-eez-areas/region_id=5690/points.parquet \
+        --coastline data/reference/ne_10m_coastline.geojson \
+        --vessel-id gfw:<vessel-id> --min-points 100 \
+        --output data/silver/atlantes_presence_experimental/tracks.parquet
+
+The command writes `tracks.parquet` and a manifest that records the input and
+coastline hashes plus the derivation semantics. Do not use its model prediction
+as an event label or as supporting evidence for an alleged rendezvous. It is
+only a compatibility experiment to determine whether an activity feature can
+later improve candidate ranking when raw AIS is available.
+
+Run the published model in the dedicated Atlantes environment, not in the
+loader environment:
+
+    background\\.venv-atlantes\\Scripts\\python.exe scripts\\run_atlantes_activity_experiment.py \
+        --input data/silver/atlantes_presence_experimental/tracks.parquet
+
+The JSON result retains all four raw activity probabilities but is explicitly
+marked `experimental_only`, `not_raw_ais`, and `not_rendezvous_evidence`.
+
 Source details: [GFW Events API](https://globalfishingwatch.org/our-apis/documentation/docs/v3/events/get-all-events),
 [GFW Vessels API](https://globalfishingwatch.org/our-apis/documentation/docs/v3/vessels/get-one-vessel),
 [GFW 4Wings Presence and Report API](https://globalfishingwatch.org/our-apis/documentation/docs/v3/4wings),
@@ -246,6 +276,7 @@ insufficient_coverage_evidence, not intentional disabling.
     dark-rendezvous gfw-gaps --start-date 2024-01-01 --end-date 2024-01-31
     dark-rendezvous gfw-gaps-pull --start-date 2017-01-01 --end-date 2017-02-01 --page-size 500
     dark-rendezvous gfw-presence --start 2022-01-01T00:00:00Z --end 2022-01-01T01:00:00Z --region-id 5690
+    dark-rendezvous prepare-atlantes-presence --input data/silver/gfw_presence_hourly/.../points.parquet --coastline data/reference/ne_10m_coastline.geojson
     dark-rendezvous gfw-identity --query <IMO-or-MMSI-or-name>
 
 All data land under data/, which is Git-ignored. Every ingestion writes a JSON
