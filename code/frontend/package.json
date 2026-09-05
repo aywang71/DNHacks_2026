@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "import:presence": "node scripts/export-presence.mjs",
+    "import:presence": "node ../backend/scripts/export-presence.mjs",
     "test": "node --test tests/*.test.mjs",
     "dev": "vite",
     "build": "tsc -b && vite build",

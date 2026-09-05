@@ -4,7 +4,7 @@ import { readFile, stat, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { execFileSync } from 'node:child_process'
-import { exportPresence } from '../scripts/export-presence.mjs'
+import { exportPresence } from '../src/presence/export.mjs'
 import { workspace, fixture, row, canonical, digest } from './fixtures.mjs'
 
 const read = async filename => JSON.parse(await readFile(filename, 'utf8'))

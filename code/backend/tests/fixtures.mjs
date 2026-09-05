@@ -2,13 +2,13 @@ import { createHash } from 'node:crypto'
 import { mkdir, mkdtemp, writeFile, rm } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-const frontend = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
+const backend = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 export const dataset = 'public-global-presence:v4.0'
 export const canonical = value => Array.isArray(value) ? value.map(canonical) : value && typeof value === 'object' ? Object.fromEntries(Object.keys(value).sort().map(key => [key, canonical(value[key])])) : value
 export const digest = value => createHash('sha256').update(typeof value === 'string' ? value : JSON.stringify(canonical(value))).digest('hex')
 export const row = (date = '2026-08-01 00:00', extra = {}) => ({ vesselId: 'vessel-a', date, entryTimestamp: '2020-01-01T00:00:00Z', lastTransmissionDate: '2026-09-01T00:00:00Z', lat: 53, lon: 158.63999938964844, hours: 1, shipName: 'TEST', flag: 'RUS', mmsi: '', imo: '', ...extra })
 export async function workspace(t) {
-  const root = path.join(frontend, '.test-output')
+  const root = path.join(backend, '.test-output')
   await mkdir(root, { recursive: true })
   const directory = await mkdtemp(path.join(root, 'presence-'))
   t.after(() => rm(directory, { recursive: true, force: true }))

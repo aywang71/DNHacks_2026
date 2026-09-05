@@ -4,7 +4,7 @@ This document describes the implemented presence viewer. The browser reads gener
 
 ```mermaid
 flowchart LR
-    B[Bronze reports and manifests] --> I[Frontend Node import]
+    B[Bronze reports and manifests] --> I[Backend Node import]
     I --> C[Coverage catalog]
     I --> D[Daily observation shards]
     I --> V[Daily vessel indexes]
@@ -22,25 +22,36 @@ flowchart LR
 From the repository root:
 
 ```bash
-cd code/frontend
-npm ci
-npm run import:presence
-npm run dev
+npm --prefix code/backend run import:presence
+npm --prefix code/frontend ci
+npm --prefix code/frontend run dev
 ```
 
-Open the local URL printed by Vite. The installed Vite package declares `^20.19.0 || >=22.12.0` as its Node requirement; this implementation was checked with Node 23.11.0. No GFW token, Python environment, Silver files, or backend process is required.
+Open the local URL printed by Vite. The installed Vite package declares `^20.19.0 || >=22.12.0` as its Node requirement; this implementation was checked with Node 23.11.0. The backend pipeline uses only Node built-ins and requires no package installation, GFW token, Python environment, Silver files, or running HTTP service.
 
-After adding a complete `report.json` and sibling `manifest.json` anywhere under `data/bronze/gfw_presence`, rerun `npm run import:presence` and refresh the browser. New dates and vessels are discovered automatically by that command. For a production static build, run `npm run build` after import; `npm run preview` serves the resulting build locally. Browser refresh does not itself rescan Bronze.
+After adding a complete `report.json` and sibling `manifest.json` anywhere under `data/bronze/gfw_presence`, rerun the backend import command and refresh the browser. New dates and vessels are discovered by that command; browser refresh does not rescan Bronze. For production, run `npm --prefix code/frontend run build` after import. The frontend's `npm run import:presence` remains a compatibility shortcut to the same backend CLI.
 
-The importer is `code/frontend/scripts/export-presence.mjs`. Its input/output defaults are resolved relative to the script, not the shell's working directory. Overrides are available for tests or another local collection:
+The CLI is `code/backend/scripts/export-presence.mjs`; implementation is split between `src/presence/source.mjs` (input validation and normalization), `export.mjs` (aggregation and publication), and `geometry.mjs` (daily bounds). Default input/output paths are resolved from the backend module location, not the shell's working directory. From `code/backend`, overrides are available for tests or another local collection:
 
 ```bash
 npm run import:presence -- --input /absolute/presence-folder --output /absolute/export-folder
-npm test
-npm run build
 ```
 
-Generated assets are ignored at `code/frontend/public/data/presence/` and copied into `dist/data/presence/` by Vite. Bronze files are read-only. The only backend-folder change for this feature is this document.
+Generated assets remain ignored at `code/frontend/public/data/presence/` and are copied into `dist/data/presence/` by Vite. This is the static delivery boundary: the backend prepares the assets, the frontend serves them. Bronze stays read-only. Backend code does not import frontend modules; the frontend imports only backend-owned TypeScript data contracts, which disappear at compilation.
+
+## Ownership and entrypoints
+
+| Responsibility | Location |
+| --- | --- |
+| Bronze discovery, validation, normalization, semantic deduplication | `code/backend/src/presence/source.mjs` |
+| Daily catalog/index generation and atomic publication | `code/backend/src/presence/export.mjs` |
+| Import CLI | `code/backend/scripts/export-presence.mjs` |
+| Static observation/catalog/profile schemas | `code/backend/contracts/presence.ts` |
+| Import fixtures, data integrity, publication, and bounds tests | `code/backend/tests` |
+| Browser provider, LRU caches, range-wide profile merging | `code/frontend/src/presence/provider.mjs` and `timeline.mjs` |
+| Client-only time range and provider interfaces; contract re-exports | `code/frontend/src/presence/types.ts` |
+| Playback, selection, UI state, and map rendering | `code/frontend/src/App.tsx` and `src/components` |
+| Browser provider and timeline helper tests | `code/frontend/tests` |
 
 ## Import rules and observation meaning
 
@@ -67,7 +78,7 @@ For overlapping records, precedence is latest manifest creation time, relative s
 
 ## Static contracts (schema version 1)
 
-The TypeScript contracts live in `code/frontend/src/presence/types.ts`. The browser adapter lives in `src/presence/provider.mjs`, with its TypeScript declaration beside it. Asset URLs in the catalog are relative to the presence asset root, which respects Vite's base URL.
+The data contracts live in `code/backend/contracts/presence.ts`. The frontend re-exports those types from `code/frontend/src/presence/types.ts`, which additionally owns its client-only `TimeRange` and `PresenceDataProvider` interfaces. The browser adapter lives in `code/frontend/src/presence/provider.mjs`, with its TypeScript declaration beside it. Asset URLs in the catalog are relative to the presence asset root, which respects Vite's base URL.
 
 | Asset | Fields and purpose |
 | --- | --- |
@@ -125,7 +136,15 @@ Snapshot verified from the repository's presence files on September 5, 2026:
 
 Three reports contain two distinct payloads. Export totals are **33,452 observations and 25 covered hours**; there are 3,340 distinct vessels across the two dates. The August first frame contains 1,184 positions; the last contains 1,280. Do not interpret the years between these dates as continuous imported coverage.
 
-`npm test` runs Node's built-in runner against import, timeline/geometry, and provider tests inside `code/frontend/tests`. Fixtures are generated under ignored `.test-output` directories and cleaned up afterward. The real-data acceptance test reads Bronze without modifying it.
+Run both independent Node test suites and the frontend build from the repository root:
+
+```bash
+npm --prefix code/backend test
+npm --prefix code/frontend test
+npm --prefix code/frontend run build
+```
+
+Backend tests cover import/normalization, immutable publication, and daily bounds. Frontend tests cover timeline/trail geometry, request ordering, and the browser provider. Backend fixtures are generated under ignored `code/backend/.test-output` directories and cleaned up afterward. The real-data acceptance test reads Bronze without modifying it.
 
 Tests cover deduplication, metadata precedence, invalid/partial input, source integrity, publication preservation, new file discovery, inclusive date bounds, empty versus uncovered hours, stepping endpoints, six-hour and cross-midnight trails, multi-cell ambiguity, dateline geometry, bounded caches, aborts, and stale responses. Run `npm run build` for TypeScript and production bundling.
 

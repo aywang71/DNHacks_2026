@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { HOUR, DAY, dateRange, presetStart, coveredHours, nextCovered, requiredDays, currentObservations, trailFeatures, circularBounds, mergeVessels, createLatestRequest } from '../src/presence/timeline.mjs'
+import { HOUR, DAY, dateRange, presetStart, coveredHours, nextCovered, requiredDays, currentObservations, trailFeatures, mergeVessels, createLatestRequest } from '../src/presence/timeline.mjs'
 const midnight = Date.parse('2026-08-01T00:00:00Z')
 const point = (hour, extra = {}) => ({ vesselId: 'v', ts: new Date(midnight + hour * HOUR).toISOString(), lat: 40, lon: 150 + hour, ...extra })
 
@@ -46,8 +46,6 @@ test('dateline segments stay short, including equivalent +180/-180 meridians', (
     assert.ok(features.length > 0)
     for (const feature of features) { const [a, b] = feature.geometry.coordinates; assert.ok(a.every(Number.isFinite) && b.every(Number.isFinite)); assert.ok(Math.abs(a[0] - b[0]) <= 2) }
   }
-  assert.deepEqual(circularBounds([{ lon: 179, lat: 40 }, { lon: -179, lat: 41 }]), [179, 40, 181, 41])
-  assert.deepEqual(circularBounds(Array.from({ length: 150000 }, () => ({ lon: 1, lat: 2 }))), [1, 2, 1, 2])
 })
 test('metadata merge is order independent and retains full selected-range extent', () => {
   const first = { id: 'v', name: 'OLD', metadataRank: '2026|a', firstObservedAt: '2026-08-01T00:00:00Z', lastObservedAt: '2026-08-01T01:00:00Z', observationCount: 2 }
