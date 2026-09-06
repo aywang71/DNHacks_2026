@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "ensemble": {"method": "weighted_mean", "threshold": 0.5},
+  "models": [
+    {"id": "fifty_fifty", "version": "1", "adapter": "splitmix64", "artifact": "fifty_fifty/model.json", "enabled": true, "weight": 1, "scoreMeaning": "demo priority"}
+  ]
+}

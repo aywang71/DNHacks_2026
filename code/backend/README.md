@@ -1,15 +1,16 @@
 # Maritime Risk Intelligence backend
 
-The backend owns presence report validation, normalization, deduplication, static export, and the data contracts consumed by the frontend. It currently runs as an offline Node pipeline; no HTTP API is required by the viewer.
+The backend owns Silver presence validation, deduplication, static export, and the data contracts consumed by the frontend. It runs as an offline Python/Parquet pipeline; no HTTP API is required by the viewer.
 
 From this directory:
 
 ```bash
 npm run import:presence
+npm run export:investigations
 npm test
 ```
 
-No backend dependencies need installing. The importer reads `data/bronze/gfw_presence` and publishes into the frontend's `public/data/presence` directory. That output stays with the frontend so both Vite and the production static build can serve it. The frontend's `npm run import:presence` command remains a shortcut to this backend CLI.
+Install the project Python dependencies (including `pyarrow`) before importing. The importer reads normalized `data/silver/gfw_presence_hourly` Parquet and publishes into the frontend's `public/data/presence` directory. Bronze remains acquisition provenance and is not read by the viewer. The frontend's `npm run import:presence` command remains a shortcut to this backend CLI.
 
 See [DATA_FLOW.md](DATA_FLOW.md) for the full flow, schemas, commands, and future API integration boundary.
 
@@ -17,11 +18,17 @@ See [DATA_FLOW.md](DATA_FLOW.md) for the full flow, schemas, commands, and futur
 backend/
   contracts/presence.ts         Browser-safe data types
   scripts/export-presence.mjs   CLI arguments and reporting
-  src/presence/source.mjs       Bronze discovery, validation, normalization, deduplication
-  src/presence/export.mjs       Daily aggregation and atomic asset publication
+  scripts/export-presence.py    Silver discovery, validation, deduplication, and publication
   src/presence/geometry.mjs     Dateline-aware bounds for exported days
   tests/                       Import, publication, and bounds checks
 ```
+
+## Model registry and investigation queue
+
+The active viewer now consumes the exported model queue. Models are stored in
+`models/`, with configurable ensemble weights and a queue threshold in
+`models/registry.json`. See [MODELS.md](MODELS.md) for inference commands,
+dependencies, adding models, score contracts, and frontend integration.
 
 ## Historical risk API proposal — not implemented
 

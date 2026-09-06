@@ -4,7 +4,7 @@ This document describes the implemented presence viewer. The browser reads gener
 
 ```mermaid
 flowchart LR
-    B[Bronze reports and manifests] --> I[Backend Node import]
+    S[Silver Parquet and manifests] --> I[Backend Python import]
     I --> C[Coverage catalog]
     I --> D[Daily observation shards]
     I --> V[Daily vessel indexes]
@@ -29,23 +29,23 @@ npm --prefix code/frontend run dev
 
 Open the local URL printed by Vite. The installed Vite package declares `^20.19.0 || >=22.12.0` as its Node requirement; this implementation was checked with Node 23.11.0. The backend pipeline uses only Node built-ins and requires no package installation, GFW token, Python environment, Silver files, or running HTTP service.
 
-After adding a complete `report.json` and sibling `manifest.json` anywhere under `data/bronze/gfw_presence`, rerun the backend import command and refresh the browser. New dates and vessels are discovered by that command; browser refresh does not rescan Bronze. For production, run `npm --prefix code/frontend run build` after import. The frontend's `npm run import:presence` remains a compatibility shortcut to the same backend CLI.
+After adding a complete `points.parquet` and sibling `manifest.json` anywhere under `data/silver/gfw_presence_hourly`, rerun the backend import command and refresh the browser. New dates and vessels are discovered by that command; browser refresh does not rescan Silver. The import requires the project Python environment with `pyarrow`. For production, run `npm --prefix code/frontend run build` after import. The frontend's `npm run import:presence` remains a compatibility shortcut to the same backend CLI.
 
-The CLI is `code/backend/scripts/export-presence.mjs`; implementation is split between `src/presence/source.mjs` (input validation and normalization), `export.mjs` (aggregation and publication), and `geometry.mjs` (daily bounds). Default input/output paths are resolved from the backend module location, not the shell's working directory. From `code/backend`, overrides are available for tests or another local collection:
+The CLI is `code/backend/scripts/export-presence.py`; it validates Silver manifests and Parquet schemas, normalizes the browser payload, deduplicates overlapping retrievals, and atomically publishes the generated assets. Default input/output paths are resolved from the repository location, not the shell's working directory. From `code/backend`, overrides are available for tests or another local collection:
 
 ```bash
 npm run import:presence -- --input /absolute/presence-folder --output /absolute/export-folder
 ```
 
-Generated assets remain ignored at `code/frontend/public/data/presence/` and are copied into `dist/data/presence/` by Vite. This is the static delivery boundary: the backend prepares the assets, the frontend serves them. Bronze stays read-only. Backend code does not import frontend modules; the frontend imports only backend-owned TypeScript data contracts, which disappear at compilation.
+Generated assets remain ignored at `code/frontend/public/data/presence/` and are copied into `dist/data/presence/` by Vite. This is the static delivery boundary: the backend prepares the assets, the frontend serves them. Silver is the viewer source of truth; Bronze remains read-only acquisition provenance. Backend code does not import frontend modules; the frontend imports only backend-owned TypeScript data contracts, which disappear at compilation.
 
 ## Ownership and entrypoints
 
 | Responsibility | Location |
 | --- | --- |
-| Bronze discovery, validation, normalization, semantic deduplication | `code/backend/src/presence/source.mjs` |
-| Daily catalog/index generation and atomic publication | `code/backend/src/presence/export.mjs` |
-| Import CLI | `code/backend/scripts/export-presence.mjs` |
+| Silver discovery, validation, normalization, semantic deduplication | `code/backend/scripts/export-presence.py` |
+| Daily catalog/index generation and atomic publication | `code/backend/scripts/export-presence.py` |
+| Import CLI | `code/backend/scripts/export-presence.py` |
 | Static observation/catalog/profile schemas | `code/backend/contracts/presence.ts` |
 | Import fixtures, data integrity, publication, and bounds tests | `code/backend/tests` |
 | Browser provider, LRU caches, range-wide profile merging | `code/frontend/src/presence/provider.mjs` and `timeline.mjs` |
@@ -53,20 +53,20 @@ Generated assets remain ignored at `code/frontend/public/data/presence/` and are
 | Playback, selection, UI state, and map rendering | `code/frontend/src/App.tsx` and `src/components` |
 | Browser provider and timeline helper tests | `code/frontend/tests` |
 
-## Import rules and observation meaning
+## Silver import rules and observation meaning
 
-Reports contain `entries: [{ "public-global-presence:v4.0": [rows] }]`. GFW also represents a successfully queried day with no observations as a `null` dataset value. In the current reports `total: 1` counts the dataset envelope, not its thousands of observations. The importer requires matching envelope totals when supplied, `nextOffset: null` or absent, and an initial/null offset. Empty arrays and null dataset values are valid covered-empty results; an empty envelope object is not.
+Each `points.parquet` file is paired with its Silver manifest. The importer requires a complete hourly, unaggregated request, a valid GFW dataset/region identity, matching Parquet `row_count`, and only valid grid-centre presence rows. A zero-row Parquet file is valid covered-empty data.
 
 Each report requires a sibling manifest with `created_at`, `dataset_version`, `row_count`, and a `request` describing an hourly, unaggregated, vessel-grouped report, its region, spatial resolution, and half-open UTC date range. Supported spatial resolutions are HIGH (0.01°) and LOW (0.1°). Embedded paths may contain Windows separators; discovery uses actual sibling files instead.
 
-| Bronze field | Viewer meaning |
+| Silver field | Viewer meaning |
 | --- | --- |
-| `date` | Observation hour, interpreted as UTC even when the string has no suffix |
-| `vesselId` | Stable identity, exported as `gfw:<vesselId>` |
+| `ts` | Observation hour, interpreted as UTC |
+| `vessel_id` | Stable GFW identity, already exported as `gfw:<id>` |
 | `lat`, `lon` | Recorded GFW grid-cell center, not an exact raw AIS position |
-| `hours` | Presence duration within the hour, from 0 to 1 |
-| Dataset envelope key | Presence dataset version; the row's `dataset` can instead identify a vessel-identity dataset |
-| `shipName`, `mmsi`, `imo`, `callsign`, `flag`, `vesselType` | Nullable source-reported profile fields |
+| `presence_hours` | Presence duration within the hour, from 0 to 1 |
+| `report_dataset` | Presence dataset version |
+| `vessel_name`, `mmsi`, `imo`, `callsign`, `flag_state`, `gfw_vessel_type` | Nullable source-reported profile fields |
 
 `entryTimestamp`, `exitTimestamp`, and `lastTransmissionDate` do not drive playback. Empty profile fields do not invalidate a vessel with a valid GFW ID. Do not use a vessel name or IMO as a unique key.
 
@@ -90,7 +90,7 @@ The data contracts live in `code/backend/contracts/presence.ts`. The frontend re
 | Daily vessel index | `{ date, vessels: PresenceVessel[] }`; one profile per observed vessel that day |
 | `PresenceVessel` | `id`, nullable `name`/`mmsi`/`imo`/`callsign`/`flag`/`vesselType`, `firstObservedAt`, `lastObservedAt`, `observationCount`, `metadataUpdatedAt`, deterministic `metadataRank` |
 
-The exporter validates every report before publication. Daily assets have content-hashed names; existing immutable assets are not rewritten, new assets are written to temporary files and renamed, and the catalog is atomically replaced last. Existing tabs can continue using their old catalog. Old immutable assets are retained deliberately; archive cleanup must account for open clients and is not part of import.
+The exporter validates every Silver manifest and Parquet file before publication. Daily assets have content-hashed names; existing immutable assets are not rewritten, new assets are written to temporary files and renamed, and the catalog is atomically replaced last. Existing tabs can continue using their old catalog. Old immutable assets are retained deliberately; archive cleanup must account for open clients and is not part of import.
 
 Coverage comes from successful manifest request intervals, **not** minimum/maximum observed timestamps. It describes the imported regions, not global vessel absence:
 
@@ -146,7 +146,7 @@ npm --prefix code/frontend test
 npm --prefix code/frontend run build
 ```
 
-Backend tests cover import/normalization, immutable publication, and daily bounds. Frontend tests cover timeline/trail geometry, request ordering, and the browser provider. Backend fixtures are generated under ignored `code/backend/.test-output` directories and cleaned up afterward. The real-data acceptance test reads Bronze without modifying it.
+The existing Node backend tests cover the retained Bronze importer during the migration. Add Silver fixture coverage before removing that compatibility implementation. Frontend tests cover timeline/trail geometry, request ordering, and the browser provider.
 
 Tests cover deduplication, metadata precedence, invalid/partial input, source integrity, publication preservation, new file discovery, inclusive date bounds, empty versus uncovered hours, stepping endpoints, six-hour and cross-midnight trails, multi-cell ambiguity, dateline geometry, bounded caches, aborts, and stale responses. Run `npm run build` for TypeScript and production bundling.
 

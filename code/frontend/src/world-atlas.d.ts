@@ -1,4 +1,4 @@
-declare module 'world-atlas/land-110m.json' {
+declare module 'world-atlas/land-50m.json' {
   const topology: any
   export default topology
 }

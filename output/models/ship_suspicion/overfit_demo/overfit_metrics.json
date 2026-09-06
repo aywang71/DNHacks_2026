@@ -1,0 +1,29 @@
+{
+  "artifact_role": "intentionally overfit demonstration; not deployable",
+  "examples": 42245,
+  "leakage_features": [
+    "vessel_id",
+    "anchor_ordinal"
+  ],
+  "positive_examples": 36,
+  "training_resubstitution": {
+    "average_precision": 1.0,
+    "roc_auc": 1.0,
+    "top_1_percent_per_anchor": {
+      "precision": 0.08372093023255814,
+      "recall": 1.0,
+      "review_count": 430,
+      "true_positives": 36
+    }
+  },
+  "vessel_held_out": {
+    "average_precision": 0.0008521718546573559,
+    "roc_auc": 0.48034779312468906,
+    "top_1_percent_per_anchor": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "review_count": 430,
+      "true_positives": 0
+    }
+  }
+}

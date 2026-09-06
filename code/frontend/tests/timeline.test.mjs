@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { HOUR, DAY, dateRange, presetStart, coveredHours, nextCovered, requiredDays, currentObservations, trailFeatures, mergeVessels, createLatestRequest } from '../src/presence/timeline.mjs'
+import { HOUR, DAY, dateRange, presetStart, coveredHours, latestPositionedHour, nextCovered, requiredDays, currentObservations, trailFeatures, mergeVessels, createLatestRequest } from '../src/presence/timeline.mjs'
 const midnight = Date.parse('2026-08-01T00:00:00Z')
 const point = (hour, extra = {}) => ({ vesselId: 'v', ts: new Date(midnight + hour * HOUR).toISOString(), lat: 40, lon: 150 + hour, ...extra })
 
@@ -21,6 +21,16 @@ test('stepping skips only uncovered hours and stops at the range end', () => {
   assert.equal(nextCovered(hours, midnight + 5 * HOUR), null)
   assert.equal(nextCovered(hours, midnight, -1), null)
   assert.equal(nextCovered(hours, midnight + 4 * HOUR, -1), midnight + HOUR)
+})
+test('initial range selection prefers the latest hour with positions over later empty coverage', () => {
+  const catalog = { days: [
+    { date: '2026-08-01', coveredHours: [3, 4], hourlyCounts: [0, 0, 0, 8, 0] },
+    { date: '2026-08-02', coveredHours: [0, 1], hourlyCounts: [0, 0] },
+    { date: '2026-08-03', coveredHours: [2], hourlyCounts: [0, 0, 12] },
+  ] }
+  assert.equal(latestPositionedHour(catalog, dateRange('2026-08-01', '2026-08-03')), Date.parse('2026-08-03T02:00:00Z'))
+  assert.equal(latestPositionedHour(catalog, dateRange('2026-08-01', '2026-08-02')), Date.parse('2026-08-01T03:00:00Z'))
+  assert.equal(latestPositionedHour(catalog, dateRange('2026-08-02', '2026-08-02')), Date.parse('2026-08-02T01:00:00Z'))
 })
 test('cross-midnight trails require only current and preceding imported days', () => {
   const catalog = { days: ['2026-07-30', '2026-07-31', '2026-08-01', '2026-08-02'].map(date => ({ date })) }

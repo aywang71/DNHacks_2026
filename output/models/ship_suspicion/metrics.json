@@ -1,0 +1,22 @@
+{
+  "average_precision": 0.0015706771469328278,
+  "brier_score": 0.0022375764105475268,
+  "constant_prevalence_brier_score": 0.0008514456577874857,
+  "constant_prevalence_log_loss": 0.006874722711238906,
+  "evaluation": "out-of-fold predictions grouped by vessel",
+  "examples": 42245,
+  "log_loss": 0.01779916842843158,
+  "positive_examples": 36,
+  "positive_vessels": 9,
+  "prevalence": 0.0008521718546573559,
+  "random_ranking_average_precision": 0.0008521718546573559,
+  "random_ranking_roc_auc": 0.5,
+  "roc_auc": 0.6690450430529561,
+  "top_1_percent_per_anchor": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "review_count": 430,
+    "true_positives": 0
+  },
+  "unique_vessels": 4504
+}

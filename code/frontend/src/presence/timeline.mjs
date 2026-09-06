@@ -18,6 +18,24 @@ export function coveredHours(catalog, range) {
     .filter(ts => ts >= range.start && ts < range.end).sort((a, b) => a - b)
 }
 
+// Prefer a populated observation hour whenever a range is opened. Catalog
+// coverage can include deliberately imported empty hours, which are useful for
+// playback but make a poor initial view.
+export function latestPositionedHour(catalog, range) {
+  let latestPosition = null
+  let latestCovered = null
+  for (const day of catalog.days) {
+    const midnight = Date.parse(`${day.date}T00:00:00Z`)
+    for (const hour of day.coveredHours) {
+      const timestamp = midnight + hour * HOUR
+      if (timestamp < range.start || timestamp >= range.end) continue
+      if (latestCovered === null || timestamp > latestCovered) latestCovered = timestamp
+      if (day.hourlyCounts[hour] > 0 && (latestPosition === null || timestamp > latestPosition)) latestPosition = timestamp
+    }
+  }
+  return latestPosition ?? latestCovered
+}
+
 export function nextCovered(hours, cursor, direction = 1) {
   // Binary search keeps stepping independent of the size of the archive.
   let lo = 0, hi = hours.length
