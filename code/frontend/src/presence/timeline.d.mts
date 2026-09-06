@@ -6,9 +6,13 @@ export function dateRange(startDate: string, endDate: string): TimeRange | null
 export function presetStart(endDate: string, days: number): string
 export function coveredHours(catalog: PresenceCatalog, range: TimeRange): number[]
 export function latestPositionedHour(catalog: PresenceCatalog, range: TimeRange): number | null
+export function earliestPositionedHour(catalog: PresenceCatalog, range: TimeRange): number | null
 export function nextCovered(hours: number[], cursor: number, direction?: number): number | null
 export function requiredDays(cursor: number, rangeStart: number, catalog: PresenceCatalog): PresenceDay[]
 export function currentObservations(observations: Observation[], cursor: number): Observation[]
+export interface AnimatedObservation extends Observation { opacity: number }
+export function createObservationInterpolator(current: Observation[], next: Observation[]): (progress: number) => AnimatedObservation[]
+export function interpolateObservations(current: Observation[], next: Observation[], progress: number): AnimatedObservation[]
 export function trailFeatures(observations: Observation[], vesselId: string | null, cursor: number, rangeStart: number): any
 export function mergeVessels(summaries: DayVessels[]): PresenceVessel[]
 export function createLatestRequest(): { invalidate(): void; run<T>(work: () => Promise<T>, publish: (value: T) => void, reject: (error: unknown) => void): Promise<void> }

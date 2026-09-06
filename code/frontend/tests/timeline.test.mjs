@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { HOUR, DAY, dateRange, presetStart, coveredHours, latestPositionedHour, nextCovered, requiredDays, currentObservations, trailFeatures, mergeVessels, createLatestRequest } from '../src/presence/timeline.mjs'
+import { HOUR, DAY, dateRange, presetStart, coveredHours, earliestPositionedHour, latestPositionedHour, nextCovered, requiredDays, currentObservations, interpolateObservations, trailFeatures, mergeVessels, createLatestRequest } from '../src/presence/timeline.mjs'
 const midnight = Date.parse('2026-08-01T00:00:00Z')
 const point = (hour, extra = {}) => ({ vesselId: 'v', ts: new Date(midnight + hour * HOUR).toISOString(), lat: 40, lon: 150 + hour, ...extra })
 
@@ -31,6 +31,8 @@ test('initial range selection prefers the latest hour with positions over later 
   assert.equal(latestPositionedHour(catalog, dateRange('2026-08-01', '2026-08-03')), Date.parse('2026-08-03T02:00:00Z'))
   assert.equal(latestPositionedHour(catalog, dateRange('2026-08-01', '2026-08-02')), Date.parse('2026-08-01T03:00:00Z'))
   assert.equal(latestPositionedHour(catalog, dateRange('2026-08-02', '2026-08-02')), Date.parse('2026-08-02T01:00:00Z'))
+  assert.equal(earliestPositionedHour(catalog, dateRange('2026-08-01', '2026-08-03')), Date.parse('2026-08-01T03:00:00Z'))
+  assert.equal(earliestPositionedHour(catalog, dateRange('2026-08-02', '2026-08-02')), Date.parse('2026-08-02T00:00:00Z'))
 })
 test('cross-midnight trails require only current and preceding imported days', () => {
   const catalog = { days: ['2026-07-30', '2026-07-31', '2026-08-01', '2026-08-02'].map(date => ({ date })) }
@@ -42,6 +44,27 @@ test('selection can persist when current positions disappear; no trail crosses m
   assert.deepEqual(currentObservations(rows, midnight + 2 * HOUR), [])
   assert.equal(trailFeatures(rows, 'v', midnight + 3 * HOUR, midnight).features.length, 1)
   assert.equal(currentObservations(rows, midnight + 3 * HOUR)[0].vesselId, 'v')
+})
+test('animation interpolates positions across the dateline and fades changing reports', () => {
+  const current = [point(0, { vesselId: 'moving', lon: 179, lat: 40 }), point(0, { vesselId: 'leaving', lon: 10 })]
+  const next = [point(1, { vesselId: 'moving', lon: -179, lat: 42 }), point(1, { vesselId: 'joining', lon: 20 })]
+  const middle = interpolateObservations(current, next, 0.5)
+  const moving = middle.find(row => row.vesselId === 'moving')
+  assert.ok(Math.abs(Math.abs(moving.lon) - 180) < 0.001)
+  assert.equal(moving.lat, 41)
+  assert.equal(middle.find(row => row.vesselId === 'leaving').opacity, 0.5)
+  assert.equal(middle.find(row => row.vesselId === 'joining').opacity, 0.5)
+  assert.deepEqual(interpolateObservations(current, next, 1).map(row => row.vesselId), ['moving', 'joining'])
+})
+test('vessels maintain steady speed through consecutive hourly boundaries', () => {
+  const rows = [point(0), point(1), point(2)]
+  const longitude = (hour, progress) => interpolateObservations([rows[hour]], [rows[hour + 1]], progress)[0].lon
+  for (const progress of [0.01, 0.25, 0.75, 0.99]) {
+    assert.ok(Math.abs(longitude(0, progress) - (150 + progress)) < 1e-10)
+  }
+  const before = longitude(0, 1) - longitude(0, 0.99)
+  const after = longitude(1, 0.01) - longitude(1, 0)
+  assert.ok(Math.abs(before - after) < 1e-10)
 })
 test('trails span at most six hours and break around multi-cell hours', () => {
   const rows = Array.from({ length: 10 }, (_, i) => point(i))

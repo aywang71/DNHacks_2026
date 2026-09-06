@@ -36,6 +36,21 @@ export function latestPositionedHour(catalog, range) {
   return latestPosition ?? latestCovered
 }
 
+export function earliestPositionedHour(catalog, range) {
+  let earliestPosition = null
+  let earliestCovered = null
+  for (const day of catalog.days) {
+    const midnight = Date.parse(`${day.date}T00:00:00Z`)
+    for (const hour of day.coveredHours) {
+      const timestamp = midnight + hour * HOUR
+      if (timestamp < range.start || timestamp >= range.end) continue
+      if (earliestCovered === null || timestamp < earliestCovered) earliestCovered = timestamp
+      if (day.hourlyCounts[hour] > 0 && (earliestPosition === null || timestamp < earliestPosition)) earliestPosition = timestamp
+    }
+  }
+  return earliestPosition ?? earliestCovered
+}
+
 export function nextCovered(hours, cursor, direction = 1) {
   // Binary search keeps stepping independent of the size of the archive.
   let lo = 0, hi = hours.length
@@ -46,12 +61,56 @@ export function nextCovered(hours, cursor, direction = 1) {
 }
 
 export function requiredDays(cursor, rangeStart, catalog) {
-  const dates = new Set([dayOf(cursor), dayOf(Math.max(rangeStart, cursor - 6 * HOUR))])
+  const dates = new Set([dayOf(cursor), dayOf(cursor + HOUR), dayOf(Math.max(rangeStart, cursor - 6 * HOUR))])
   return catalog.days.filter(day => dates.has(day.date))
 }
 
 export function currentObservations(observations, cursor) {
   return observations.filter(row => Date.parse(row.ts) === cursor)
+}
+
+// Blend consecutive hourly reports into animation frames. Vessels with a
+// report at only one end of the interval fade in/out, avoiding a distracting
+// pop when the set of reporting vessels changes.
+export function createObservationInterpolator(current, next) {
+  // Match reports once per interval, rather than rebuilding indexes every frame.
+  const currentCounts = new Map(), nextCounts = new Map(), nextByVessel = new Map()
+  for (const row of current) currentCounts.set(row.vesselId, (currentCounts.get(row.vesselId) ?? 0) + 1)
+  for (const row of next) {
+    nextCounts.set(row.vesselId, (nextCounts.get(row.vesselId) ?? 0) + 1)
+    nextByVessel.set(row.vesselId, row)
+  }
+  const matched = new Set()
+  const pairs = current.map(row => {
+    const target = nextByVessel.get(row.vesselId)
+    if (!target || currentCounts.get(row.vesselId) !== 1 || nextCounts.get(row.vesselId) !== 1) return { row }
+    matched.add(row.vesselId)
+    let longitudeDelta = target.lon - row.lon
+    if (longitudeDelta > 180) longitudeDelta -= 360
+    if (longitudeDelta < -180) longitudeDelta += 360
+    return { row, target, longitudeDelta }
+  })
+  const joining = next.filter(row => !matched.has(row.vesselId))
+  return progress => {
+    if (progress <= 0) return current.map(row => ({ ...row, opacity: 1 }))
+    if (progress >= 1) return next.map(row => ({ ...row, opacity: 1 }))
+    // Constant speed avoids braking and accelerating at every hourly report.
+    const t = progress
+    const fade = t * t * (3 - 2 * t)
+    const frames = pairs.map(({ row, target, longitudeDelta }) => {
+      if (!target) return { ...row, opacity: 1 - fade }
+      let lon = row.lon + longitudeDelta * t
+      if (lon > 180) lon -= 360
+      if (lon < -180) lon += 360
+      return { ...row, lat: row.lat + (target.lat - row.lat) * t, lon, opacity: 1 }
+    })
+    for (const row of joining) frames.push({ ...row, opacity: fade })
+    return frames
+  }
+}
+
+export function interpolateObservations(current, next, progress) {
+  return createObservationInterpolator(current, next)(progress)
 }
 
 export function trailFeatures(observations, vesselId, cursor, rangeStart) {

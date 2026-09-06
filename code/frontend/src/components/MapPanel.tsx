@@ -3,12 +3,17 @@ import * as maplibregl from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import { land } from '../data/land'
 import { portFeatures, ports } from '../data/ports'
+import { createObservationInterpolator } from '../presence/timeline.mjs'
 import type { Observation } from '../presence/types'
 import './MapPanel.css'
 
 const empty = { type: 'FeatureCollection', features: [] }
 export interface MapPanelProps {
   positions: Observation[]
+  nextPositions: Observation[]
+  playing: boolean
+  transitionDuration: number
+  onTransitionEnd: () => void
   trail: any
   history: Observation[]
   selectedId: string | null
@@ -22,6 +27,14 @@ export function MapPanel(props: MapPanelProps) {
   const map = useRef<any>(null)
   const latest = useRef(props)
   const fitDone = useRef(false)
+  const playback = useRef({ positions: props.positions, nextPositions: props.nextPositions, elapsed: 0 })
+  const [reducedMotion, setReducedMotion] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+  useEffect(() => {
+    const media = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const update = () => setReducedMotion(media.matches)
+    media.addEventListener('change', update)
+    return () => media.removeEventListener('change', update)
+  }, [])
   const [ready, setReady] = useState(false)
   const [mapError, setMapError] = useState('')
   latest.current = props
@@ -57,8 +70,8 @@ export function MapPanel(props: MapPanelProps) {
       for (const source of ['presence-trail', 'presence-history', 'presence']) instance.addSource(source, { type: 'geojson', data: empty })
       instance.addLayer({ id: 'presence-trail', type: 'line', source: 'presence-trail', paint: { 'line-color': '#a7f3c0', 'line-width': 2, 'line-opacity': 0.75 } })
       instance.addLayer({ id: 'presence-history', type: 'circle', source: 'presence-history', paint: { 'circle-radius': 3, 'circle-color': '#a7f3c0', 'circle-opacity': 0.55, 'circle-stroke-width': 1, 'circle-stroke-color': '#0c0a09' } })
-      instance.addLayer({ id: 'presence', type: 'circle', source: 'presence', paint: { 'circle-radius': ['interpolate', ['linear'], ['zoom'], 1, 3, 7, 5], 'circle-color': '#3ebd78', 'circle-opacity': 0.9, 'circle-stroke-color': '#102a1b', 'circle-stroke-width': 0.7 } })
-      instance.addLayer({ id: 'presence-selected', type: 'circle', source: 'presence', filter: ['==', ['get', 'vesselId'], ''], paint: { 'circle-radius': 7, 'circle-color': '#d9ffe5', 'circle-stroke-color': '#3ebd78', 'circle-stroke-width': 3 } })
+      instance.addLayer({ id: 'presence', type: 'circle', source: 'presence', paint: { 'circle-radius': ['interpolate', ['linear'], ['zoom'], 1, 3, 7, 5], 'circle-color': '#3ebd78', 'circle-opacity': ['*', 0.9, ['coalesce', ['get', 'opacity'], 1]], 'circle-stroke-color': '#102a1b', 'circle-stroke-width': 0.7 } })
+      instance.addLayer({ id: 'presence-selected', type: 'circle', source: 'presence', filter: ['==', ['get', 'vesselId'], ''], paint: { 'circle-radius': 7, 'circle-color': '#d9ffe5', 'circle-opacity': ['coalesce', ['get', 'opacity'], 1], 'circle-stroke-color': '#3ebd78', 'circle-stroke-width': 3 } })
       instance.on('click', 'presence', (event: any) => { const id = event.features?.[0]?.properties?.vesselId; if (id) latest.current.onSelect(id) })
       instance.on('mouseenter', 'presence', () => { instance.getCanvas().style.cursor = 'pointer' })
       instance.on('mouseleave', 'presence', () => { instance.getCanvas().style.cursor = '' })
@@ -71,12 +84,44 @@ export function MapPanel(props: MapPanelProps) {
   }, [])
   useEffect(() => {
     if (!ready || !map.current) return
+    let frame = 0
+    const segment = playback.current
+    if (segment.positions !== props.positions || segment.nextPositions !== props.nextPositions) {
+      segment.positions = props.positions
+      segment.nextPositions = props.nextPositions
+      segment.elapsed = 0
+    }
+    const interpolate = createObservationInterpolator(props.positions, props.nextPositions)
+    let previousTime = performance.now()
+    const toGeoJSON = (rows: Array<Observation & { opacity?: number }>) => ({ type: 'FeatureCollection', features: rows.map(row => ({ type: 'Feature', properties: { vesselId: row.vesselId, observationId: row.id, opacity: row.opacity ?? 1 }, geometry: { type: 'Point', coordinates: [row.lon, row.lat] } })) })
+    if (reducedMotion) {
+      map.current.getSource('presence')?.setData(toGeoJSON(props.positions))
+      if (!props.playing) return
+      const timer = window.setTimeout(() => latest.current.onTransitionEnd(), props.transitionDuration)
+      return () => window.clearTimeout(timer)
+    }
+    const draw = (now: number) => {
+      // Preserve the displayed position while paused; ignore time spent in a
+      // background tab so returning to playback cannot produce a sudden jump.
+      if (props.playing && !document.hidden) segment.elapsed += Math.min(now - previousTime, 64)
+      previousTime = now
+      const progress = Math.min(segment.elapsed / props.transitionDuration, 1)
+      map.current?.getSource('presence')?.setData(toGeoJSON(interpolate(progress)))
+      if (props.playing) {
+        if (progress < 1) frame = requestAnimationFrame(draw)
+        else latest.current.onTransitionEnd()
+      }
+    }
+    draw(previousTime)
+    return () => cancelAnimationFrame(frame)
+  }, [ready, props.positions, props.nextPositions, props.playing, props.transitionDuration, reducedMotion])
+  useEffect(() => {
+    if (!ready || !map.current) return
     const toGeoJSON = (rows: Observation[]) => ({ type: 'FeatureCollection', features: rows.map(row => ({ type: 'Feature', properties: { vesselId: row.vesselId, observationId: row.id }, geometry: { type: 'Point', coordinates: [row.lon, row.lat] } })) })
-    map.current.getSource('presence').setData(toGeoJSON(props.positions))
     map.current.getSource('presence-trail').setData(props.trail)
     map.current.getSource('presence-history').setData(toGeoJSON(props.history))
     map.current.setFilter('presence-selected', ['==', ['get', 'vesselId'], props.selectedId ?? ''])
-  }, [ready, props.positions, props.trail, props.history, props.selectedId])
+  }, [ready, props.trail, props.history, props.selectedId])
   useEffect(() => {
     if (!ready || !props.initialBounds || fitDone.current) return
     const [west, south, east, north] = props.initialBounds
@@ -84,7 +129,7 @@ export function MapPanel(props: MapPanelProps) {
     fitDone.current = true
   }, [ready, props.initialBounds])
   return <section className="presence-map" aria-label="Vessel presence map">
-    <div ref={element} className="world-map" role="img" aria-label={`${props.positions.length.toLocaleString()} recorded vessel positions. Use the vessel list to select a vessel with the keyboard.`} />
+    <div ref={element} className="world-map" role="group" aria-label={`${props.positions.length.toLocaleString()} recorded vessel positions. Use the vessel list to select a vessel with the keyboard.`} />
     <div className="map-key"><span><i /> Recorded positions</span><span><i className="port-key" /> Major ports</span><span className="map-key-detail">Global Fishing Watch · Hourly grid centers</span></div>
     {(props.status || mapError) && <div className="map-message" role="status">{mapError || props.status}</div>}
   </section>
