@@ -1,0 +1,56 @@
+{
+  "request_id": "gulf_2021_09_aet_pair",
+  "completed_at": "2026-09-05T22:36:13Z",
+  "status": "completed",
+  "provider": "noaa_marine_cadastre",
+  "position_semantics": "terrestrial_ais_minute_downsampled",
+  "bronze_objects": [
+    {
+      "date": "2021-09-15",
+      "path": "data/bronze/noaa_marine_cadastre/2021/ais-2021-09-15.csv.zst",
+      "bytes": 265914141,
+      "sha256": "6cd06fa96126fc4ba883efee477e703e7239a4fe65c9b47c2527457a00ee149f"
+    },
+    {
+      "date": "2021-09-16",
+      "path": "data/bronze/noaa_marine_cadastre/2021/ais-2021-09-16.csv.zst",
+      "bytes": 263182984,
+      "sha256": "8fc3a78850e7d38a952dfa01224f484f836a45390bbbf2808906e720c71c42ed"
+    },
+    {
+      "date": "2021-09-17",
+      "path": "data/bronze/noaa_marine_cadastre/2021/ais-2021-09-17.csv.zst",
+      "bytes": 263132240,
+      "sha256": "77387a89f184fd9b730bfa789a40aaf84ee8d99e0a537917b2bf0fa116f7bcc5"
+    }
+  ],
+  "silver_summary": {
+    "path": "data/silver/ais_positions/source=noaa_marine_cadastre/request_id=gulf_2021_09_aet_pair/",
+    "rows": 58318,
+    "valid_rows": 58318,
+    "distinct_vessels": 280,
+    "time_min_utc": "2021-09-15T00:00:05Z",
+    "time_max_utc": "2021-09-17T23:59:55Z"
+  },
+  "trigger_vessel_observations": [
+    {
+      "mmsi": "367530350",
+      "name": "AET RESPONSIBILITY",
+      "gfw_event_id": "89ec6f06d17264ecc4645d72e0bf81ca",
+      "rows_in_requested_bbox": 144,
+      "rows_during_gfw_gap": 3,
+      "gfw_gap_start_utc": "2021-09-15T21:53:39Z",
+      "gfw_gap_end_utc": "2021-09-16T20:52:01Z"
+    },
+    {
+      "mmsi": "367511240",
+      "name": "AET EXCELLENCE",
+      "gfw_event_id": "5fe704944fcf3e1083a170260d1ef710",
+      "rows_in_requested_bbox": 151,
+      "rows_during_gfw_gap": 11,
+      "gfw_gap_start_utc": "2021-09-16T01:53:55Z",
+      "gfw_gap_end_utc": "2021-09-16T22:29:04Z"
+    }
+  ],
+  "interpretation": "NOAA observations during GFW-labelled gap intervals show that this screen is not a raw-AIS validation of an absence. The result is a coverage/provenance finding, not evidence for or against a rendezvous or intentional disabling."
+}

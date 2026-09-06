@@ -1,0 +1,119 @@
+{
+  "description": "Targeted 30-day, hourly GFW AIS-Presence coverage for the Dark Rendezvous demo. These regions are intentionally a selected showcase, not global coverage.",
+  "date_range": {
+    "start": "2026-08-06T00:00:00Z",
+    "end": "2026-09-05T00:00:00Z"
+  },
+  "report_settings": {
+    "dataset": "public-global-presence:latest",
+    "format": "JSON",
+    "group_by": "VESSEL_ID",
+    "temporal_resolution": "HOURLY",
+    "spatial_resolution": "HIGH",
+    "spatial_aggregation": false
+  },
+  "targets": [
+    {
+      "slug": "iran_eez",
+      "kind": "eez",
+      "region_dataset": "public-eez-areas",
+      "region_id": 8469,
+      "label": "Iranian Exclusive Economic Zone"
+    },
+    {
+      "slug": "china_eez",
+      "kind": "eez",
+      "region_dataset": "public-eez-areas",
+      "region_id": 8486,
+      "label": "Chinese Exclusive Economic Zone"
+    },
+    {
+      "slug": "australia_eez",
+      "kind": "eez",
+      "region_dataset": "public-eez-areas",
+      "region_id": 8323,
+      "label": "Australian Exclusive Economic Zone"
+    },
+    {
+      "slug": "suez_red_sea_corridor",
+      "kind": "geojson",
+      "label": "Suez Canal and Red Sea corridor",
+      "geojson": {
+        "type": "Polygon",
+        "coordinates": [[[31.8, 31.6], [35.9, 29.0], [44.8, 13.0], [44.5, 11.8], [41.6, 11.8], [33.6, 27.2], [31.8, 30.0], [31.8, 31.6]]]
+      }
+    },
+    {
+      "slug": "mediterranean_west",
+      "kind": "geojson",
+      "label": "Western Mediterranean",
+      "geojson": {
+        "type": "Polygon",
+        "coordinates": [[[-6.0, 30.0], [14.99, 30.0], [14.99, 45.8], [-6.0, 45.8], [-6.0, 30.0]]]
+      }
+    },
+    {
+      "slug": "mediterranean_east",
+      "kind": "geojson",
+      "label": "Eastern Mediterranean",
+      "geojson": {
+        "type": "Polygon",
+        "coordinates": [[[15.01, 31.75], [36.5, 31.75], [36.5, 36.5], [32.0, 36.5], [28.0, 37.0], [26.0, 39.5], [24.0, 40.0], [22.0, 40.0], [21.0, 43.5], [19.0, 45.8], [15.01, 45.8], [15.01, 31.75]]]
+      }
+    },
+    {
+      "slug": "pacific_northwest",
+      "kind": "geojson",
+      "label": "Northwest Pacific",
+      "geojson": {
+        "type": "Polygon",
+        "coordinates": [[[140.0, 20.0], [160.0, 20.0], [160.0, 40.0], [140.0, 40.0], [140.0, 20.0]]]
+      }
+    },
+    {
+      "slug": "pacific_dateline_west",
+      "kind": "geojson",
+      "label": "Western equatorial Pacific",
+      "geojson": {
+        "type": "Polygon",
+        "coordinates": [[[160.0, 0.0], [179.9, 0.0], [179.9, 20.0], [160.0, 20.0], [160.0, 0.0]]]
+      }
+    },
+    {
+      "slug": "pacific_dateline_east",
+      "kind": "geojson",
+      "label": "Eastern equatorial Pacific",
+      "geojson": {
+        "type": "Polygon",
+        "coordinates": [[[-179.9, 0.0], [-160.0, 0.0], [-160.0, 20.0], [-179.9, 20.0], [-179.9, 0.0]]]
+      }
+    },
+    {
+      "slug": "strait_of_hormuz",
+      "kind": "geojson",
+      "label": "Persian Gulf and Strait of Hormuz",
+      "geojson": {
+        "type": "Polygon",
+        "coordinates": [[[47.0, 22.0], [58.0, 22.0], [58.0, 31.0], [47.0, 31.0], [47.0, 22.0]]]
+      }
+    },
+    {
+      "slug": "taiwan_strait",
+      "kind": "geojson",
+      "label": "Taiwan Strait",
+      "geojson": {
+        "type": "Polygon",
+        "coordinates": [[[116.5, 21.5], [123.5, 21.5], [123.5, 27.5], [116.5, 27.5], [116.5, 21.5]]]
+      }
+    },
+    {
+      "slug": "malacca_singapore",
+      "kind": "geojson",
+      "label": "Strait of Malacca and Singapore",
+      "geojson": {
+        "type": "Polygon",
+        "coordinates": [[[98.5, 0.5], [105.5, 0.5], [105.5, 7.5], [98.5, 7.5], [98.5, 0.5]]]
+      }
+    }
+  ]
+}

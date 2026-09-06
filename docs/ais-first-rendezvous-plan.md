@@ -1,5 +1,10 @@
 # AIS-first Dark Rendezvous build plan
 
+> **Design reference, not the current checkout layout.** The implementation
+> already has an ingestion CLI, GFW Bronze/Silver data, and a presence viewer.
+> This document specifies the future candidate-detection architecture. Use
+> [REPO_MAP.md](../REPO_MAP.md) for existing code and data locations.
+
 ## Decision
 
 Build an **AIS-first, post-event candidate-triage system**. Its first release
@@ -318,7 +323,7 @@ weights, and cloned external repositories stay outside Git.
       scripts/
         run_local.ps1
         verify_manifest.py
-      data/                           # Git-ignored; described below
+      data/                           # proposed target layout; see REPO_MAP.md for current paths
         raw/
         normalized/
         derived/
@@ -343,7 +348,7 @@ weights, and cloned external repositories stay outside Git.
 - **imagery** is a plugin boundary. An unavailable satellite dependency must
   result in coverage_status=unknown, not a failed AIS assessment.
 
-## Storage policy
+## Future storage policy
 
 Keep a source ledger and append-only derived artifacts. Do not overwrite an
 assessment that might need to be reconstructed.
@@ -415,4 +420,3 @@ than whole scenes.
   publishes a downloadable xView3-trained model.
 - [rslearn Sentinel-2 vessel documentation](https://github.com/allenai/rslearn_projects/blob/master/docs/sentinel2_vessels.md)
   documents public checkpoints and an on-demand scene prediction pipeline.
-

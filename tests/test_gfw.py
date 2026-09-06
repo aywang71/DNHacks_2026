@@ -1,9 +1,12 @@
+import json
+
 from dark_rendezvous.cli import _gfw_api_token
 from dark_rendezvous.providers.gfw import GFW_GAP_ENDPOINT_COLUMNS, GfwClient, normalize_gap_endpoints
 from dark_rendezvous.providers.gfw_presence import (
     GFW_PRESENCE_COLUMNS,
     PRESENCE_POSITION_SEMANTICS,
     normalize_presence_report,
+    partition_presence_report,
     report_dataset_version,
 )
 from dark_rendezvous.providers.gfw_tracks import normalize_track_lines
@@ -22,6 +25,67 @@ def test_gfw_token_loads_ignored_local_env_without_overriding_process_env(tmp_pa
 
 def test_gfw_client_accepts_a_presence_report_timeout() -> None:
     assert GfwClient("test-token", timeout_seconds=180.0)._timeout_seconds == 180.0
+
+
+def test_partition_presence_report_preserves_rows_below_byte_limit() -> None:
+    records = [
+        {"vesselId": f"vessel-{index}", "date": "2026-08-06 00:00", "detail": "x" * 600}
+        for index in range(8)
+    ]
+    payload = {"entries": [{"public-global-presence:v4.0": records}], "metadata": {}, "total": 1}
+
+    parts = partition_presence_report(payload, max_bytes=2_000)
+
+    assert len(parts) > 1
+    assert all(len(json.dumps(part, indent=2, sort_keys=True).encode("utf-8")) <= 2_000 for part in parts)
+    actual_records = [
+        record
+        for part in parts
+        for entry in part["entries"]
+        for record in entry["public-global-presence:v4.0"]
+    ]
+    assert actual_records == records
+
+
+def test_gfw_client_posts_custom_geojson_presence_report(monkeypatch) -> None:
+    captured: dict[str, object] = {}
+
+    class Response:
+        headers = {"x-datasets": "public-global-presence:v4.0"}
+
+        def raise_for_status(self) -> None:
+            return None
+
+        def json(self) -> dict[str, object]:
+            return {"entries": []}
+
+    def fake_post(url, *, params, json, headers, timeout):
+        captured.update({"url": url, "params": params, "json": json, "headers": headers, "timeout": timeout})
+        return Response()
+
+    monkeypatch.setattr("dark_rendezvous.providers.gfw.httpx.post", fake_post)
+    geometry = {"type": "Polygon", "coordinates": [[[31.8, 30.0], [32.0, 30.0], [31.8, 30.0]]]}
+
+    client = GfwClient("test-token", timeout_seconds=45.0)
+    result = client.presence_report(
+        start="2026-08-06T00:00:00Z",
+        end="2026-09-05T00:00:00Z",
+        geojson=geometry,
+    )
+
+    assert result == {"entries": []}
+    assert captured["url"] == "https://gateway.api.globalfishingwatch.org/v3/4wings/report"
+    assert captured["json"] == {"geojson": geometry}
+    assert captured["params"] == {
+        "datasets[0]": "public-global-presence:latest",
+        "date-range": "2026-08-06T00:00:00Z,2026-09-05T00:00:00Z",
+        "format": "JSON",
+        "group-by": "VESSEL_ID",
+        "temporal-resolution": "HOURLY",
+        "spatial-resolution": "HIGH",
+        "spatial-aggregation": "false",
+    }
+    assert client.last_dataset_version == "public-global-presence:v4.0"
 
 
 def test_gap_events_expand_to_two_distinct_endpoint_rows() -> None:
