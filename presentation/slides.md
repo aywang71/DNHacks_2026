@@ -68,7 +68,7 @@ layout: default
 
 <div class="source-strip"><b>7.8M t/mo</b><span>Crude attributed to dark-shipping flows from <em>Iran, Syria, Venezuela, and Russia</em>, 2017–2023.</span></div>
 <div class="paper-citation">The dollar lens: 7.8M t/mo × 7.3 bbl/t × &#36;69.43/bbl average Brent = &#36;4.0B/mo (≈&#36;48B/yr). Sources: <a href="https://users.ox.ac.uk/~wadh4073/research_files/Dark_Shipping.pdf">Fernández-Villaverde et al. (2025)</a> · <a href="https://www.eia.gov/dnav/pet/hist/LeafHandler.ashx?f=a&amp;n=pet&amp;s=rbrte">U.S. EIA</a>.</div>
-<div class="footer"><span>THE ECONOMIC SCALE OF THE BLIND SPOT</span><span>03</span></div>
+<div class="footer"><span></span><span>03</span></div>
 
 ---
 layout: default
