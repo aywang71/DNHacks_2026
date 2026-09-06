@@ -1,6 +1,6 @@
 # wake.ai presentation
 
-This is the wake.ai pitch deck. It is a Slidev deck with eight slides.
+This is the wake.ai pitch deck. It is a Slidev deck with nine slides.
 
 From this directory:
 

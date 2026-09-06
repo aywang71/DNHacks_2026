@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { HOUR, DAY, dateRange, presetStart, coveredHours, latestPositionedHour, nextCovered, requiredDays, currentObservations, trailFeatures, mergeVessels, createLatestRequest } from '../src/presence/timeline.mjs'
+import { HOUR, DAY, dateRange, presetStart, coveredHours, latestPositionedHour, nextCovered, requiredDays, currentObservations, trailFeatures, directionFeature, mergeVessels, createLatestRequest } from '../src/presence/timeline.mjs'
 const midnight = Date.parse('2026-08-01T00:00:00Z')
 const point = (hour, extra = {}) => ({ vesselId: 'v', ts: new Date(midnight + hour * HOUR).toISOString(), lat: 40, lon: 150 + hour, ...extra })
 
@@ -43,12 +43,23 @@ test('selection can persist when current positions disappear; no trail crosses m
   assert.equal(trailFeatures(rows, 'v', midnight + 3 * HOUR, midnight).features.length, 1)
   assert.equal(currentObservations(rows, midnight + 3 * HOUR)[0].vesselId, 'v')
 })
-test('trails span at most six hours and break around multi-cell hours', () => {
+test('trails span four hours, fade by age, and break around multi-cell hours', () => {
   const rows = Array.from({ length: 10 }, (_, i) => point(i))
-  assert.equal(trailFeatures(rows, 'v', midnight + 9 * HOUR, midnight).features.length, 6)
+  const features = trailFeatures(rows, 'v', midnight + 9 * HOUR, midnight).features
+  assert.equal(features.length, 4)
+  assert.deepEqual(features.map(feature => feature.properties.opacity), [0.25, 0.5, 0.75, 1])
   assert.equal(trailFeatures(rows, 'v', midnight + 9 * HOUR, midnight + 7 * HOUR).features.length, 2)
   rows.push(point(8, { lon: 170 }))
   assert.equal(trailFeatures(rows, 'v', midnight + 9 * HOUR, midnight + 7 * HOUR).features.length, 0)
+})
+test('direction arrow uses only the final unambiguous, meaningful hourly displacement', () => {
+  const eastward = [point(0, { lon: 150, gridResolution: 0.01 }), point(1, { lon: 151, gridResolution: 0.01 })]
+  const feature = directionFeature(eastward, 'v', midnight + HOUR, midnight).features[0]
+  assert.equal(feature.geometry.coordinates[0], 151)
+  assert.ok(feature.properties.bearing > 89 && feature.properties.bearing < 91)
+  assert.equal(directionFeature([point(0), point(2)], 'v', midnight + 2 * HOUR, midnight).features.length, 0)
+  assert.equal(directionFeature([point(0), point(1), point(1, { lon: 170 })], 'v', midnight + HOUR, midnight).features.length, 0)
+  assert.equal(directionFeature([point(0, { lon: 150, gridResolution: 0.01 }), point(1, { lon: 150.0001, gridResolution: 0.01 })], 'v', midnight + HOUR, midnight).features.length, 0)
 })
 test('dateline segments stay short, including equivalent +180/-180 meridians', () => {
   for (const [from, to] of [[179, -179], [-179, 179], [180, -180], [-180, 180]]) {

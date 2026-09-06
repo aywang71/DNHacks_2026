@@ -7,7 +7,7 @@ import { dataProvider } from './data/provider'
 import { ModelQueue } from './components/ModelQueue'
 import { createPresenceProvider } from './presence/provider.mjs'
 import { formatTime } from './presence/format'
-import { HOUR, coveredHours, createLatestRequest, currentObservations, dateRange, dayOf, latestPositionedHour, nextCovered, presetStart, requiredDays, trailFeatures } from './presence/timeline.mjs'
+import { HOUR, TRAIL_HOURS, coveredHours, createLatestRequest, currentObservations, dateRange, dayOf, directionFeature, latestPositionedHour, nextCovered, presetStart, requiredDays, trailFeatures } from './presence/timeline.mjs'
 import type { Observation, PresenceCatalog, PresenceVessel } from './presence/types'
 import type { CaseRecord, Vessel } from './types'
 import logoLockup from './assets/logo-04-lockup.svg'
@@ -19,6 +19,7 @@ const MapPanel = lazy(() => import('./components/MapPanel').then(module => ({ de
 const message = (error: unknown) => error instanceof Error ? error.message : 'Presence data could not be loaded.'
 const noObservations: Observation[] = []
 const noVessels: PresenceVessel[] = []
+const noFeatures = { type: 'FeatureCollection', features: [] }
 
 type Workspace = 'presence' | 'investigations'
 
@@ -41,6 +42,7 @@ export default function App() {
   const [playing, setPlaying] = useState(false)
   const [speed, setSpeed] = useState(1)
   const [selectedId, setSelectedId] = useState<string | null>(null)
+  const [showMovement, setShowMovement] = useState(false)
   const [notice, setNotice] = useState('')
   const [bundle, setBundle] = useState<{ key: string; observations: Observation[] }>({ key: '', observations: [] })
   const [dataError, setDataError] = useState<{ key: string; message: string } | null>(null)
@@ -101,8 +103,9 @@ export default function App() {
   const observations = ready ? bundle.observations : noObservations
   const positions = useMemo(() => currentObservations(observations, cursor), [observations, cursor])
   const vessels = range && index.key === indexKey ? index.vessels : noVessels
-  const history = useMemo(() => range && selectedId ? observations.filter(row => row.vesselId === selectedId && Date.parse(row.ts) >= Math.max(range.start, cursor - 6 * HOUR) && Date.parse(row.ts) < cursor) : [], [observations, selectedId, cursor, range])
-  const trail = useMemo(() => trailFeatures(observations, selectedId, cursor, range?.start ?? cursor), [observations, selectedId, cursor, range])
+  const history = useMemo(() => showMovement && range && selectedId ? observations.filter(row => row.vesselId === selectedId && Date.parse(row.ts) >= Math.max(range.start, cursor - TRAIL_HOURS * HOUR) && Date.parse(row.ts) < cursor) : [], [showMovement, observations, selectedId, cursor, range])
+  const trail = useMemo(() => showMovement ? trailFeatures(observations, selectedId, cursor, range?.start ?? cursor) : noFeatures, [showMovement, observations, selectedId, cursor, range])
+  const direction = useMemo(() => showMovement ? directionFeature(observations, selectedId, cursor, range?.start ?? cursor) : noFeatures, [showMovement, observations, selectedId, cursor, range])
   const visibleIds = useMemo(() => new Set(positions.map(row => row.vesselId)), [positions])
   useEffect(() => { if (!notice) return; const timeout = window.setTimeout(() => setNotice(''), 4500); return () => window.clearTimeout(timeout) }, [notice])
   const cursorDay = dayOf(cursor)
@@ -169,8 +172,8 @@ export default function App() {
             <label htmlFor="end-date">Through <input id="end-date" name="end-date" aria-label="End date UTC" type="date" value={endDate} onChange={event => applyRange(preset === 'custom' || !event.target.value ? startDate : presetStart(event.target.value, Number(preset)), event.target.value, preset)} /></label><span className="utc-label">UTC</span>
           </div>
         </header>
-        <div className="frame-heading"><time dateTime={new Date(cursor).toISOString()}>{formatTime(cursor)}</time><span>{!ready ? 'Loading…' : `${visibleIds.size.toLocaleString()} vessels · ${positions.length.toLocaleString()} positions`}</span></div>
-        <Suspense fallback={<MapLoading status={mapStatus} />}><MapPanel positions={positions} trail={trail} history={history} selectedId={selectedId} initialBounds={initialDay?.bounds ?? null} onSelect={setSelectedId} status={mapStatus} /></Suspense>
+        <div className="frame-heading"><time dateTime={new Date(cursor).toISOString()}>{formatTime(cursor)}</time><div className="frame-actions"><span>{!ready ? 'Loading…' : `${visibleIds.size.toLocaleString()} vessels · ${positions.length.toLocaleString()} positions`}</span><button className="movement-toggle" type="button" aria-pressed={showMovement} aria-label={`Movement trail ${showMovement ? 'on' : 'off'}`} onClick={() => setShowMovement(value => !value)}><i aria-hidden="true" />Movement trail <strong>{showMovement ? 'On' : 'Off'}</strong></button></div></div>
+        <Suspense fallback={<MapLoading status={mapStatus} />}><MapPanel positions={positions} trail={trail} history={history} direction={direction} cursor={cursor} movementEnabled={showMovement} vessels={vessels} metadataReady={index.key === indexKey && Boolean(range)} selectedId={selectedId} initialBounds={initialDay?.bounds ?? null} onSelect={setSelectedId} status={mapStatus} /></Suspense>
         {currentError && <div className="inline-error"><span>{currentError}</span><button onClick={() => setDataRetry(value => value + 1)}>Retry data</button></div>}
         <Timeline catalog={catalog} range={range} startDate={startDate} endDate={endDate} cursor={cursor} available={available} playing={playing} speed={speed} error={Boolean(currentError)} onPlay={() => setPlaying(value => !value)} onStep={step} onScrub={scrub} onSpeed={setSpeed} />
       </section>

@@ -144,6 +144,34 @@ layout: default
 <div class="footer"><span>ARCHITECTURE BREAKDOWN</span><span>07</span></div>
 
 ---
+layout: default
+class: sources-slide
+---
+
+<div class="kicker">07 / RESEARCH SOURCES</div>
+<h2>Read the research<br>behind Wake AI.</h2>
+
+<div class="sources-list">
+  <a class="source-card" href="https://ora.ox.ac.uk/bookmarks/uuid%3Af1ae5ac6-f011-415b-be03-fa2f210829a3">
+    <span>01</span>
+    <div><b>Charting the Uncharted</b><small>Fernández-Villaverde, Li, Xu &amp; Zanetti · Oxford Discussion Paper 1070 · 2025</small></div>
+    <i>OPEN PAPER ↗</i>
+  </a>
+  <a class="source-card" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9629714/">
+    <span>02</span>
+    <div><b>Hot Spots of Unseen Fishing Vessels</b><small>Welch et al. · Science Advances 8, eabq2109 · 2022</small></div>
+    <i>OPEN PAPER ↗</i>
+  </a>
+  <a class="source-card" href="https://doi.org/10.3389/fmars.2018.00240">
+    <span>03</span>
+    <div><b>Identifying Global Patterns of Transshipment Behavior</b><small>Miller et al. · Frontiers in Marine Science 5:240 · 2018</small></div>
+    <i>OPEN PAPER ↗</i>
+  </a>
+</div>
+
+<div class="footer"><span>DIRECT LINKS TO ORIGINAL PAPERS</span><span>08</span></div>
+
+---
 layout: center
 class: closing
 ---
