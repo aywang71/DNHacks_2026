@@ -214,7 +214,7 @@ export default function App() {
         {currentError && <div className="inline-error"><span>{currentError}</span><button onClick={() => setDataRetry(value => value + 1)}>Retry data</button></div>}
         <Timeline catalog={catalog} range={range} startDate={startDate} endDate={endDate} cursor={cursor} available={available} playing={playing && ready && Boolean(range) && available.length > 0 && !currentError} error={Boolean(currentError)} loading={Boolean(range) && !ready && !currentError} onPlay={() => setPlaying(value => !value)} onStep={step} onScrub={scrub} />
       </section>
-      <VesselPanel vessels={vessels} selectedId={selectedId} onSelect={setSelectedId} positions={positions} visibleIds={visibleIds} ready={ready} validRange={Boolean(range)} indexReady={index.key === indexKey && Boolean(range)} indexError={indexError?.key === indexKey ? indexError.message : ''} onRetry={() => setDataRetry(value => value + 1)} onJump={scrub} rangeKey={indexKey} />
+      <VesselPanel vessels={vessels} selectedId={selectedId} onSelect={setSelectedId} positions={positions} visibleIds={visibleIds} ready={ready} validRange={Boolean(range)} indexReady={index.key === indexKey && Boolean(range)} indexError={indexError?.key === indexKey ? indexError.message : ''} onRetry={() => setDataRetry(value => value + 1)} onJump={scrub} rangeKey={indexKey} rangeStart={range ? new Date(range.start).toISOString() : undefined} rangeEnd={range ? new Date(range.end).toISOString() : undefined} />
     </main>}
     <div className="toast" role="status" aria-live="polite">{notice}</div>
   </div>
