@@ -1,16 +1,24 @@
 # wake.ai
 
-wake.ai currently replays Global Fishing Watch (GFW) vessel-presence data in a browser viewer. The viewer loads static, hourly GFW Presence assets and shows vessel positions, trails, time controls, search, and vessel details. Presence coordinates are hourly grid-cell centres, not raw AIS fixes.
+wake.ai has two browser workspaces: a replay of Global Fishing Watch (GFW)
+vessel-presence data and a static GapPair screening queue. The replay loads
+hourly GFW Presence assets for positions, trails, time controls, search, and
+vessel details. Presence coordinates are hourly grid-cell centres, not raw AIS
+fixes.
 
-The intended product ranks paired dark-gap candidates with the GapPair pipeline and shows them in the viewer. Those halves are not connected. The current pipeline validates a 2017–2019 CSV corpus, while the viewer reads a separate GFW Presence export.
+GapPair materializes 434 paired dark-gap candidates from the 2017–2019 CSV
+reference corpus into a static investigation export with score provenance and
+observed-versus-estimated geometry. The two workspaces are deliberately not a
+vessel-identity bridge: the CSV candidates have MMSIs but no GFW vessel IDs,
+and the locally available Presence export covers a different population.
 
 ## Three subsystems
 
 | Subsystem | Path | Owner | Language/runtime | Status | Docs |
 | --- | --- | --- | --- | --- | --- |
-| Presence viewer | `code/frontend`, `code/backend` | Will Pallan (`gurubazawada`) | React, Vite, MapLibre, Node | Implemented presence replay; no candidate UI | [viewer data flow](code/backend/DATA_FLOW.md) |
+| Presence and investigation viewer | `code/frontend`, `code/backend` | Will Pallan (`gurubazawada`) | React, Vite, MapLibre, Node | Presence replay plus static GapPair investigation workspace; a future identity/presence bridge is separate | [viewer data flow](code/backend/DATA_FLOW.md) |
 | Dark Rendezvous ingestion | `src/dark_rendezvous`, `scripts/*.ps1` | Andrew Wang (`aywang71`) | Python CLI; Windows Python 3.13 venv | Ingests NOAA and retrieves GFW products; token stays on Andrew's machine | [ingestion docs](docs/ais-ingestion.md) |
-| GapPair candidate pipeline | `pipeline`, `tests/test_pipeline_*`, `data/reference`, `data/derived` | Tanner Shah (`tannershah`) | Python | Candidate scaffolding; CSV stages are partly complete and not integrated | [pipeline reference](docs/candidate-pipeline.md) |
+| GapPair candidate pipeline | `pipeline`, `tests/test_pipeline_*`, `data/reference`, `data/derived` | Tanner Shah (`tannershah`) | Python | CSV reference path is materialized through score and static export; 2021 bridge and narration remain unbuilt | [pipeline reference](docs/candidate-pipeline.md) |
 
 ## Quick start
 
@@ -72,11 +80,21 @@ Run the verified CSV-corpus stages from the repository root:
 
 ```bash
 .venv/bin/python -m pytest -q tests/
-.venv/bin/python -m pipeline.run --stage reference --stage load --stage pair --stage feasibility --stage context --stage corroborate
-.venv/bin/python -m pipeline.run --stage null --draws 20
+.venv/bin/python -m pipeline.run --stage reference --stage load --stage pair \
+  --stage feasibility --stage context --stage null --draws 20 \
+  --stage corroborate --stage features --stage score --stage export
 ```
 
-`features`, `score`, `export`, and `narrate` are not implemented. The declared Python package bounds conflict with the installed 3.14 virtual environment; see [current status](docs/status.md).
+The explicit stage list intentionally excludes unavailable enrichment and
+narration. The declared Python package bounds conflict with the installed 3.14
+virtual environment; see [current status](docs/status.md). Validate the
+published artifacts with the [verification guide](docs/verification.md) rather
+than treating a command exit code as proof that an export was written.
+
+The current full Python suite has known cleanup failures from duplicate test
+paths and a stale three-record fixture assertion. The focused S6/S8 checks and
+the frontend test/build are passing; see [status](docs/status.md) before using
+the full-suite result as a release gate.
 
 ## Repository map
 
@@ -113,4 +131,4 @@ The system never asserts a hidden route, an intentional disabling, a transfer, o
 
 ## Documentation
 
-Start at the [documentation index](docs/README.md). See the [architecture](docs/architecture.md), [status](docs/status.md), [data inventory](docs/data.md), [candidate pipeline](docs/candidate-pipeline.md), and [viewer data flow](code/backend/DATA_FLOW.md).
+Start at the [documentation index](docs/README.md). See the [architecture](docs/architecture.md), [status](docs/status.md), [data inventory](docs/data.md), [candidate pipeline](docs/candidate-pipeline.md), [ship-suspicion model](docs/ship-suspicion-model.md), [developer guide](docs/development.md), [verification guide](docs/verification.md), and [viewer data flow](code/backend/DATA_FLOW.md).

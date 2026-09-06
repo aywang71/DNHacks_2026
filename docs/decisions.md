@@ -29,7 +29,6 @@ boundary. Open questions remain open until an explicit decision replaces them.
 - Select an LLM for S9 narration and decide whether the deterministic verifier is in scope.
 - Decide whether to enrich the CSV corpus. That requires complete 2017–2019 GAP Bronze.
 - Decide whether to relax package pins or move the working venv to the pinned versions.
-- Decide whether to delete or reuse the unreferenced frontend risk-panel, provider, and mock-data files.
 - Decide how to reconcile the presentation's oil-tanker framing with the fishing-pair corpus.
 - Decide whether to rename the frontend's Maritime Risk Intelligence brand string.
 - Determine whether GFW 4Wings accepts a high-seas region identifier.

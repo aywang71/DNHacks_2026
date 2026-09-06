@@ -36,17 +36,18 @@ vessel cannot appear in both training and validation within a fold.
 
 | Metric | Model | Non-informative baseline |
 | --- | ---: | ---: |
-| Average precision | 0.000636 | 0.000852 |
-| ROC-AUC | 0.3636 | 0.5000 |
-| Brier score (lower is better) | 0.0008519 | 0.0008514 |
-| Log loss (lower is better) | 0.007170 | 0.006875 |
-| Top 1% per-day recall | 0/36 (0%) | - |
+| Average precision | 0.001571 | 0.000852 |
+| ROC-AUC | 0.6690 | 0.5000 |
+| Brier score (lower is better) | 0.002238 | 0.000851 |
+| Log loss (lower is better) | 0.017799 | 0.006875 |
+| Top 1% per-anchor precision / recall | 0 / 430 reviewed; 0 / 36 positives | - |
 
-This model does not clear a useful deployment threshold. The result shows that
-the currently aligned Presence features do not predict the future GFW label
-out of vessel. The most likely causes are the nine-vessel positive sample,
-coarse/region-bounded Presence data, weak negatives, and the fact that a global
-future gap need not be behaviorally visible in the prior Russian-EEZ window.
+This model does not clear a useful deployment threshold. Its ranking metrics
+are above the non-informative baseline, but calibration metrics are worse and
+the operational top-1% review set finds none of the held-out positives. The
+most likely causes are the nine-vessel positive sample, coarse/region-bounded
+Presence data, weak negatives, and the fact that a global future gap need not
+be behaviorally visible in the prior Russian-EEZ window.
 
 The trained artifact is retained as a reproducible baseline and as a working
 training/scoring pipeline. Do not promote it to an alerting system based on
@@ -66,6 +67,29 @@ selects a deterministic hash seed on the training labels and produces 50%
 true-positive rate and 49.9988% false-positive rate. Its balanced accuracy is
 50.0006%, as expected for random classification.
 
+## Static viewer export
+
+`scripts/export_ship_suspicion.py` publishes the 200 highest precomputed
+latest-anchor scores to `code/frontend/public/data/ship-suspicion.json`. The
+browser reads that static snapshot; the exporter does not retrain or rescore a
+model at page load.
+
+The envelope has `schemaVersion`, `generatedAt`, `model`, and `vessels` keys.
+`model` records the feature order, flattened evaluation metrics, version,
+training timestamp, and caveat. Each vessel has `mmsi`, nullable display
+identity fields, `vesselClass`, a [0, 1] score, a stable rank, and optional
+signed `topFeatures` contributions.
+
+The current model artifact can be incompatible with the local scikit-learn
+runtime used for export. In that case the exporter leaves `topFeatures` empty
+rather than inventing an explanation; an empty contribution list is an honest
+compatibility limitation, not a zero contribution. The current training source
+also deliberately excludes flag identity, so a missing flag in the static
+asset is not a claim that a vessel has no flag.
+
+This independent vessel score is separate from the GapPair paired-dark score.
+Neither score is a probability of wrongdoing or evidence of an event.
+
 ## Reproduce
 
 ```bash
@@ -81,4 +105,10 @@ PYTHONPATH=src .venv-model/bin/python scripts/score_ship_suspicion.py \
   --features output/models/ship_suspicion/training_examples.parquet \
   --anchor-date 2026-08-25 \
   --output output/models/ship_suspicion/latest_anchor_scores.csv
+```
+
+Publish the static snapshot after the training and score artifacts are present:
+
+```bash
+.venv/bin/python scripts/export_ship_suspicion.py
 ```

@@ -28,8 +28,8 @@ export function ModelQueue({ cursor, vessels, selectedId, onSelect, onJump }: {
   useEffect(() => setLimit(30), [batch?.asOf])
   const latest = queue?.batches.at(-1)
   const names = new Map(vessels.map(vessel => [vessel.id, vessel.name]))
-  return <section className="model-queue" aria-label="Investigation queue">
-    <header className="vessel-panel-heading"><div><h2>Investigation queue</h2><p>{batch ? `${batch.items.length} flagged of ${batch.scoredVessels} · ${batch.asOf.slice(0, 10)}` : 'Model-scored vessel windows'}</p></div></header>
+  return <section className="model-queue" aria-label="Demo investigation queue">
+    <header className="vessel-panel-heading"><div><h2>Demo investigation queue</h2><p>{batch ? `${batch.items.length} flagged of ${batch.scoredVessels} · ${batch.asOf.slice(0, 10)} · fifty_fifty demo model` : 'Replay-only random-score demo; not the ship-suspicion model'}</p></div></header>
     {error ? <div className="list-state" role="alert">{error}<button onClick={() => setRetry(value => value + 1)}>Retry</button></div> : !queue ? <p className="list-state" role="status">Loading scores…</p> : !batch ? <div className="list-state"><p>No scores cover this replay time.</p>{latest && <button onClick={() => onJump(latest.asOf.slice(0, 10))}>Open latest scored date</button>}</div> : <>
       <div className="queue-scroll">{batch.items.slice(0, limit).map(item => <button className={`vessel-row ${selectedId === item.vesselId ? 'selected' : ''}`} key={item.id} onClick={() => onSelect(item.vesselId)} aria-pressed={selectedId === item.vesselId}>
         <span><strong>{names.get(item.vesselId) || item.mmsi || item.vesselId}</strong><small>{item.vesselType} · {item.modelScores.map(model => `${model.id}: ${(model.score * 100).toFixed(1)}`).join(' / ')}</small></span><b className="queue-score">{(item.score * 100).toFixed(1)}</b>

@@ -11,6 +11,9 @@
 | [Decisions](decisions.md) | Decision log and accepted boundaries. |
 | [Data](data.md) | Data inventory, provenance, coverage, and missing inputs. |
 | [Candidate pipeline](candidate-pipeline.md) | GapPair stages, configuration, definitions, outputs, and commands. |
+| [Ship-suspicion model](ship-suspicion-model.md) | Experimental individual-vessel model, evidence limits, and static export. |
+| [Developer guide](development.md) | Subsystem ownership, generated-artifact rules, and safe cross-boundary work. |
+| [Verification guide](verification.md) | Repeatable pipeline, export, browser, and documentation checks. |
 | [Data-local README](../data/README.md) | Local data-directory notes. |
 | [Reference tables README](../data/reference/README.md) | Static reference tables used by the GapPair pipeline. |
 
@@ -28,6 +31,7 @@
 
 | Document | Purpose |
 | --- | --- |
+| [Frontend README](../code/frontend/README.md) | Local viewer entry point, static assets, and UI contract rules. |
 | [Backend README](../code/backend/README.md) | Node importer and the unimplemented historical-risk API proposal. |
 | [Viewer data flow](../code/backend/DATA_FLOW.md) | Implemented presence assets, semantics, and frontend behavior. |
 

@@ -68,13 +68,16 @@ Parquet outputs are ignored by `data/derived/*.parquet`. JSON and text checkpoin
 | `data/derived/candidates_t0.parquet` | S3, `pair` | 434 operating paired-gap candidates from 2017–2019 | 104 KB / 434 rows | No | n/a | S2, S4, S5, S7 | Pair candidates are not confirmed encounters. |
 | `data/derived/pair_grid_counts.json` | S3, `pair` | 2017–2019 pairing ladder and cell-month counts | 2.1 KB / 1 file | Yes | Checkpoint, not a manifest | Methods and export code | Records 434 operating and 18,775 loose pairs. |
 | `data/derived/queue_mmsis.txt` | S3, `pair` | MMSIs represented in operating candidates | 2.1 KB / 212 lines | Yes | n/a | `scripts/pull_queue_events.py` | The live GFW queue pull has not run. |
-| `data/derived/feasibility.parquet` | S2, `feasibility` | 434 operating candidates | 1.3 MB / 434 rows | No | n/a | Future S6 and S8 | 433 of 434 are feasible under the current rule. |
+| `data/derived/feasibility.parquet` | S2, `feasibility` | 434 operating candidates | 1.3 MB / 434 rows | No | n/a | S6 and S8 | 433 of 434 are feasible under the current rule. |
 | `data/derived/loose_feasibility.json` | S2, `feasibility` | 18,775 loose pairs; 18,735 feasible at the minimum overlap | 53 B / 1 file | Yes | Checkpoint, not a manifest | Methods and export code | The loose rule is not a queue. |
-| `data/derived/local_context.parquet` | S4, `context` | 434 operating candidates | 80 KB / 434 rows | No | n/a | Future S6 and S8 | Local density, identity, and history features. |
-| `data/derived/components.parquet` | S4, `context` | 434 operating candidates | 11 KB / 434 rows | No | n/a | Future S6 and S8 | Compact component classification table. |
+| `data/derived/local_context.parquet` | S4, `context` | 434 operating candidates | 80 KB / 434 rows | No | n/a | S6 and S8 | Local density, identity, and history features. |
+| `data/derived/components.parquet` | S4, `context` | 434 operating candidates | 11 KB / 434 rows | No | n/a | S6 and S8 | Compact component classification table. |
 | `data/derived/null_results.json` | S5, `null --draws 20` | 2017–2019 operating rule; 20 draws on disk | 21 KB / 1 file | Yes | Checkpoint, not a manifest | Methods and export code | The configured design is 200 draws; this stored run has 20. |
-| `data/derived/p_cell.parquet` | S5, `null --draws 20` | 434 operating candidates | 8 KB / 434 rows | No | n/a | Future S6 and S8 | Per-pair cell probability output. |
-| `data/derived/corroboration.parquet` | S7, `corroborate` | 434 operating candidates | 10 KB / 434 rows | No | n/a | Future S6 and S8 | Every default row is `no_coverage`; no VIIRS data is present. |
+| `data/derived/p_cell.parquet` | S5, `null --draws 20` | 434 operating candidates | 8 KB / 434 rows | No | n/a | S6 and S8 | Per-pair cell probability output. |
+| `data/derived/corroboration.parquet` | S7, `corroborate` | 434 operating candidates | 10 KB / 434 rows | No | n/a | S6 and S8 | Every default row is `no_coverage`; no VIIRS data is present. |
+| `data/derived/features.parquet` | S6a, `features` | 434 operating candidates | 1.6 MB / 434 rows and 106 columns | No | n/a | S6b and S8 | Complete keyed feature surface; absent enrichment fields remain null. |
+| `data/derived/scores.parquet` | S6b, `score` | 434 operating candidates | 193 KB / 434 rows and 17 columns | No | n/a | S8 | Bounded score terms, labels, and row-level provenance; behavior is null in this corpus. |
+| `data/derived/evidence_ledger.parquet` and `summary.md` | S8, `export` | 2017–2019 reference export | 2,170 ledger rows and one summary | Ledger: No; summary: generated release artifact | Auditor and human review | The ledger preserves the exported evidence claims; the summary states headline counts and limits. |
 | `data/derived/candidate_windows_probe.json` | One-off 2021 API-corpus probe; not a stage in `pipeline.run` | 28 in-EEZ and 12 high-seas unscored pairs from the complete 2021 GAP pull | 68 KB / 40 candidate records | Yes | Status is `PROBE, unscored`; not a manifest | Planned targeted Presence and raw-AIS requests | Carries GFW vessel IDs. A future bridge replaces this file. |
 
 ### `data/reference/`
@@ -93,7 +96,10 @@ Parquet outputs are ignored by `data/derived/*.parquet`. JSON and text checkpoin
 | Path | Producer (command/script) | Coverage | Size / file count | Tracked in git? | Manifest / complete? | Consumer | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `code/frontend/public/data/presence/` | `npm --prefix code/backend run import:presence` | 35 UTC dates, region `5690`; 1,019,256 observations across 817 covered hours | 313 MB / 71 files | No; ignored by `code/frontend/.gitignore` | `catalog.json` plus immutable daily shards | React presence viewer | Generated from Bronze Presence reports. It must not be edited by hand. |
-| `code/frontend/public/data/{risk-events,methods,narratives}.json` | Hand-made GapPair P0 fixture | Three fixture records | 3 small files | Yes | n/a | No current React consumer | Retained for possible contract reuse. |
+| `code/frontend/public/data/risk-events.json` and `methods.json` | S8, `pipeline.export` | 2017–2019 CSV reference corpus; 434 candidate records | 11.3 MB risk export and 7.5 KB methods metadata | Release-controlled generated assets | Static GapPair provider (`risk-events`) and methods review | Every record passes `validate_record`; `beh` is null for this corpus. |
+| `code/frontend/public/data/tracks/` | S8, `pipeline.export` | One GeoJSON track per reference candidate | 434 GeoJSON files | Release-controlled generated assets | Investigation geometry view | Observed endpoints and estimated geometry share the record contract but remain visually and semantically distinct. |
+| `code/frontend/public/data/narratives.json` | Earlier P0 fixture | Three fixture records | Small JSON file | Yes | No S9 output exists | No current static-provider consumer | Retained only until a narrated/verifier-backed stage is implemented. |
+| `code/frontend/public/data/ship-suspicion.json` | `scripts/export_ship_suspicion.py` | Top 200 latest-anchor individual vessel scores | 40 KB / 200 ranked vessels | Release-controlled generated asset | Independent vessel-model panel | Experimental model snapshot; it is not a GapPair event score or evidence of wrongdoing. |
 
 ## Schemas
 
@@ -216,9 +222,24 @@ Run implemented GapPair stages in dependency order. The stored null result uses 
 .venv/bin/python -m pipeline.run --stage context
 .venv/bin/python -m pipeline.run --stage null --draws 20
 .venv/bin/python -m pipeline.run --stage corroborate
+.venv/bin/python -m pipeline.run --stage features
+.venv/bin/python -m pipeline.run --stage score
+.venv/bin/python -m pipeline.run --stage export
 ```
 
-`features`, `score`, `narrate`, the 2021 API loader, and the viewer bridge are not implemented. S8 export needs S6, so no full real export has run. `candidate_windows_probe.json` is a one-off, unscored probe rather than a `pipeline.run` stage; its checked-in regeneration command is unknown.
+`narrate`, the 2021 API loader, and the viewer bridge are not implemented.
+The S8 reference export currently has 434 records and 434 tracks; validate it
+with the commands in [the verification guide](verification.md) after a rerun.
+`candidate_windows_probe.json` is a one-off, unscored probe rather than a
+`pipeline.run` stage; its checked-in regeneration command is unknown.
+
+Regenerate the separate ship-suspicion static asset only after its model,
+training manifest, metrics, latest-anchor score file, and training examples are
+present:
+
+```bash
+.venv/bin/python scripts/export_ship_suspicion.py
+```
 
 ### Presence assets
 

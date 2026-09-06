@@ -1,105 +1,311 @@
 {
-  "corpus": {
-    "events": 55368,
-    "vessels": 5269,
-    "flags": 101,
-    "years": [2017, 2018, 2019],
-    "source": "Global Fishing Watch AIS-disabling corpus (Welch et al. 2022)",
-    "license": "CC BY-NC 4.0"
-  },
-  "operatingRule": {
-    "startKm": 10.0,
-    "startHours": 1.0,
-    "endKm": 10.0,
-    "endHours": 1.0,
-    "requiresOverlap": true,
-    "description": "Two vessel gaps must begin within 10 km and 1 h, end within 10 km and 1 h, and overlap."
-  },
-  "ladder": [
-    {"rung": "start-only 50 km / 24 h", "observed": 101901, "nullMean": 1327.4, "lift": 76.77, "draws": 20},
-    {"rung": "start-only 5 km / 1 h", "observed": 1230, "nullMean": 2.7, "lift": 455.56, "draws": 20},
-    {"rung": "both ends 25 km / 3 h", "observed": 5630, "nullMean": 109.3, "lift": 51.51, "draws": 20},
-    {"rung": "both ends 10 km / 1 h", "observed": 434, "nullMean": 12.0, "lift": 36.2, "draws": 20},
-    {"rung": "both ends 5 km / 1 h", "observed": 103, "nullMean": 1.8, "lift": 57.22, "draws": 20},
-    {"rung": "both ends 2 km / 30 min", "observed": 3, "nullMean": 0.1, "lift": 30.0, "draws": 20}
-  ],
-  "loose": {
-    "observed": 18775,
-    "feasibleAtTauMin": 18735,
-    "startKm": 50.0,
-    "startHours": 6.0,
-    "endKm": 50.0,
-    "endHours": 6.0,
-    "description": "Methods-only loose rule; it is not a queue source."
-  },
-  "null": {
-    "name": "within-cell permutation v1",
-    "cellDeg": 5,
-    "draws": 200,
-    "seed": 20260905,
-    "observed": 434,
-    "nullMean": 12.0,
-    "nullSd": 3.1,
-    "lift": 36.2
-  },
-  "classSpeedsKn": {
-    "squid_jigger": 12.0,
-    "drifting_longlines": 12.0,
-    "trawlers": 13.0,
-    "tuna_purse_seines": 16.0,
-    "other": 14.0,
-    "carrier": 18.0,
-    "reefer": 18.0,
-    "unknown": 16.0
-  },
-  "weights": {
-    "geom": 0.3,
-    "kin": 0.15,
-    "beh": 0.2,
-    "ctx": 0.15,
-    "cor": 0.2,
-    "den": -0.15,
-    "flt": -0.2,
-    "hab": -0.1
-  },
-  "labelRules": [
-    "Investigate when priority is at least 0.50 and no artifact or fleet penalty dominates the score.",
-    "Coordinated-fleet-pattern marks a fleet_cluster with a strong fleet-pattern penalty, including sequential MMSIs.",
-    "Likely-coverage-or-cluster-artifact marks a regional_blackout or other case whose density or cluster confounder dominates.",
-    "Risk levels are high for investigate, review for fleet-pattern cases, and watch for likely artifacts in this P0 fixture."
-  ],
-  "labelHistogram": {
-    "investigate": 1,
-    "coordinated-fleet-pattern": 1,
-    "likely-coverage-or-cluster-artifact": 1
-  },
-  "componentHistogram": {
-    "bilateral": 1,
-    "fleet_cluster": 1,
-    "regional_blackout": 1
-  },
-  "counts": {
-    "crossFlag": 26,
-    "sequentialMmsi": 173,
-    "identityTwin": 181,
-    "bilateral": 237,
-    "zeroNeighbour": 37
-  },
+  "attribution": "Data: Global Fishing Watch AIS-disabling corpus (Welch et al. 2022), CC BY-NC 4.0",
   "caveats": [
     "WCPFC found that 78% of 77 AIS-only transshipment candidates were unsubstantiated after triangulation.",
     "Detection is retrospective because both AIS gaps must close before a pair can be assessed.",
     "The corpus covers fishing vessels only; it does not provide coordinate-level ground truth for a transfer.",
     "Meeting points and reachable-set rings are inferred heuristics, never observed AIS positions.",
-    "Kinematics are largely uninformative at the operating rule and are not used as affirmative evidence."
+    "Kinematic plausibility is a reachability screen, not proof of a rendezvous or wrongdoing."
   ],
+  "classSpeedsKn": {
+    "carrier": 18.0,
+    "drifting_longlines": 12.0,
+    "other": 14.0,
+    "reefer": 18.0,
+    "squid_jigger": 12.0,
+    "trawlers": 13.0,
+    "tuna_purse_seines": 16.0,
+    "unknown": 16.0
+  },
+  "componentHistogram": {
+    "bilateral": 237,
+    "fleet_cluster": 187,
+    "regional_blackout": 3,
+    "unresolved": 7
+  },
+  "config": {
+    "ATTRIBUTION": "Data: Global Fishing Watch AIS-disabling corpus (Welch et al. 2022), CC BY-NC 4.0",
+    "BLACKOUT_LOCAL_COUNT": 20,
+    "BLACKOUT_MIN_SIZE": 5,
+    "CELL_DEG": 5,
+    "EARTH_R_KM": 6371.0,
+    "FISHERY_RFMOS": [
+      "CCAMLR",
+      "CCSBT",
+      "GFCM",
+      "IATTC",
+      "ICCAT",
+      "IOTC",
+      "NAFO",
+      "NEAFC",
+      "NPFC",
+      "SEAFO",
+      "SIOFA",
+      "SPRFMO",
+      "WCPFC"
+    ],
+    "FLEET_CLUSTER_MIN_SIZE": 3,
+    "INVESTIGATE_MIN_PRIORITY": 0.5,
+    "KM_PER_KN_H": 1.852,
+    "LADDER": [
+      [
+        "start-only 50 km / 24 h",
+        {
+          "both_ends": false,
+          "start_h": 24.0,
+          "start_km": 50.0
+        }
+      ],
+      [
+        "start-only 5 km / 1 h",
+        {
+          "both_ends": false,
+          "start_h": 1.0,
+          "start_km": 5.0
+        }
+      ],
+      [
+        "both ends 25 km / 3 h",
+        {
+          "end_h": 3.0,
+          "end_km": 25.0,
+          "start_h": 3.0,
+          "start_km": 25.0
+        }
+      ],
+      [
+        "both ends 10 km / 1 h",
+        {
+          "end_h": 1.0,
+          "end_km": 10.0,
+          "start_h": 1.0,
+          "start_km": 10.0
+        }
+      ],
+      [
+        "both ends 5 km / 1 h",
+        {
+          "end_h": 1.0,
+          "end_km": 5.0,
+          "start_h": 1.0,
+          "start_km": 5.0
+        }
+      ],
+      [
+        "both ends 2 km / 30 min",
+        {
+          "end_h": 0.5,
+          "end_km": 2.0,
+          "start_h": 0.5,
+          "start_km": 2.0
+        }
+      ]
+    ],
+    "LADDER_DRAWS": 20,
+    "LOCAL_H": 1.0,
+    "LOCAL_KM": 200.0,
+    "LOOSE": {
+      "end_h": 6.0,
+      "end_km": 50.0,
+      "start_h": 6.0,
+      "start_km": 50.0
+    },
+    "MIN_GAPS_FOR_HISTORY": 3,
+    "MMSI_VALID": {
+      "hi": 999999999,
+      "lo": 100000000,
+      "mid_hi": 775,
+      "mid_lo": 201
+    },
+    "NEIGHBOURS_MAX": 8,
+    "NULL_DRAWS": 200,
+    "NULL_MODEL_NAME": "within-cell permutation v1",
+    "OPERATING": {
+      "end_h": 1.0,
+      "end_km": 10.0,
+      "start_h": 1.0,
+      "start_km": 10.0
+    },
+    "PENALTY_DOMINANT": 0.5,
+    "PORT_TRANSIT_KM": 50.0,
+    "SAME_FLAG_MIN_VESSELS": 3,
+    "SEED": 20260905,
+    "SEQ_MMSI_MAX_DELTA": 10,
+    "SHOWCASE": {
+      "mmsi_a": "412331147",
+      "mmsi_b": "416004105",
+      "t0_date": "2017-07-01"
+    },
+    "SIGMOID_K": 6.0,
+    "SIGMOID_MID": 0.3,
+    "TAU_MIN_H": 1.0,
+    "TWIN_LEN_M": 0.5,
+    "TWIN_TON_GT": 1.0,
+    "V_KN": {
+      "carrier": 18.0,
+      "drifting_longlines": 12.0,
+      "other": 14.0,
+      "reefer": 18.0,
+      "squid_jigger": 12.0,
+      "trawlers": 13.0,
+      "tuna_purse_seines": 16.0,
+      "unknown": 16.0
+    },
+    "WEIGHTS": {
+      "beh": 0.2,
+      "cor": 0.2,
+      "ctx": 0.15,
+      "den": -0.15,
+      "flt": -0.2,
+      "geom": 0.3,
+      "hab": -0.1,
+      "kin": 0.15
+    }
+  },
+  "corpus": {
+    "events": 55368,
+    "flags": 101,
+    "license": "CC BY-NC 4.0",
+    "source": "Global Fishing Watch AIS-disabling corpus (Welch et al. 2022)",
+    "vessels": 5269,
+    "years": [
+      2017,
+      2018,
+      2019
+    ]
+  },
+  "counts": {
+    "bilateral": 237,
+    "crossFlag": 26,
+    "identityTwin": 183,
+    "sequentialMmsi": 173,
+    "zeroNeighbour": 16
+  },
+  "generatedAt": "2026-09-06T00:41:35Z",
+  "labelHistogram": {
+    "coordinated-fleet-pattern": 155,
+    "identity-twin": 193,
+    "insufficient-evidence": 76,
+    "investigate": 6,
+    "likely-coverage-or-cluster-artifact": 4
+  },
+  "labelRules": [
+    "insufficient-evidence: unresolved identity or missing operating evidence.",
+    "identity-twin: identity twin or sequential MMSI.",
+    "coordinated-fleet-pattern: dominant fleet confounder.",
+    "likely-coverage-or-cluster-artifact: dominant density confounder or regional blackout.",
+    "possible-port-transit: a qualifying post-gap port transit.",
+    "investigate: priority at least 0.50, bilateral, and no dominant penalty."
+  ],
+  "ladder": [
+    {
+      "draws": 200,
+      "lift": 35.0,
+      "nullMean": 12.4,
+      "observed": 434,
+      "rung": "both ends 10 km / 1 h"
+    },
+    {
+      "draws": 200,
+      "lift": 30.0,
+      "nullMean": 0.1,
+      "observed": 3,
+      "rung": "both ends 2 km / 30 min"
+    },
+    {
+      "draws": 200,
+      "lift": 14.44,
+      "nullMean": 389.8,
+      "observed": 5630,
+      "rung": "both ends 25 km / 3 h"
+    },
+    {
+      "draws": 200,
+      "lift": 30.75,
+      "nullMean": 3.35,
+      "observed": 103,
+      "rung": "both ends 5 km / 1 h"
+    },
+    {
+      "draws": 200,
+      "lift": 7.43,
+      "nullMean": 2525.7,
+      "observed": 18775,
+      "rung": "loose"
+    },
+    {
+      "draws": 200,
+      "lift": 9.12,
+      "nullMean": 134.9,
+      "observed": 1230,
+      "rung": "start-only 5 km / 1 h"
+    },
+    {
+      "draws": 200,
+      "lift": 2.66,
+      "nullMean": 38311.25,
+      "observed": 101901,
+      "rung": "start-only 50 km / 24 h"
+    }
+  ],
+  "loose": {
+    "description": "Methods-only loose rule; it is not a queue source.",
+    "endHours": 6.0,
+    "endKm": 50.0,
+    "feasibleAtTauMin": null,
+    "observed": 18775,
+    "startHours": 6.0,
+    "startKm": 50.0
+  },
+  "null": {
+    "cellDeg": 5,
+    "draws": 200,
+    "lift": 32.92,
+    "name": "within-cell permutation v1",
+    "nullMean": 13.19,
+    "nullSd": 3.27,
+    "observed": 434,
+    "seed": 20260905
+  },
+  "operatingRule": {
+    "description": "Two vessel gaps must begin within 10 km and 1 h, end within 10 km and 1 h, and overlap.",
+    "endHours": 1.0,
+    "endKm": 10.0,
+    "requiresOverlap": true,
+    "startHours": 1.0,
+    "startKm": 10.0
+  },
   "sources": [
-    {"name": "Global Fishing Watch AIS-disabling corpus", "detail": "Welch et al. 2022 event corpus used for endpoint observations.", "license": "CC BY-NC 4.0"},
-    {"name": "Skylight threshold guidance", "detail": "Context for transparent temporal and spatial screening thresholds."},
-    {"name": "Global Fishing Watch encounter rule", "detail": "Potential enrichment source for behaviour evidence; not pulled for the P0 showcase."},
-    {"name": "Oxford A.1/A.2 kinematic formulation", "detail": "Reachable-set and required-speed heuristic basis."},
-    {"name": "WCPFC AIS-only transshipment review", "detail": "Source of the 78% unsubstantiated-after-triangulation precision caveat."}
+    {
+      "detail": "Welch et al. 2022 event corpus used for endpoint observations.",
+      "license": "CC BY-NC 4.0",
+      "name": "Global Fishing Watch AIS-disabling corpus"
+    },
+    {
+      "detail": "Context for transparent temporal and spatial screening thresholds.",
+      "name": "Skylight threshold guidance"
+    },
+    {
+      "detail": "Potential enrichment source for behaviour evidence.",
+      "name": "Global Fishing Watch encounter rule"
+    },
+    {
+      "detail": "Reachable-set and required-speed heuristic basis.",
+      "name": "Oxford A.1/A.2 kinematic formulation"
+    },
+    {
+      "detail": "Source of the 78% unsubstantiated-after-triangulation precision caveat.",
+      "name": "WCPFC AIS-only transshipment review"
+    }
   ],
-  "fixtureScope": "P0 static preview: the three-record histograms describe risk-events.json, while corpus, operating-rule, loose-rule, and structural counts are the planned full-run figures.",
-  "attribution": "Data: Global Fishing Watch AIS-disabling corpus (Welch et al. 2022), CC BY-NC 4.0",
-  "generatedAt": "2026-09-05T17:30:00Z"
+  "weights": {
+    "beh": 0.2,
+    "cor": 0.2,
+    "ctx": 0.15,
+    "den": -0.15,
+    "flt": -0.2,
+    "geom": 0.3,
+    "hab": -0.1,
+    "kin": 0.15
+  }
 }

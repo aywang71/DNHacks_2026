@@ -1,0 +1,144 @@
+{
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          -166.98712,
+          58.207867
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "mmsi": "367064000",
+        "observationStatus": "observed",
+        "role": "off",
+        "time": "2019-10-06T07:36:58Z",
+        "vessel": "A"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -166.9864,
+          58.209067
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "mmsi": "367650000",
+        "observationStatus": "observed",
+        "role": "off",
+        "time": "2019-10-06T07:37:22Z",
+        "vessel": "B"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -168.4348,
+          58.184933
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "mmsi": "367064000",
+        "observationStatus": "observed",
+        "role": "on",
+        "time": "2019-10-09T16:05:46Z",
+        "vessel": "A"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -168.331173,
+          58.193867
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "mmsi": "367650000",
+        "observationStatus": "observed",
+        "role": "on",
+        "time": "2019-10-09T16:06:08Z",
+        "vessel": "B"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            -166.98712,
+            58.207867
+          ],
+          [
+            -167.7106,
+            58.197
+          ],
+          [
+            -168.4348,
+            58.184933
+          ]
+        ],
+        "type": "LineString"
+      },
+      "properties": {
+        "confidence": "low",
+        "lineStyle": "dashed",
+        "observationStatus": "estimated",
+        "source": "reachable-set heuristic",
+        "vessel": "A"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            -166.9864,
+            58.209067
+          ],
+          [
+            -167.7106,
+            58.197
+          ],
+          [
+            -168.331173,
+            58.193867
+          ]
+        ],
+        "type": "LineString"
+      },
+      "properties": {
+        "confidence": "low",
+        "lineStyle": "dashed",
+        "observationStatus": "estimated",
+        "source": "reachable-set heuristic",
+        "vessel": "B"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -167.7106,
+          58.197
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "kind": "meetingPoint",
+        "observationStatus": "estimated"
+      },
+      "type": "Feature"
+    }
+  ],
+  "properties": {
+    "dateline": true
+  },
+  "type": "FeatureCollection"
+}

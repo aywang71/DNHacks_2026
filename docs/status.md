@@ -12,17 +12,34 @@ point to that commit. `will-dev` and `andrew-dev` are merged. Local
 | Tanner Shah (`tannershah`) — 16 commits | GapPair pipeline scaffolding and derived candidate work. |
 | Will Pallan (`gurubazawada`) — 11 commits; William Pallan — 3 commits | Presence viewer and Node importer. |
 
-The product is **wake.ai**. Its current product surface is Will's presence
-viewer. GapPair is backend scaffolding that is not integrated with the viewer.
+The product is **wake.ai**. Its current product surface has a Presence replay
+workspace and a separate static GapPair investigation workspace. The CSV
+reference candidates do not yet bridge into the Presence replay by GFW vessel
+identity.
+
+### Active working-tree integration update
+
+The following reflects the current uncommitted integration work, not the
+commit snapshot above:
+
+- S6 and S8 materialize a 434-record, contract-valid 2017–2019 CSV reference
+  export, 434 GeoJSON tracks, methods metadata, and a 2,170-row evidence
+  ledger.
+- The frontend static provider reads that export and the investigation
+  workspace distinguishes observed endpoints from estimated projections,
+  meeting points, and reachable sets.
+- `ship-suspicion.json` publishes a separate top-200 individual-vessel model
+  snapshot. It is experimental and does not change a GapPair label or record.
 
 ## What runs today
 
 | Command | Result | Evidence |
 | --- | --- | --- |
-| `.venv/bin/python -m pytest -q tests/` | Partial | 49 passed and 1 failed. The failure is the timing assertion in `tests/test_pipeline_nulls.py`: 13.8 s observed against a 10 s bound. It is not a correctness failure. |
+| `.venv/bin/python -m pytest -q tests/` | Partial | 102 passed and 4 failed in 124.81 s. Two duplicate null-model timing tests took 17.9 s and 20.2 s against a 10 s bound; two duplicated stale fixture tests expect 3 records after S8 intentionally wrote 434. |
+| `.venv/bin/python -m pytest -q tests/test_pipeline_features.py tests/test_pipeline_score.py tests/test_pipeline_export.py` | Done | 8 passed in 1.13 s against the materialized S6/S8 reference artifacts. |
 | `npm --prefix code/backend test` | Done | 21 of 21 tests pass. |
-| `npm --prefix code/frontend test` | Done | 12 of 12 tests pass. |
-| `npm --prefix code/frontend ci && npm --prefix code/frontend run build` | Done | The build succeeds. Vite warns about one 1.3 MB chunk. |
+| `npm --prefix code/frontend test` | Done | 13 of 13 tests pass after the static-investigation integration. |
+| `npm --prefix code/frontend run build` | Done | TypeScript and Vite build succeeded after the static GapPair and ship-suspicion UI integration. |
 | `npm --prefix code/backend run import:presence` | Done | Exports 1,019,256 observations across 817 covered hours and 35 UTC days. It writes ignored assets under `code/frontend/public/data/presence/`. All coverage is for `public-eez-areas` region 5690, the Russian EEZ. |
 
 The focused check `.venv/bin/python -m pytest -q tests/test_pipeline_geo.py`
@@ -33,23 +50,30 @@ also passes: 5 tests pass.
 Markers: **Done** means the named behavior works. **Partial** means only part
 of the intended behavior works. **Missing** means no implementation exists.
 
-### Will's presence viewer — **Partial**
+### Presence and investigation viewer — **Partial**
 
 - **Done:** The Vite, React, and MapLibre app reads the static presence catalog,
   daily observation shards, and vessel indexes produced by the Node importer.
   It renders positions and trails, supports date ranges and hourly playback,
   and provides vessel search and details. The region-5690 presence data works
   end to end. See [the viewer data flow](../code/backend/DATA_FLOW.md).
-- **Partial:** The viewer only presents GFW hourly grid-cell-centre presence.
-  It does not present candidates, raw tracks, inferred meeting points,
-  reachable rings, or areas of interest.
-- **Partial:** These files are not imported by `App.tsx`:
-  `code/frontend/src/components/InvestigationPanel.tsx`,
-  `code/frontend/src/components/InvestigationPanel.css`,
-  `code/frontend/src/data/provider.ts`, and
-  `code/frontend/src/data/mockData.ts`. The handmade three-record GapPair
-  fixture at `code/frontend/public/data/{risk-events,methods,narratives}.json`
-  is also unused by the React app.
+- **Done:** The investigation workspace fetches the S8 static
+  `risk-events.json` asset, shows the 434 candidate queue, and keeps an
+  explicit error/retry state instead of falling back to mock candidates.
+- **Done:** The candidate map renders solid observed endpoint points separately
+  from dashed estimated projections, inferred meeting points, and feasible
+  reachable areas. Dateline rings are omitted rather than drawn as misleading
+  world-spanning polygons.
+- **Done:** Analyst weight sliders re-rank the local queue using the exported
+  component values and provenance. They do not overwrite the pipeline score,
+  label, evidence tier, or source record.
+- **Partial:** The ship-suspicion surface reads its independent static top-200
+  snapshot. The snapshot currently has no safely extracted feature
+  contributions because of model-artifact/runtime compatibility; it presents
+  that absence rather than inventing an explanation.
+- **Partial:** The current CSV candidates have no GFW vessel IDs and cannot be
+  replayed through the Presence catalog. Raw tracks remain unavailable; the
+  candidate geometry is inferred from endpoints.
 - **Partial:** The product name is wake.ai, while the frontend still displays
   “Maritime Risk Intelligence” and the HTML title says “Vessel presence ·
   Maritime Risk Intelligence.” This is a naming inconsistency to resolve in a
@@ -98,9 +122,9 @@ Run stages with `.venv/bin/python -m pipeline.run --stage <name>`.
 | S3 `pair_t0.py` | Done | 434 operating pairs, 26 cross-flag pairs, and 212 queue MMSIs. |
 | S4 `context.py` | Done | 237 bilateral, 183 strict identity twins, and 173 sequential pairs. The methods figures are corrected in [decisions](decisions.md). |
 | S5 `nulls.py` | Partial | A 20-draw run is materialized: null mean 12.4 and lift 35.0x. The written design calls for 200 draws. |
-| S6 `features.py` and `score.py` | Missing | No files. |
+| S6 `features.py` and `score.py` | Done | 434 one-to-one feature rows and 434 score rows. `beh` is null for every CSV-reference record; unavailable behavior was not fabricated. |
 | S7 `corroborate.py` | Done | 434 default `no_coverage` rows. No VIIRS data is present. |
-| S8 `export.py` | Partial | The fixture-level unit test passes. A real full export has not run because S6 is missing. |
+| S8 `export.py` | Done | 434 validated records, 434 tracks, methods metadata, a 2,170-row evidence ledger, and summary are materialized. |
 | S9 `narrate.py` and `verify.py` | Missing | No files. Narration also needs a selected LLM and a key. |
 
 `scripts/pull_queue_events.py` is implemented and has seven mocked tests. It
@@ -122,9 +146,13 @@ viewer, but its loader and bridge are not implemented.
 
 | Severity | Issue | Owner to decide |
 | --- | --- | --- |
-| Medium | `tests/test_pipeline_nulls.py` fails only its performance bound: 13.8 s versus 10 s. | Tanner Shah |
+| Medium | The null-model timing test exceeds its 10 s bound (17.9 s and 20.2 s in the current full run). A staged duplicate path makes the same failure run twice. | Tanner Shah and repository maintainer |
+| High | `tests/test_pipeline_reference.py` still asserts a three-record P0 fixture after S8 intentionally replaced it with 434 real reference records; its staged duplicate also fails. | Tanner Shah and repository maintainer |
+| High | A large staged set of filename-suffixed duplicate files (` 2`/` 3`) includes collected test files and duplicates data/code paths. It requires a reviewed target list; do not bulk-delete or unstage it during feature work. | Repository maintainer |
 | High | `pyproject.toml` and `requirements.txt` pin Python `<3.14`, pandas `<3`, and PyArrow `<22`, while the working venv is Python 3.14.2, pandas 3.0.5, and PyArrow 25.0.1. | Tanner Shah and Andrew Wang |
-| Low | The viewer retains unreferenced risk-panel, provider, and mock-data files. | Will Pallan |
+| Medium | The static `risk-events.json` reference export is about 11.3 MB before its 434 separate track files. Establish a release-size budget before deploying it broadly. | User and Will Pallan |
+| Medium | The ship-suspicion model does not meet a useful deployment threshold: calibration is worse than a constant-prevalence baseline and the top-1% held-out review set finds no positives. | User and model owner |
+| Low | The current ship-suspicion static export has empty feature-contribution lists because the saved model cannot be safely loaded by the export runtime. | Model owner |
 | Medium | wake.ai and the frontend's Maritime Risk Intelligence strings differ. | User and Will Pallan |
 | Low | About 2 GB of Bronze data remains tracked in Git. This is accepted; no history rewrite is planned. | User |
 | Medium | `data/reference/psma_parties.csv` has only its header row. | Tanner Shah |
@@ -141,9 +169,6 @@ viewer, but its loader and bridge are not implemented.
 - `pipeline/load_api.py` for the 2021 corpus is not implemented. See [the candidate-pipeline reference](candidate-pipeline.md) and [archived handoff prompts §14](archive/plan/handoff-prompts.md).
 - `pipeline/presence_bridge.py` and `candidates.json` are not implemented. See [archived handoff prompts §14](archive/plan/handoff-prompts.md).
 - Presence acquisition per candidate window is not done. See [data needs](data.md) and [archived handoff prompts §14](archive/plan/handoff-prompts.md).
-- The viewer's Candidates panel, candidate selection behavior, and candidate geometry layers are not implemented. See [archived handoff prompts §14](archive/plan/handoff-prompts.md).
-- S6 feature assembly and scoring are not implemented. See [the candidate-pipeline reference](candidate-pipeline.md).
-- The real S8 export is not run. See [the candidate-pipeline reference](candidate-pipeline.md).
 - S9 narration and verification are not implemented. See [the candidate-pipeline reference](candidate-pipeline.md) and [data needs](data.md).
 
 ## Reproduce this snapshot
@@ -154,6 +179,11 @@ viewer assets. It does not modify Bronze inputs.
 ```bash
 git status --short
 .venv/bin/python -m pytest -q tests/
+.venv/bin/python -m pytest -q tests/test_pipeline_features.py tests/test_pipeline_score.py tests/test_pipeline_export.py
+.venv/bin/python -m pipeline.run --stage reference --stage load --stage pair \
+  --stage feasibility --stage context --stage null --draws 20 \
+  --stage corroborate --stage features --stage score --stage export
+.venv/bin/python scripts/export_ship_suspicion.py
 npm --prefix code/backend test
 npm --prefix code/frontend ci
 npm --prefix code/frontend test

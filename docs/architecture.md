@@ -8,22 +8,29 @@ flowchart LR
     I --> D["data/bronze + data/silver"]
     D --> N["Node presence importer"]
     N --> P["public/data/presence"]
-    P --> V["Will's presence viewer"]
+    P --> V["Presence replay workspace"]
     D --> G["GapPair pipeline<br/>CSV corpus today"]
     A["2021 API corpus (planned)"] -.-> G
     G --> R["data/derived"]
-    R -.-> C["risk-events.json / candidates.json<br/>(planned)"]
-    C -.-> CP["Viewer Candidates panel<br/>(planned)"]
+    R --> C["risk-events.json + tracks + methods"]
+    C --> CP["GapPair investigation workspace"]
+    M["ship-suspicion model output"] --> CP
+    C -.-> B["candidates.json / presence bridge<br/>(planned)"]
+    B -.-> V
 ```
 
-Dark Rendezvous writes and retrieves the source material. The Node importer independently turns GFW Presence reports into static viewer assets. GapPair independently processes the 2017–2019 CSV today. The proposed 2021 loader and viewer bridge are not implemented.
+Dark Rendezvous writes and retrieves the source material. The Node importer
+independently turns GFW Presence reports into static replay assets. GapPair
+processes the 2017–2019 CSV into a static 434-record screening export, which
+drives the separate investigation workspace. The proposed 2021 loader and the
+bridge from candidates into the presence replay are not implemented.
 
 ## Data contracts
 
-| Presence contract | GapPair candidate record | Planned bridge |
+| Presence contract | GapPair static candidate record | Future cross-corpus bridge |
 | --- | --- | --- |
-| Defined in [`code/backend/contracts/presence.ts`](../code/backend/contracts/presence.ts). `Observation` has `vesselId` as `gfw:<id>`, ISO UTC `ts`, separate numeric `lat` and `lon`, `presenceHours`, dataset version, and grid resolution. `catalog.json` declares coverage and daily shards; each day has observation and vessel-index URLs plus covered hours. | The GapPair `risk-events.json` contract has `id`, `tier`, `label`, `priority`, `riskScore`, two `vessels` with MMSI, `window`, `meetingPoint`, `scores`, `features`, `evidence[]`, `timeline[]`, and a track GeoJSON `FeatureCollection`. Coordinates use `[lon, lat]`; times are ISO-8601 UTC. | `candidates.json` is planned. Each candidate would add each vessel's `gfwId`, `presenceDays`, and `presenceCoverage`, then carry the candidate window, geometry, scores, evidence, and timeline into the viewer. |
-| Semantics: one hourly grid-cell-centre position per vessel-hour. It is not raw AIS. Coverage records queried hours, including covered-empty hours. Assets are daily, content-hashed static shards. | `meetingPoint` and projections can be inferred. The track collection is expected to contain observed endpoints, estimated projections, an estimated meeting point, and estimated reachable rings. | `presenceDays` covers the candidate window with adjacent UTC days. `presenceCoverage` would be `full`, `partial`, or `none` from the presence catalog. |
+| Defined in [`code/backend/contracts/presence.ts`](../code/backend/contracts/presence.ts). `Observation` has `vesselId` as `gfw:<id>`, ISO UTC `ts`, separate numeric `lat` and `lon`, `presenceHours`, dataset version, and grid resolution. `catalog.json` declares coverage and daily shards; each day has observation and vessel-index URLs plus covered hours. | `pipeline/export.py` validates `risk-events.json`. A record has `id`, `tier`, `label`, `priority`, `riskScore`, two MMSI-keyed vessels, `window`, `meetingPoint`, bounded scores, score provenance, features, evidence, timeline, and embedded track GeoJSON. Coordinates use `[lon, lat]`; times are ISO-8601 UTC. | `candidates.json` is planned. Each candidate would add each vessel's `gfwId`, `presenceDays`, and `presenceCoverage`, then carry the candidate window, geometry, scores, evidence, and timeline into the replay. |
+| Semantics: one hourly grid-cell-centre position per vessel-hour. It is not raw AIS. Coverage records queried hours, including covered-empty hours. Assets are daily, content-hashed static shards. | The static provider fetches the export directly; no runtime candidate API is required. The browser shows observed endpoints separately from estimated projections, meeting points, and reachable rings. | `presenceDays` covers the candidate window with adjacent UTC days. `presenceCoverage` would be `full`, `partial`, or `none` from the presence catalog. |
 
 Two integration hazards are explicit:
 
@@ -40,7 +47,8 @@ Estimated geometry carries `observationStatus: "estimated"` and is never present
 | --- | --- | --- |
 | `wake.ai` | Product name. | Current product name. |
 | Presence viewer / `Maritime Risk Intelligence` | Will's browser viewer and its current frontend brand string. | The string remains in the frontend and should be renamed later. |
-| GapPair | Tanner's paired-dark-gap candidate pipeline. | Incomplete and not integrated. |
+| GapPair | Tanner's paired-dark-gap candidate pipeline. | The CSV reference path is materialized through S8 and feeds the investigation workspace; 2021 bridge and S9 remain missing. |
+| Ship-suspicion model | Experimental individual-vessel model from Presence features. | Separate static top-200 snapshot; it does not alter the GapPair record or label. |
 | Dark Rendezvous | Andrew's ingestion package and `dark-rendezvous` CLI. | Used for NOAA and GFW ingestion. |
 | `Wake AI` | Slidev deck name. | Existing deck naming. |
 
@@ -54,13 +62,19 @@ Estimated geometry carries `observationStatus: "estimated"` and is never present
 
 ## Integration boundary
 
-For the viewer to show candidates, these items must exist. Each is not started:
+The static CSV-corpus integration is complete, but joining a candidate to the
+Presence replay remains a separate task:
 
 | Needed item | Status |
 | --- | --- |
+| S6 features, score, and S8 static export for the CSV reference corpus | Done: 434 validated records, 434 tracks, methods metadata, and evidence ledger. |
+| Viewer investigation workspace, static candidate provider, and candidate geometry layers | Done for the CSV reference export. |
 | 2021-corpus loader with GFW vessel IDs | Not started. |
 | Bridge export that writes `candidates.json` | Not started. |
 | GFW Presence pulled per candidate window | Not started. |
-| Viewer Candidates panel and candidate geometry layers | Not started. |
 
-The three-record `risk-events.json` fixture is hand-made and the React app does not read it. The original detailed prompts are retained in [archived handoff prompts](archive/plan/handoff-prompts.md), section 14. See [data needs](data.md) for the missing inputs.
+The 434 current records come from the CSV corpus and have no GFW vessel IDs;
+the investigation workspace therefore does not claim to replay them as Presence
+tracks. The original detailed prompts are retained in [archived handoff
+prompts](archive/plan/handoff-prompts.md), section 14. See [data needs](data.md)
+for the missing inputs.

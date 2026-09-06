@@ -428,6 +428,52 @@ def _parse_explanations(value: object) -> list[str]:
     return [str(item) for item in raw if isinstance(item, str) and item.strip()]
 
 
+_SCORE_COMPONENTS = ("geom", "kin", "beh", "ctx", "cor", "den", "flt", "hab")
+
+
+def _score_provenance(
+    sources: list[Mapping[str, object]],
+    scores: Mapping[str, object],
+) -> dict[str, dict[str, object]]:
+    """Return materialised S6 provenance, with a useful fixture fallback.
+
+    Full S6 runs supply the JSON ``score_provenance`` column.  The fallback
+    keeps older focused S8 fixtures valid without pretending their hand-made
+    values had row-level derivation metadata.
+    """
+
+    supplied = _loads_object(_lookup(sources, "score_provenance", "scoreProvenance"))
+    provenance: dict[str, dict[str, object]] = {}
+    for name in _SCORE_COMPONENTS:
+        item = _loads_object(supplied.get(name))
+        value = _json_value(item.get("value", scores.get(name)))
+        provenance[name] = {
+            "value": value,
+            "weight": _number(item.get("weight"), default=pipeline_config.WEIGHTS[name]),
+            "inputs": _json_value(_loads_object(item.get("inputs"))),
+            "reason": _clean_string(
+                item.get("reason"),
+                default="No per-component provenance was materialized for this fixture.",
+            )
+            or "No per-component provenance was materialized for this fixture.",
+            "available": _boolean(item.get("available"), default=value is not None),
+        }
+    return provenance
+
+
+def _available_score_components(
+    sources: list[Mapping[str, object]],
+    scores: Mapping[str, object],
+) -> list[str]:
+    """Read S6's availability list, retaining a backwards-compatible fallback."""
+
+    supplied = _loads_list(_lookup(sources, "available_components", "availableScoreComponents"))
+    available = [str(value) for value in supplied if str(value) in _SCORE_COMPONENTS]
+    if available:
+        return list(dict.fromkeys(available))
+    return [name for name in _SCORE_COMPONENTS if scores.get(name) is not None]
+
+
 def _build_explanations(
     sources: list[Mapping[str, object]],
     scores: Mapping[str, object],
@@ -576,10 +622,12 @@ def build_record(
         "den": _score_value(sources, "den"),
         "flt": _score_value(sources, "flt"),
         "hab": _score_value(sources, "hab"),
-        # ``raw`` is retained to 3 dp to reproduce the worked showcase
-        # value (0.329); all bounded score terms use the stated 2 dp rule.
+        # Raw remains more precise than the bounded display terms so analysts
+        # can reproduce the sigmoid priority from the exported scorecard.
         "raw": _round(_lookup(sources, "raw"), 3),
     }
+    score_provenance = _score_provenance(sources, scores)
+    available_score_components = _available_score_components(sources, scores)
 
     label = _clean_string(_lookup(sources, "label"), default="insufficient-evidence") or "insufficient-evidence"
     risk_level = _clean_string(_lookup(sources, "risk_level", "riskLevel"))
@@ -774,6 +822,8 @@ def build_record(
             "portDistanceKm": _round(_lookup(sources, "port_distance_km"), 2),
         },
         "scores": scores,
+        "availableScoreComponents": available_score_components,
+        "scoreProvenance": score_provenance,
         "features": features,
         "corroboration": corroboration_record,
         "nullModel": null_record,
@@ -906,6 +956,34 @@ def validate_record(record: dict) -> None:
         value = scores[key]
         _require(value is None or (isinstance(value, (int, float)) and 0.0 <= float(value) <= 1.0), f"scores.{key} must be null or [0, 1]")
     _require(scores.get("raw") is None or isinstance(scores.get("raw"), (int, float)), "scores.raw must be numeric or null")
+
+    # These S6 fields are additive by contract.  Validate them when supplied
+    # without making historical fixtures (which legitimately omit them) fail.
+    if "availableScoreComponents" in record:
+        available_score_components = record["availableScoreComponents"]
+        _require(isinstance(available_score_components, list), "availableScoreComponents must be a list")
+        _require(
+            all(isinstance(name, str) and name in _SCORE_COMPONENTS for name in available_score_components),
+            "availableScoreComponents contains an invalid component",
+        )
+        _require(len(set(available_score_components)) == len(available_score_components), "availableScoreComponents must be unique")
+    if "scoreProvenance" in record:
+        score_provenance = record["scoreProvenance"]
+        _require(isinstance(score_provenance, Mapping), "scoreProvenance must be an object")
+        _require(set(_SCORE_COMPONENTS).issubset(score_provenance), "scoreProvenance is missing a component")
+        for name in _SCORE_COMPONENTS:
+            item = score_provenance[name]
+            _require(isinstance(item, Mapping), f"scoreProvenance.{name} must be an object")
+            _require({"value", "weight", "inputs", "reason", "available"}.issubset(item), f"scoreProvenance.{name} is incomplete")
+            value = item.get("value")
+            _require(
+                value is None or (isinstance(value, (int, float)) and 0.0 <= float(value) <= 1.0),
+                f"scoreProvenance.{name}.value must be null or [0, 1]",
+            )
+            _require(isinstance(item.get("weight"), (int, float)), f"scoreProvenance.{name}.weight must be numeric")
+            _require(isinstance(item.get("inputs"), Mapping), f"scoreProvenance.{name}.inputs must be an object")
+            _require(isinstance(item.get("reason"), str) and item["reason"], f"scoreProvenance.{name}.reason is required")
+            _require(isinstance(item.get("available"), bool), f"scoreProvenance.{name}.available must be boolean")
 
     features = record["features"]
     _require(isinstance(features, Mapping), "features must be an object")
@@ -1140,7 +1218,7 @@ def write_methods(
             "Detection is retrospective because both AIS gaps must close before a pair can be assessed.",
             "The corpus covers fishing vessels only; it does not provide coordinate-level ground truth for a transfer.",
             "Meeting points and reachable-set rings are inferred heuristics, never observed AIS positions.",
-            "Kinematics are largely uninformative at the operating rule and are not used as affirmative evidence.",
+            "Kinematic plausibility is a reachability screen, not proof of a rendezvous or wrongdoing.",
         ],
         "sources": sources or _default_sources(),
         "attribution": pipeline_config.ATTRIBUTION,
@@ -1187,7 +1265,11 @@ def write_evidence_ledger(records: list[dict], *, out: Path | None = None) -> No
                     "pair_id": record.get("id"),
                     "claim_id": evidence.get("id"),
                     "claim_key": claim_key,
-                    "value": json.dumps(_json_value(value), sort_keys=True) if isinstance(value, (list, dict)) else _json_value(value),
+                    # The ledger holds scalar and coordinate claims in one
+                    # typed parquet column.  A JSON scalar keeps that column
+                    # consistently textual while retaining each claim's
+                    # original number/list/null representation for auditors.
+                    "value": json.dumps(_json_value(value), sort_keys=True, allow_nan=False),
                     "unit": unit,
                     "source": evidence.get("source"),
                     "retrieved_at": evidence.get("observedAt"),
@@ -1335,10 +1417,13 @@ def run() -> list[dict]:
         path = DERIVED / optional
         if path.exists():
             merged = _join_on_pair(merged, pd.read_parquet(path))
-    merged = pd.concat(
-        [merged.reset_index(drop=True), _endpoint_frame(events, candidates, "a"), _endpoint_frame(events, candidates, "b")],
-        axis=1,
-    )
+    for side in ("a", "b"):
+        endpoint = _endpoint_frame(events, candidates, side).reset_index(drop=True)
+        for column in endpoint.columns:
+            if column in merged:
+                merged[column] = merged[column].where(~merged[column].isna(), endpoint[column])
+            else:
+                merged[column] = endpoint[column]
     pair_counts = pd.concat([candidates["mmsi_a"], candidates["mmsi_b"]], ignore_index=True).value_counts()
     null_meta = _read_json(DERIVED / "null_results.json")
     records: list[dict] = []
@@ -1366,4 +1451,3 @@ def run() -> list[dict]:
         f"methods={methods_path.stat().st_size}B tracks={tracks_size}B"
     )
     return records
-

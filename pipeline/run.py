@@ -22,9 +22,9 @@ STAGES = [
     ("feasibility", "pipeline.feasibility", "run", ()),      # S2
     ("context", "pipeline.context", "run", ()),              # S4
     ("null", "pipeline.nulls", "run", ("draws",)),           # S5
+    ("corroborate", "pipeline.corroborate", "run", ()),      # S7
     ("features", "pipeline.features", "run", ()),            # S6a
     ("score", "pipeline.score", "run", ()),                  # S6b
-    ("corroborate", "pipeline.corroborate", "run", ()),      # S7
     ("export", "pipeline.export", "run", ()),                # S8
     ("narrate", "pipeline.narrate", "run", ("top",)),        # S9
 ]

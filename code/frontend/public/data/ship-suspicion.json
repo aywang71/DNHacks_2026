@@ -1,0 +1,1862 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-06T00:31:00Z",
+  "model": {
+    "name": "ship_suspicion",
+    "version": "unversioned",
+    "trainedAt": "2026-09-05T23:55:29Z",
+    "features": [
+      "observation_count",
+      "observed_hours_fraction",
+      "active_days",
+      "unique_grid_cells",
+      "internal_gap_count",
+      "max_internal_gap_hours",
+      "median_speed_knots",
+      "p90_speed_knots",
+      "speed_sd_knots",
+      "stationary_fraction",
+      "movement_distance_km",
+      "net_displacement_km",
+      "tortuosity",
+      "turn_variability_deg",
+      "spatial_radius_km",
+      "night_observation_fraction",
+      "nearest_port_min_km",
+      "near_port_20km_fraction",
+      "near_port_50km_fraction",
+      "nearest_liquid_port_min_km",
+      "near_liquid_port_50km_fraction",
+      "mean_local_vessel_density",
+      "p90_local_vessel_density",
+      "mean_region_vessel_count",
+      "max_shared_gap_end_count",
+      "shared_gap_end_fraction",
+      "has_imo",
+      "has_callsign",
+      "vessel_type"
+    ],
+    "metrics": {
+      "average_precision": 0.0015706771469328278,
+      "brier_score": 0.0022375764105475268,
+      "constant_prevalence_brier_score": 0.0008514456577874857,
+      "constant_prevalence_log_loss": 0.006874722711238906,
+      "examples": 42245.0,
+      "log_loss": 0.01779916842843158,
+      "positive_examples": 36.0,
+      "positive_vessels": 9.0,
+      "prevalence": 0.0008521718546573559,
+      "random_ranking_average_precision": 0.0008521718546573559,
+      "random_ranking_roc_auc": 0.5,
+      "roc_auc": 0.6690450430529561,
+      "top_1_percent_per_anchor_precision": 0.0,
+      "top_1_percent_per_anchor_recall": 0.0,
+      "top_1_percent_per_anchor_review_count": 430.0,
+      "top_1_percent_per_anchor_true_positives": 0.0,
+      "unique_vessels": 4504.0
+    },
+    "caveat": "This experimental score estimates a future GFW intentional-disabling label from past Presence features, not illegal conduct, and it did not meet a useful deployment threshold."
+  },
+  "vessels": [
+    {
+      "mmsi": "273612170",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0060825053588778,
+      "rank": 1,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273430940",
+      "name": null,
+      "flag": null,
+      "vesselClass": "PASSENGER",
+      "score": 0.0058838269415859,
+      "rank": 2,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273439850",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0057684533798724,
+      "rank": 3,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273457210",
+      "name": null,
+      "flag": null,
+      "vesselClass": "PASSENGER",
+      "score": 0.0056436361269435,
+      "rank": 4,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "416005571",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0056232174371375,
+      "rank": 5,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273429780",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.005401599012839,
+      "rank": 6,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273612380",
+      "name": null,
+      "flag": null,
+      "vesselClass": "PASSENGER",
+      "score": 0.0050311052838135,
+      "rank": 7,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273348570",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.004792279716286,
+      "rank": 8,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273528800",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.00478861252499,
+      "rank": 9,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273150800",
+      "name": null,
+      "flag": null,
+      "vesselClass": "PASSENGER",
+      "score": 0.0046790105518496,
+      "rank": 10,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273257400",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0046567367671766,
+      "rank": 11,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "212499000",
+      "name": null,
+      "flag": null,
+      "vesselClass": "PASSENGER",
+      "score": 0.0045392360886664,
+      "rank": 12,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273846700",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0045217426401219,
+      "rank": 13,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "277291000",
+      "name": null,
+      "flag": null,
+      "vesselClass": "PASSENGER",
+      "score": 0.0044038417124084,
+      "rank": 14,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273425250",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0043484631885896,
+      "rank": 15,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273351040",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0043062555971874,
+      "rank": 16,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273312460",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0042423827330149,
+      "rank": 17,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273436020",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0042151238476981,
+      "rank": 18,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273431480",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0041891154357922,
+      "rank": 19,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273842110",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0040986700453456,
+      "rank": 20,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "416239500",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0040947865504473,
+      "rank": 21,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273619100",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0039725293990495,
+      "rank": 22,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273895000",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0039424506329144,
+      "rank": 23,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "249596000",
+      "name": null,
+      "flag": null,
+      "vesselClass": "PASSENGER",
+      "score": 0.0039268661934005,
+      "rank": 24,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273219770",
+      "name": null,
+      "flag": null,
+      "vesselClass": "PASSENGER",
+      "score": 0.0037401263178147,
+      "rank": 25,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273345230",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0037296444234591,
+      "rank": 26,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273435580",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0035654054397063,
+      "rank": 27,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273894000",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0035630687066058,
+      "rank": 28,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "261024850",
+      "name": null,
+      "flag": null,
+      "vesselClass": "PASSENGER",
+      "score": 0.0035605911746537,
+      "rank": 29,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273438500",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0035422153458399,
+      "rank": 30,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273186400",
+      "name": null,
+      "flag": null,
+      "vesselClass": "PASSENGER",
+      "score": 0.0035015606286177,
+      "rank": 31,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "277339000",
+      "name": null,
+      "flag": null,
+      "vesselClass": "PASSENGER",
+      "score": 0.0034588020014655,
+      "rank": 32,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273847900",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0034246475656532,
+      "rank": 33,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "261061070",
+      "name": null,
+      "flag": null,
+      "vesselClass": "PASSENGER",
+      "score": 0.0034057233408639,
+      "rank": 34,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273516500",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0032967746715565,
+      "rank": 35,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "352002153",
+      "name": null,
+      "flag": null,
+      "vesselClass": "CARGO",
+      "score": 0.0032912499308168,
+      "rank": 36,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273310460",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0032304406292073,
+      "rank": 37,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273420200",
+      "name": null,
+      "flag": null,
+      "vesselClass": "SEISMIC_VESSEL",
+      "score": 0.0032159810453188,
+      "rank": 38,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273256250",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.003210055139539,
+      "rank": 39,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273899100",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0031506112265269,
+      "rank": 40,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273815110",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0031363708271272,
+      "rank": 41,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273421150",
+      "name": null,
+      "flag": null,
+      "vesselClass": "CARRIER",
+      "score": 0.0030876856468499,
+      "rank": 42,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273219690",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0030654549307367,
+      "rank": 43,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273458740",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0030027213919339,
+      "rank": 44,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273437330",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0029836131954982,
+      "rank": 45,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "248368000",
+      "name": null,
+      "flag": null,
+      "vesselClass": "PASSENGER",
+      "score": 0.002980115842689,
+      "rank": 46,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273336280",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0029738699117273,
+      "rank": 47,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273413550",
+      "name": null,
+      "flag": null,
+      "vesselClass": "SEISMIC_VESSEL",
+      "score": 0.0029336247390581,
+      "rank": 48,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273414770",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0028449840190092,
+      "rank": 49,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273842320",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0028198029246083,
+      "rank": 50,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273428880",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0028021112442625,
+      "rank": 51,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273211810",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.002767372736665,
+      "rank": 52,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273445180",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0027560099043095,
+      "rank": 53,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "256730000",
+      "name": null,
+      "flag": null,
+      "vesselClass": "PASSENGER",
+      "score": 0.002748208816044,
+      "rank": 54,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273339930",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0027125115328655,
+      "rank": 55,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273267230",
+      "name": null,
+      "flag": null,
+      "vesselClass": "PASSENGER",
+      "score": 0.0027047783242111,
+      "rank": 56,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273212480",
+      "name": null,
+      "flag": null,
+      "vesselClass": "PASSENGER",
+      "score": 0.0026954663807377,
+      "rank": 57,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "311002115",
+      "name": null,
+      "flag": null,
+      "vesselClass": "OTHER",
+      "score": 0.0026649658565828,
+      "rank": 58,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273381060",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0026606796751964,
+      "rank": 59,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273392550",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0026540360343456,
+      "rank": 60,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273450570",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0026440191993096,
+      "rank": 61,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273848700",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0026360540934748,
+      "rank": 62,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273389460",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0026299600470206,
+      "rank": 63,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273352230",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0026236814059047,
+      "rank": 64,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273392740",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0026054568616881,
+      "rank": 65,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273385130",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0026054335809298,
+      "rank": 66,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "412420954",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0026043858238116,
+      "rank": 67,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "412209136",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0025970690079133,
+      "rank": 68,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273613850",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0025861127696524,
+      "rank": 69,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273454040",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0025803764135292,
+      "rank": 70,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273852400",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0025754633230071,
+      "rank": 71,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273359470",
+      "name": null,
+      "flag": null,
+      "vesselClass": "OTHER",
+      "score": 0.0025669722546688,
+      "rank": 72,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273827000",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0025661811702582,
+      "rank": 73,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273813610",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0025637254071027,
+      "rank": 74,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273895110",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0025415190404535,
+      "rank": 75,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273185600",
+      "name": null,
+      "flag": null,
+      "vesselClass": "PASSENGER",
+      "score": 0.0025401485806849,
+      "rank": 76,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273210390",
+      "name": null,
+      "flag": null,
+      "vesselClass": "PASSENGER",
+      "score": 0.002508321353826,
+      "rank": 77,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273348470",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0024798579336365,
+      "rank": 78,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273347910",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0024715920414374,
+      "rank": 79,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273611930",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0024638167830353,
+      "rank": 80,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273311050",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0024604102133762,
+      "rank": 81,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273813100",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0024544950255009,
+      "rank": 82,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "477909800",
+      "name": null,
+      "flag": null,
+      "vesselClass": "CARGO",
+      "score": 0.002426661750838,
+      "rank": 83,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273432860",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0024209730282239,
+      "rank": 84,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "261002530",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0023871645036921,
+      "rank": 85,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273291480",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0023857491792671,
+      "rank": 86,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273392230",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0023666161199263,
+      "rank": 87,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273270450",
+      "name": null,
+      "flag": null,
+      "vesselClass": "PASSENGER",
+      "score": 0.002359729188078,
+      "rank": 88,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273219030",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.002344399841162,
+      "rank": 89,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "636093399",
+      "name": null,
+      "flag": null,
+      "vesselClass": "PASSENGER",
+      "score": 0.0023418680491993,
+      "rank": 90,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273841710",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0023364970265003,
+      "rank": 91,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273613810",
+      "name": null,
+      "flag": null,
+      "vesselClass": "CARGO",
+      "score": 0.0023341712297629,
+      "rank": 92,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273272310",
+      "name": null,
+      "flag": null,
+      "vesselClass": "OTHER",
+      "score": 0.0023293541665747,
+      "rank": 93,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273445440",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0023255384413675,
+      "rank": 94,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273444670",
+      "name": null,
+      "flag": null,
+      "vesselClass": "PASSENGER",
+      "score": 0.0023201108131724,
+      "rank": 95,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273271420",
+      "name": null,
+      "flag": null,
+      "vesselClass": "SEISMIC_VESSEL",
+      "score": 0.0023151602364849,
+      "rank": 96,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273814110",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0023128416399416,
+      "rank": 97,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273427690",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0023100732113551,
+      "rank": 98,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "274488546",
+      "name": null,
+      "flag": null,
+      "vesselClass": "PASSENGER",
+      "score": 0.0022943051202458,
+      "rank": 99,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273430790",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.002287550673964,
+      "rank": 100,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273845300",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0022776303084057,
+      "rank": 101,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273318720",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0022674356114186,
+      "rank": 102,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273328330",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0022665827327634,
+      "rank": 103,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273610030",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0022620692500908,
+      "rank": 104,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273259530",
+      "name": null,
+      "flag": null,
+      "vesselClass": "OTHER",
+      "score": 0.0022562422032782,
+      "rank": 105,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273616200",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0022510628417534,
+      "rank": 106,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273433540",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0022441585715519,
+      "rank": 107,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "261001250",
+      "name": null,
+      "flag": null,
+      "vesselClass": "PASSENGER",
+      "score": 0.0022329060519628,
+      "rank": 108,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "352003557",
+      "name": null,
+      "flag": null,
+      "vesselClass": "OTHER",
+      "score": 0.0022253540898466,
+      "rank": 109,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273298880",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0022231006994154,
+      "rank": 110,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "255806314",
+      "name": null,
+      "flag": null,
+      "vesselClass": "CARGO",
+      "score": 0.002214808022112,
+      "rank": 111,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273258170",
+      "name": null,
+      "flag": null,
+      "vesselClass": "OTHER",
+      "score": 0.0022128901924492,
+      "rank": 112,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273297860",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0022111035544663,
+      "rank": 113,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "613004011",
+      "name": null,
+      "flag": null,
+      "vesselClass": "PASSENGER",
+      "score": 0.0022094454851151,
+      "rank": 114,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273212500",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0021806678856716,
+      "rank": 115,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "352002086",
+      "name": null,
+      "flag": null,
+      "vesselClass": "CARGO",
+      "score": 0.0021787281408117,
+      "rank": 116,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273385760",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0021720307567417,
+      "rank": 117,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273816020",
+      "name": null,
+      "flag": null,
+      "vesselClass": "CARRIER",
+      "score": 0.0021689934522678,
+      "rank": 118,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273330280",
+      "name": null,
+      "flag": null,
+      "vesselClass": "CARRIER",
+      "score": 0.0021541987205685,
+      "rank": 119,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273316750",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0021418369490179,
+      "rank": 120,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273291680",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0021318379763504,
+      "rank": 121,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "255917275",
+      "name": null,
+      "flag": null,
+      "vesselClass": "CARGO",
+      "score": 0.0021195218552746,
+      "rank": 122,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273411740",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0021188517469788,
+      "rank": 123,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "305755000",
+      "name": null,
+      "flag": null,
+      "vesselClass": "CARGO",
+      "score": 0.0021184658431051,
+      "rank": 124,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "412421075",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0021104051732189,
+      "rank": 125,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "352005524",
+      "name": null,
+      "flag": null,
+      "vesselClass": "CARGO",
+      "score": 0.0021041345561375,
+      "rank": 126,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "245901000",
+      "name": null,
+      "flag": null,
+      "vesselClass": "CARGO",
+      "score": 0.0020989421031325,
+      "rank": 127,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273513600",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0020910785524767,
+      "rank": 128,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273445230",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0020903733894526,
+      "rank": 129,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273310280",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0020873777529966,
+      "rank": 130,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "257155320",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0020708212785033,
+      "rank": 131,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273457870",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0020660043556301,
+      "rank": 132,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273337360",
+      "name": null,
+      "flag": null,
+      "vesselClass": "OTHER",
+      "score": 0.0020632152477488,
+      "rank": 133,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273353800",
+      "name": null,
+      "flag": null,
+      "vesselClass": "CARRIER",
+      "score": 0.0020585956333218,
+      "rank": 134,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273412090",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0020583562514675,
+      "rank": 135,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "352006531",
+      "name": null,
+      "flag": null,
+      "vesselClass": "SEISMIC_VESSEL",
+      "score": 0.0020583184654865,
+      "rank": 136,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273815080",
+      "name": null,
+      "flag": null,
+      "vesselClass": "CARRIER",
+      "score": 0.0020545032276214,
+      "rank": 137,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273819100",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0020521144295208,
+      "rank": 138,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273458210",
+      "name": null,
+      "flag": null,
+      "vesselClass": "PASSENGER",
+      "score": 0.0020345223443073,
+      "rank": 139,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273380500",
+      "name": null,
+      "flag": null,
+      "vesselClass": "OTHER",
+      "score": 0.0020325426250019,
+      "rank": 140,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "636022406",
+      "name": null,
+      "flag": null,
+      "vesselClass": "OTHER",
+      "score": 0.0020139970971681,
+      "rank": 141,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273259900",
+      "name": null,
+      "flag": null,
+      "vesselClass": "OTHER",
+      "score": 0.0020076868268837,
+      "rank": 142,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273891000",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0020066376395671,
+      "rank": 143,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "412440245",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0020056440853199,
+      "rank": 144,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273413770",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0019977168249119,
+      "rank": 145,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273298090",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0019966725347213,
+      "rank": 146,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "630001287",
+      "name": null,
+      "flag": null,
+      "vesselClass": "OTHER",
+      "score": 0.0019910379380583,
+      "rank": 147,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273415240",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0019906414221305,
+      "rank": 148,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273213540",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0019861070854808,
+      "rank": 149,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273338020",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0019832684008107,
+      "rank": 150,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273326150",
+      "name": null,
+      "flag": null,
+      "vesselClass": "OTHER",
+      "score": 0.0019805095188047,
+      "rank": 151,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273258710",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.001979084629295,
+      "rank": 152,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273533100",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0019728224165147,
+      "rank": 153,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273252780",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0019451482728158,
+      "rank": 154,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "538006247",
+      "name": null,
+      "flag": null,
+      "vesselClass": "CARGO",
+      "score": 0.0019416072172386,
+      "rank": 155,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273269560",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0019374283015095,
+      "rank": 156,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273294090",
+      "name": null,
+      "flag": null,
+      "vesselClass": "CARRIER",
+      "score": 0.0019354056082599,
+      "rank": 157,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273437190",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0019299831847804,
+      "rank": 158,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273456770",
+      "name": null,
+      "flag": null,
+      "vesselClass": "NA",
+      "score": 0.001924028545568,
+      "rank": 159,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273215510",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0019229632569388,
+      "rank": 160,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273264660",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0019158863889087,
+      "rank": 161,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273437790",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0019089700143175,
+      "rank": 162,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273338570",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0019043032427356,
+      "rank": 163,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273391550",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0019008323857136,
+      "rank": 164,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "630001235",
+      "name": null,
+      "flag": null,
+      "vesselClass": "CARGO",
+      "score": 0.0018982933040013,
+      "rank": 165,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273454560",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0018966198543024,
+      "rank": 166,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273253350",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0018960807223227,
+      "rank": 167,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273290520",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0018957583103265,
+      "rank": 168,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "538006857",
+      "name": null,
+      "flag": null,
+      "vesselClass": "CARGO",
+      "score": 0.0018954445713356,
+      "rank": 169,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273413740",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0018821743993519,
+      "rank": 170,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273511692",
+      "name": null,
+      "flag": null,
+      "vesselClass": "PASSENGER",
+      "score": 0.0018779446101207,
+      "rank": 171,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273563210",
+      "name": null,
+      "flag": null,
+      "vesselClass": "CARRIER",
+      "score": 0.0018750686615669,
+      "rank": 172,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273430630",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0018735898543522,
+      "rank": 173,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "219028115",
+      "name": null,
+      "flag": null,
+      "vesselClass": "PASSENGER",
+      "score": 0.0018719565296263,
+      "rank": 174,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273433220",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0018603498082539,
+      "rank": 175,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273429250",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0018478949762908,
+      "rank": 176,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273841610",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0018473957086508,
+      "rank": 177,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273434000",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0018429303142449,
+      "rank": 178,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273442200",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0018327847234282,
+      "rank": 179,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273355780",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0018318256842396,
+      "rank": 180,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273250870",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0018275699246173,
+      "rank": 181,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273277600",
+      "name": null,
+      "flag": null,
+      "vesselClass": "PASSENGER",
+      "score": 0.0018062337403797,
+      "rank": 182,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "314245000",
+      "name": null,
+      "flag": null,
+      "vesselClass": "PASSENGER",
+      "score": 0.0018017731958372,
+      "rank": 183,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273219770",
+      "name": null,
+      "flag": null,
+      "vesselClass": "PASSENGER",
+      "score": 0.0018015136945132,
+      "rank": 184,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273410850",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0018010200712713,
+      "rank": 185,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273374920",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0017949570210083,
+      "rank": 186,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273423940",
+      "name": null,
+      "flag": null,
+      "vesselClass": "SEISMIC_VESSEL",
+      "score": 0.0017913652577212,
+      "rank": 187,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273458300",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0017891478352198,
+      "rank": 188,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273000885",
+      "name": null,
+      "flag": null,
+      "vesselClass": "PASSENGER",
+      "score": 0.0017875647306682,
+      "rank": 189,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "311002359",
+      "name": null,
+      "flag": null,
+      "vesselClass": "NA",
+      "score": 0.0017841123150838,
+      "rank": 190,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273001307",
+      "name": null,
+      "flag": null,
+      "vesselClass": "PASSENGER",
+      "score": 0.0017784888460908,
+      "rank": 191,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273427730",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0017645082229855,
+      "rank": 192,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "636020269",
+      "name": null,
+      "flag": null,
+      "vesselClass": "CARGO",
+      "score": 0.0017461524055436,
+      "rank": 193,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "413457820",
+      "name": null,
+      "flag": null,
+      "vesselClass": "OTHER",
+      "score": 0.0017452529736275,
+      "rank": 194,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273389300",
+      "name": null,
+      "flag": null,
+      "vesselClass": "OTHER",
+      "score": 0.0017434748890502,
+      "rank": 195,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273210600",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0017414060756137,
+      "rank": 196,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273421750",
+      "name": null,
+      "flag": null,
+      "vesselClass": "FISHING",
+      "score": 0.0017351918993587,
+      "rank": 197,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273358680",
+      "name": null,
+      "flag": null,
+      "vesselClass": "OTHER",
+      "score": 0.00173369830636,
+      "rank": 198,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273616940",
+      "name": null,
+      "flag": null,
+      "vesselClass": "PASSENGER",
+      "score": 0.0017301243038946,
+      "rank": 199,
+      "topFeatures": []
+    },
+    {
+      "mmsi": "273312950",
+      "name": null,
+      "flag": null,
+      "vesselClass": "CARRIER",
+      "score": 0.0017301053979527,
+      "rank": 200,
+      "topFeatures": []
+    }
+  ]
+}

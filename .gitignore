@@ -14,3 +14,8 @@ data/derived/*.parquet
 # 15 MB paper PDF; text extraction and page PNGs are committed.
 # Source: https://users.ox.ac.uk/~wadh4073/research_files/Dark_Shipping.pdf
 tmp/pdfs/Dark_Shipping.pdf
+
+# iCloud Desktop-sync conflict copies ("name 2.ext"). The repo lives under
+# ~/Desktop, which iCloud syncs; it regenerates these on every conflict.
+* [0-9].*
+* [0-9]

@@ -14,7 +14,7 @@ standard: an observed encounter is ingested and ranked. Only T0 is built.
 ## Stage status
 
 All verified counts below are from the 2017–2019 CSV reference run unless the
-row says otherwise. A missing stage has no module or output.
+row says otherwise. A missing stage has no module or materialized output.
 
 | Stage | Module | Reads | Writes | Status | Verified numbers | Test file |
 |---|---|---|---|---|---|---|
@@ -24,16 +24,16 @@ row says otherwise. A missing stage has no module or output.
 | S3 | pipeline/pair_t0.py | gap_events.parquet | candidates_t0.parquet, pair_grid_counts.json, queue_mmsis.txt | complete | 434 operating pairs; 26 cross-flag; 212 queue MMSIs; ladder 101,901 / 1,230 / 5,630 / 434 / 103 / 3; loose 18,775 | tests/test_pipeline_pair.py |
 | S2 | pipeline/feasibility.py | gap events and T0 candidates | feasibility.parquet, loose_feasibility.json | complete | 433 of 434 feasible; showcase τ 38.564 h, required speed 0.919 kn, p* (162.000, 42.775); loose 18,735 feasible | tests/test_pipeline_feasibility.py |
 | S4 | pipeline/context.py | gap events and T0 candidates | local_context.parquet, components.parquet | complete | 237 bilateral; 183 strict identity twins; 173 sequential MMSIs | tests/test_pipeline_context.py |
-| S5 | pipeline/nulls.py | gap events and T0 candidates | null_results.json, p_cell.parquet | complete | 20 draws on disk; null mean 12.4; lift 35.0× | tests/test_pipeline_nulls.py |
-| S6 | pipeline/features.py, pipeline/score.py | S0–S5 and optional enrichment | features.parquet, scores.parquet | missing | not verified | none |
+| S5 | pipeline/nulls.py | gap events and T0 candidates | null_results.json, p_cell.parquet | complete | 200 seeded draws; 434 observed pairs; null mean 13.185; lift 32.916× | tests/test_pipeline_nulls.py |
+| S6 | pipeline/features.py, pipeline/score.py | S1–S5, S7, and optional enrichment | features.parquet, scores.parquet | complete | 434 one-to-one feature rows (106 columns) and 434 score rows; `beh` is null for every reference record | tests/test_pipeline_features.py, tests/test_pipeline_score.py |
 | S7 | pipeline/corroborate.py | T0 candidates and optional VIIRS input | corroboration.parquet | default hook complete; real VIIRS join not implemented | 434 default no_coverage rows; no VIIRS | tests/test_pipeline_corroborate.py |
-| S8 | pipeline/export.py | S2, S6, S7 and candidates | risk-events.json, tracks, methods, ledger, summary | scaffold only | fixture-level export test passes; no full export has run because S6 is missing | tests/test_pipeline_export.py |
+| S8 | pipeline/export.py | S2, S6, S7 and candidates | risk-events.json, tracks, methods, ledger, summary | complete | 434 contract-valid records, 434 GeoJSON tracks, 2,170 evidence-ledger rows, methods metadata, and summary | tests/test_pipeline_export.py plus full-record validation |
 | S9 | pipeline/narrate.py, pipeline/verify.py | S8 outputs | narratives.json | missing | not verified | none |
 | T10 | pipeline/load_api.py | Andrew's 2021 API corpus | normalized API gap_events.parquet | missing | 2021 probe has 66,306 valid-MMSI events and 465 operating fishing-plus-carrier pairs | none |
 | T11 | pipeline/presence_bridge.py | API candidates and candidate-window presence | viewer candidates.json bridge | missing | 28 in-EEZ 2021 pairs have presence days in the probe; 12 are high-seas pairs | none |
 
 S3 appears before S2 in the runner because S2 evaluates the pairs produced by
-S3. S6 and S9 are designed stages, not implemented stages.
+S3. S9 remains a designed stage, not an implemented stage.
 
 ## Run the implemented reference path
 
@@ -45,19 +45,29 @@ flags and runs selected stages in its fixed order.
     .venv/bin/python -m pipeline.run --stage pair
     .venv/bin/python -m pipeline.run --stage feasibility
     .venv/bin/python -m pipeline.run --stage context
-    .venv/bin/python -m pipeline.run --stage null --draws 20
+    .venv/bin/python -m pipeline.run --stage null --draws 200
     .venv/bin/python -m pipeline.run --stage corroborate
+    .venv/bin/python -m pipeline.run --stage features
+    .venv/bin/python -m pipeline.run --stage score
+    .venv/bin/python -m pipeline.run --stage export
 
 Use --draws 200 for the configured null-model draw count. S0 validates the
 reference tables. S1 writes the normalized event corpus to data/derived/. S3,
-S2, S4, S5, and S7 write the files named in the table. S6 blocks a full score
-and export path. --all is not a usable full reference command while the
-missing stages remain missing.
+S2, S4, S5, S6, S7, and S8 write the files named in the table. `--all` is not
+a usable full reference command because it includes the unavailable enrichment
+stage; run the explicit sequence above for the CSV reference corpus.
 
-The session-wide pipeline test run has 49 passes and one failure. The failing
-test is the timing assertion in tests/test_pipeline_nulls.py: 13.8 seconds
-observed against a 10-second bound. It is a performance failure, not a
-correctness failure.
+The current full Python suite has 102 passes and four failures. Two are the
+same null-model performance assertion discovered twice because both
+`tests/test_pipeline_nulls.py` and the staged duplicate
+`tests/test_pipeline_nulls 2.py` are collected; the observed times were 17.9 s
+and 20.2 s against a 10-second bound. The other two are likewise duplicated
+stale P0-fixture tests in `test_pipeline_reference.py` and
+`test_pipeline_reference 2.py`; they still assert that `risk-events.json` has
+three fixture records, while S8 now intentionally writes 434 real reference
+records. The focused S6/S8 checks pass. See [current status](status.md) for
+the cleanup boundary; do not treat the full suite as green until the stale and
+duplicate tests are resolved.
 
 The active .venv runs Python 3.14.2, pandas 3.0.5, numpy 2.5.2, pyarrow
 25.0.1, and shapely 2.1.2. pyproject.toml and requirements.txt instead pin
@@ -87,8 +97,8 @@ For two vessels, joint dwell is:
 The pair is feasible when max_p τ_AB(p) ≥ τ_min. The maximizing p* is the
 inferred meeting point. The pipeline also records the zero-dwell
 required_speed_kn and kin_plausibility = clip(1 − required_speed_kn / V, 0, 1).
-Kinematics is a gate and a loose-rule feature. It is not affirmative evidence
-for an operating T0 pair.
+Kinematics is a reachability plausibility input to S6, not affirmative proof
+of a rendezvous or wrongdoing.
 
 ### Candidate rules and context
 
@@ -111,28 +121,43 @@ event positions and durations. For a candidate cell-month:
 The pseudo-count prevents log(0). A null lift of exactly 1.00× fails the run
 because it indicates a broken null.
 
-### Designed features, score, labels, and evidence tiers
+### Feature assembly, score, labels, and evidence tiers
 
-S6 is not implemented. Its specified features are geometry, kinematics,
-behaviour, context, corroboration, and confounders. Missing inputs stay null;
-they are not converted to observed evidence.
+S6 joins every operating pair to feasibility, local context, component,
+corroboration, null-model, and observed-endpoint fields. The join is strictly
+one-to-one on `pair_id`; an incomplete or duplicate upstream stage raises an
+error rather than silently producing a partial score. Optional API enrichment
+fields are materialized as `null` in the CSV reference corpus.
 
-    S_geom = clip(−log10(p_cell), 0, 2) / 2
-    S_beh  = 0.5·bracket + 0.3·(role_pair == fishing–carrier) + 0.2·port_after_gap_risk
-    S_ctx  = 0.3·cross_flag + 0.3·flag_card(any) + 0.2·not_authorized(any)
-             + 0.1·iuu_listed(any) + 0.1·port_risk
-    S_cor  = 1.0 if viirs_state == uncorrelated_detection else 0
-    S_kin  = kin_plausibility for loose pairs and T1
-    S_den  = clip(log10(1 + local_dark_count) / 2, 0, 1)
-    S_flt  = max(fleet_cluster, sequential_mmsi, identity_twin, local_same_flag_share > 0.8)
-    S_hab  = 1 − gap_unusualness
+Each score component is bounded to [0, 1] when it is available:
 
-    raw      = 0.30·S_geom + 0.15·S_kin + 0.20·S_beh + 0.15·S_ctx + 0.20·S_cor
-               − 0.15·S_den − 0.20·S_flt − 0.10·S_hab
+| Component | Current implementation |
+| --- | --- |
+| `geom` | Mean endpoint synchrony: operating-rule-normalised endpoint distance and time deltas plus dark-duration similarity. |
+| `kin` | S2 reachable-set kinematic plausibility. |
+| `beh` | Unavailable in the reference corpus because no encounter, loitering, or port-visit evidence was collected; it remains `null`. |
+| `ctx` | Independent bilateral structure, non-twin/non-sequential identity signals, and gap unusualness. |
+| `cor` | An uncorrelated VIIRS detection is 1; no coverage, a clear non-detection, or a correlated detection is 0. |
+| `den` | Log-transformed nearby event and unique-vessel density penalty. |
+| `flt` | Largest available component-extent, same-flag-share, or sequential-MMSI-share fleet-pattern penalty. |
+| `hab` | Largest routine-duration or repeat-queue-pattern penalty. |
+
+For available components A, the score is:
+
+    raw      = sum(w_i · S_i for i in A) / sum(abs(w_i) for i in A)
     priority = sigmoid(6 · (raw − 0.30))
 
-The priority is an analyst-priority value, not a probability of wrongdoing.
-The designed labels are investigate, coordinated-fleet-pattern, identity-twin,
+Using the absolute configured weight mass in the denominator is deliberate:
+negative penalty weights must not reverse the normalization, and an unavailable
+component must not be silently treated as zero. `riskScore` is
+`round(100 · priority)`. The priority is an analyst-priority value, not a
+probability of wrongdoing.
+
+Each scored export carries `availableScoreComponents` and a
+`scoreProvenance` item for every configured component. Provenance records the
+value, signed weight, source inputs, plain-language reason, and availability
+flag used for that individual record. The labels are investigate,
+coordinated-fleet-pattern, identity-twin,
 likely-coverage-or-cluster-artifact, possible-port-transit, and
 insufficient-evidence. Evidence tiers are coincidence_or_artifact,
 coordinated_fleet_activity, bilateral_rendezvous_plausible,
@@ -186,16 +211,18 @@ current configuration.
 
 ## Output contract
 
-S8 specifies a static risk-events.json array and one GeoJSON track per
-candidate. This is an intended contract. A full export is not present because
-S6 is missing.
+S8 publishes a static `risk-events.json` array and one GeoJSON track per
+candidate. The current 2017–2019 reference export contains 434 contract-valid
+records, 434 track files, `methods.json`, a 2,170-row evidence ledger, and a
+human-readable summary. The export is reproducible from S1–S7 inputs plus S6
+features and scores.
 
 | Area | Record fields |
 |---|---|
 | Identity and display | id, name, imo, flag, vesselType, vessels[] |
 | Classification | tier, label, evidenceTier, priority, riskScore, riskLevel, eventKind, eventLabel |
 | Time and place | location, lastSeen, coordinates, window, meetingPoint, jurisdiction |
-| Method | scores, features, corroboration, nullModel, neighbours, explanations |
+| Method | scores, availableScoreComponents, scoreProvenance, features, corroboration, nullModel, neighbours, explanations |
 | Evidence | evidence[], timeline[], sources[], attribution, analystDisposition |
 | Geometry | embedded track FeatureCollection and tracks/<id>.geojson |
 
@@ -222,8 +249,9 @@ carry observationStatus: estimated; observed endpoints carry
 observationStatus: observed. Omit ring polygons when the geometry crosses the
 dateline.
 
-The current presence viewer does not read risk-events.json, tracks,
-methods.json, or narratives.json.
+The browser's static GapPair provider reads `risk-events.json`. The provider
+does not turn its endpoint geometry into Presence observations; `methods.json`
+and `narratives.json` are not fetched by that provider.
 
 ## Open definitions and decisions
 
@@ -239,7 +267,7 @@ The figures “181” identity twins and “3 neighbours” in archived
 
 | Corpus | Use | Join properties | Current state |
 |---|---|---|---|
-| 2017–2019 disabling-events CSV | Validation and reference run. It supplies all verified pipeline counts, the null lift, and the showcase pair CHN 412331147 × TWN 416004105 on 2017-07-01. | It has no GFW vessel IDs. | Complete reference path through S7 default corroboration. |
+| 2017–2019 disabling-events CSV | Validation and reference run. It supplies all verified pipeline counts, the null lift, and the showcase pair CHN 412331147 × TWN 416004105 on 2017-07-01. | It has no GFW vessel IDs. | Complete reference path through S8 with a 434-record static export. |
 | Andrew's 2021 GFW API pull | Demo-capable corpus for the viewer integration. | It has GFW vessel IDs, names, flags, EEZ/RFMO IDs, and shore/port distances. The viewer key is gfw:<vesselId>. | Complete pull exists; T10 loader is not implemented. |
 
 S2 through S8 are corpus-agnostic when given a compatible gap_events.parquet.
@@ -254,8 +282,6 @@ further enrichment.
 | T1 one-sided | Carrier loitering events, fishing-gap join, and score implementation. |
 | T2 standard | Encounter-event ingest and ranking. |
 | S1′ enrichment | Complete 2017–2019 GAP bronze and the enrich_api.py module. |
-| S6 features and score | features.py and score.py. |
-| S8 full export | S6 outputs, then a real export and validation run. |
 | S9 narration and verification | An LLM decision, an API key, narrator, and verifier modules. |
 | T10 API loader | Normalization of the 2021 API corpus. |
 | T11 presence bridge | Candidate asset for the presence viewer and targeted presence windows. |
@@ -268,9 +294,11 @@ The archived [handoff prompts](archive/plan/handoff-prompts.md) retain the
 original implementation prompts. [Data needs](data.md) lists the required data
 and inputs.
 
-## Frontend fixture
+## Published assets and remaining fixture
 
-code/frontend/public/data/risk-events.json, methods.json, and narratives.json
-are hand-made three-record P0 fixtures in the GapPair contract. They are not
-generated from a completed S8 run. The React app does not read them.
-
+S8 overwrites `code/frontend/public/data/risk-events.json` and `methods.json`
+with the materialized 434-record reference export. It also writes
+`code/frontend/public/data/tracks/<id>.geojson`,
+`data/derived/evidence_ledger.parquet`, and `data/derived/summary.md`.
+`narratives.json` remains the earlier three-record P0 fixture because S9 is not
+implemented; it is not an S8 output and is not fetched by the static provider.
