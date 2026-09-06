@@ -99,6 +99,10 @@ def build_parser() -> argparse.ArgumentParser:
     noaa.add_argument("--bronze-root", type=Path, default=Path("data/bronze"))
     noaa.add_argument("--silver-root", type=Path, default=Path("data/silver"))
     noaa.add_argument("--bbox", type=_parse_bbox)
+    noaa.add_argument(
+        "--request-id",
+        help="Optional acquisition-request identifier; isolates Silver output for targeted pulls.",
+    )
 
     local = commands.add_parser("normalize-file", help="Normalize a raw AIS CSV or Parquet export")
     local.add_argument("--input", required=True, type=Path)
@@ -208,6 +212,7 @@ def main() -> None:
             bronze_root=args.bronze_root,
             silver_root=args.silver_root,
             bbox=args.bbox,
+            request_id=args.request_id,
         )
         print(output)
         return

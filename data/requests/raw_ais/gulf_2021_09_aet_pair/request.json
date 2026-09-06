@@ -1,0 +1,42 @@
+{
+  "request_id": "gulf_2021_09_aet_pair",
+  "candidate_id": "gfw-gap-pair-89ec6f06-5fe70494",
+  "trigger_type": "paired_gfw_gap_screen",
+  "trigger_source_ids": [
+    "89ec6f06d17264ecc4645d72e0bf81ca",
+    "5fe704944fcf3e1083a170260d1ef710"
+  ],
+  "vessels": [
+    {
+      "mmsi": "367530350",
+      "name": "AET RESPONSIBILITY"
+    },
+    {
+      "mmsi": "367511240",
+      "name": "AET EXCELLENCE"
+    }
+  ],
+  "candidate_window_start_utc": "2021-09-15T21:53:39Z",
+  "candidate_window_end_utc": "2021-09-16T22:29:04Z",
+  "window_start_utc": "2021-09-15T15:53:39Z",
+  "window_end_utc": "2021-09-17T04:29:04Z",
+  "time_buffer_hours": 6,
+  "bbox_wgs84": [
+    -94.65,
+    28.1,
+    -93.45,
+    29.1
+  ],
+  "provider": "noaa_marine_cadastre",
+  "provider_object_format": "daily_csv_zstd",
+  "collection_mode": "terrestrial",
+  "position_semantics": "terrestrial_ais_minute_downsampled",
+  "coverage_hypothesis": "The northern Gulf of Mexico window is within NOAA Marine Cadastre's U.S. terrestrial AIS footprint. Coverage must be evaluated from the retrieved observations.",
+  "screening_summary": {
+    "gap_overlap_hours": 18.97,
+    "off_endpoint_separation_km": 3.1,
+    "on_endpoint_separation_km": 6.15
+  },
+  "request_reason": "Validate the observed-point ingestion and coverage workflow against a bounded paired-GAP screening candidate. This is not an assertion of a transfer or intentional AIS disabling.",
+  "status": "approved_for_public_noaa_validation"
+}

@@ -1,5 +1,6 @@
 export const HOUR = 3_600_000
 export const DAY = 24 * HOUR
+export const TRAIL_HOURS = 4
 export const dayOf = (timestamp) => new Date(timestamp).toISOString().slice(0, 10)
 
 export function dateRange(startDate, endDate) {
@@ -61,7 +62,7 @@ export function nextCovered(hours, cursor, direction = 1) {
 }
 
 export function requiredDays(cursor, rangeStart, catalog) {
-  const dates = new Set([dayOf(cursor), dayOf(cursor + HOUR), dayOf(Math.max(rangeStart, cursor - 6 * HOUR))])
+  const dates = new Set([dayOf(cursor), dayOf(cursor + HOUR), dayOf(Math.max(rangeStart, cursor - TRAIL_HOURS * HOUR))])
   return catalog.days.filter(day => dates.has(day.date))
 }
 
@@ -115,7 +116,7 @@ export function interpolateObservations(current, next, progress) {
 
 export function trailFeatures(observations, vesselId, cursor, rangeStart) {
   if (!vesselId) return { type: 'FeatureCollection', features: [] }
-  const start = Math.max(rangeStart, cursor - 6 * HOUR)
+  const start = Math.max(rangeStart, cursor - TRAIL_HOURS * HOUR)
   const buckets = new Map()
   for (const row of observations) {
     if (row.vesselId !== vesselId) continue
@@ -139,9 +140,50 @@ export function trailFeatures(observations, vesselId, cursor, rangeStart) {
         lines.push([a, [edge, lat]], [[-edge, lat], b])
       }
     }
-    for (const coordinates of lines) features.push({ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates } })
+    const ageHours = (cursor - (ts + HOUR)) / HOUR
+    const opacity = Math.max(0.25, 1 - ageHours * 0.25)
+    for (const coordinates of lines) features.push({ type: 'Feature', properties: { ageHours, opacity }, geometry: { type: 'LineString', coordinates } })
   }
   return { type: 'FeatureCollection', features }
+}
+
+function distanceKm(a, b) {
+  const radians = Math.PI / 180
+  const lat1 = a[1] * radians, lat2 = b[1] * radians
+  const deltaLat = (b[1] - a[1]) * radians
+  const deltaLon = (b[0] - a[0]) * radians
+  const value = Math.sin(deltaLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(deltaLon / 2) ** 2
+  return 6371 * 2 * Math.atan2(Math.sqrt(value), Math.sqrt(1 - value))
+}
+
+function bearingDegrees(a, b) {
+  const radians = Math.PI / 180
+  const lat1 = a[1] * radians, lat2 = b[1] * radians
+  const deltaLon = (b[0] - a[0]) * radians
+  const y = Math.sin(deltaLon) * Math.cos(lat2)
+  const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(deltaLon)
+  return (Math.atan2(y, x) / radians + 360) % 360
+}
+
+/**
+ * The presence feed has no AIS course or heading. This marks only the
+ * direction implied by the final pair of unambiguous hourly grid centers.
+ */
+export function directionFeature(observations, vesselId, cursor, rangeStart) {
+  if (!vesselId || cursor - HOUR < rangeStart) return { type: 'FeatureCollection', features: [] }
+  const previous = [], current = []
+  for (const row of observations) {
+    if (row.vesselId !== vesselId) continue
+    const ts = Date.parse(row.ts)
+    if (ts === cursor - HOUR) previous.push(row)
+    else if (ts === cursor) current.push(row)
+  }
+  if (previous.length !== 1 || current.length !== 1) return { type: 'FeatureCollection', features: [] }
+  const from = [previous[0].lon, previous[0].lat], to = [current[0].lon, current[0].lat]
+  const kilometers = distanceKm(from, to)
+  const minimumDistance = Math.max(previous[0].gridResolution ?? 0, current[0].gridResolution ?? 0) * 111
+  if (!Number.isFinite(kilometers) || kilometers < minimumDistance) return { type: 'FeatureCollection', features: [] }
+  return { type: 'FeatureCollection', features: [{ type: 'Feature', properties: { bearing: bearingDegrees(from, to), distanceKm: kilometers }, geometry: { type: 'Point', coordinates: to } }] }
 }
 
 export function mergeVessels(summaries) {

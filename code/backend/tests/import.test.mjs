@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { readFile, stat, writeFile } from 'node:fs/promises'
+import { readFile, rm, stat, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { execFileSync } from 'node:child_process'
@@ -49,6 +49,36 @@ test('identical/reordered reports dedupe; latest metadata wins; distinct cells s
   assert.equal(summary.vessels[0].mmsi, null)
   assert.equal(summary.vessels[0].imo, null)
   assert.equal(summary.vessels[0].id, 'gfw:vessel-a')
+})
+
+test('partitioned report files are reassembled and validated against their complete manifest', async t => {
+  const paths = await workspace(t)
+  const source = await fixture(paths.input, 'partitioned', [row(), row('2026-08-01 01:00')])
+  const records = source.payload.entries[0][Object.keys(source.payload.entries[0])[0]]
+  const first = { ...source.payload, entries: [{ [Object.keys(source.payload.entries[0])[0]]: [records[0]] }] }
+  const second = { ...source.payload, entries: [{ [Object.keys(source.payload.entries[0])[0]]: [records[1]] }] }
+  const firstRaw = JSON.stringify(first), secondRaw = JSON.stringify(second)
+  const directory = path.dirname(source.report)
+  await writeFile(path.join(directory, 'report.part-0001.json'), firstRaw)
+  await writeFile(path.join(directory, 'report.part-0002.json'), secondRaw)
+  await rm(source.report)
+  const request = { ...source.metadata.request }
+  delete request['region-dataset']; delete request['region-id']
+  await writeFile(source.manifestFile, JSON.stringify({ ...source.metadata, request, target: { kind: 'eez', region_dataset: 'public-eez-areas', region_id: 8469 }, raw_response_part_sha256: [digest(firstRaw), digest(secondRaw)] }))
+  const catalog = await exportPresence(paths)
+  assert.equal(catalog.observationCount, 2)
+  assert.equal(catalog.days[0].observationCount, 2)
+  assert.equal(catalog.coverage[0].regionId, 8469)
+})
+
+test('multiple input roots merge coverage and retain distinct cells', async t => {
+  const paths = await workspace(t)
+  const secondInput = path.join(path.dirname(paths.input), 'second-input')
+  await fixture(paths.input, 'first-region', [row()])
+  await fixture(secondInput, 'second-region', [row(undefined, { lon: 159 })], { request: { 'region-id': 8469 } })
+  const catalog = await exportPresence({ inputs: [paths.input, secondInput], output: paths.output })
+  assert.equal(catalog.observationCount, 2)
+  assert.equal(catalog.coverage.length, 2)
 })
 
 test('imported empty hours preserve coverage; missing hours stay uncovered', async t => {

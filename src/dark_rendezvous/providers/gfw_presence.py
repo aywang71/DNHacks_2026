@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from typing import Any, Iterator
 
 import pandas as pd
@@ -20,6 +21,88 @@ GFW_PRESENCE_COLUMNS: tuple[str, ...] = (
     "report_dataset",
     "grid_resolution_degrees",
 )
+
+
+def partition_presence_report(payload: dict[str, Any], *, max_bytes: int) -> list[dict[str, Any]]:
+    """Split a large 4Wings response into independently valid JSON envelopes.
+
+    GFW puts Presence rows under a dataset-keyed list in ``entries``. Each
+    returned part retains the response's top-level metadata and a subset of
+    that list, so it remains auditable raw data and is directly consumable by
+    :func:`normalize_presence_report`.
+    """
+    if max_bytes < 1024:
+        raise ValueError("max_bytes must be at least 1 KiB")
+
+    def encoded_size(value: dict[str, Any]) -> int:
+        return len(json.dumps(value, indent=2, sort_keys=True).encode("utf-8"))
+
+    if encoded_size(payload) <= max_bytes:
+        return [payload]
+
+    envelope_fields = {key: value for key, value in payload.items() if key != "entries"}
+    groups: list[tuple[str | None, list[dict[str, Any]]]] = []
+    for entry in payload.get("entries", []):
+        if not isinstance(entry, dict):
+            continue
+        nested_groups = [
+            (dataset, records)
+            for dataset, records in entry.items()
+            if isinstance(records, list) and all(isinstance(record, dict) for record in records)
+        ]
+        if nested_groups:
+            groups.extend((dataset, records) for dataset, records in nested_groups)
+        else:
+            groups.append((None, [entry]))
+
+    if not groups:
+        raise ValueError("Cannot partition a Presence response without object entries")
+
+    def envelope(dataset: str | None, records: list[dict[str, Any]]) -> dict[str, Any]:
+        entries: list[dict[str, Any]]
+        if dataset is None:
+            entries = records
+        else:
+            entries = [{dataset: records}]
+        return {"entries": entries, **envelope_fields}
+
+    # Compact-row bytes are only a conservative trigger. We validate each
+    # rendered JSON part before emitting it, leaving substantial room for
+    # indentation and the enclosing response object.
+    trigger_bytes = max_bytes // 2
+    parts: list[dict[str, Any]] = []
+    for dataset, records in groups:
+        batch: list[dict[str, Any]] = []
+        compact_size = 0
+        for record in records:
+            batch.append(record)
+            compact_size += len(json.dumps(record, separators=(",", ":")).encode("utf-8")) + 1
+            if compact_size < trigger_bytes:
+                continue
+            part = envelope(dataset, batch)
+            if encoded_size(part) > max_bytes:
+                if len(batch) == 1:
+                    raise ValueError("A single Presence record exceeds max_bytes")
+                batch.pop()
+                part = envelope(dataset, batch)
+                if encoded_size(part) > max_bytes:
+                    raise ValueError("Unable to partition Presence response within max_bytes")
+                parts.append(part)
+                batch = [record]
+                compact_size = len(json.dumps(record, separators=(",", ":")).encode("utf-8")) + 1
+            else:
+                parts.append(part)
+                batch = []
+                compact_size = 0
+        if batch:
+            part = envelope(dataset, batch)
+            if encoded_size(part) > max_bytes:
+                raise ValueError("Unable to partition Presence response within max_bytes")
+            parts.append(part)
+
+    if not parts or any(encoded_size(part) > max_bytes for part in parts):
+        raise AssertionError("Presence response partitioning exceeded max_bytes")
+    return parts
 
 
 def _presence_rows(payload: dict[str, Any]) -> Iterator[tuple[str | None, dict[str, Any]]]:
