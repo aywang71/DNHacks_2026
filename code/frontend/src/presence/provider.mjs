@@ -8,7 +8,7 @@ export function createPresenceProvider(base = '/data/presence/', fetcher = globa
     if (signal?.aborted) throw new DOMException('Request aborted', 'AbortError')
     if (cache?.has(filename)) { const result = cache.get(filename); cache.delete(filename); cache.set(filename, result); return result }
     const response = await fetcher(`${root}${filename}`, { signal, cache: filename === 'catalog.json' ? 'no-store' : 'default' })
-    if (!response.ok) throw new Error(filename === 'catalog.json' ? 'Presence data is unavailable. Run npm run import:presence from code/frontend, then retry.' : 'This day could not be loaded. Retry to load its observations.')
+    if (!response.ok) throw new Error(filename === 'catalog.json' ? 'Presence data is unavailable. Retry to reconnect, or ask your data administrator to check the imported observations.' : 'This day could not be loaded. Retry to load its observations.')
     let result
     try { result = await response.json() } catch { throw new Error('Presence assets could not be read. Run the import again, then retry.') }
     if (signal?.aborted) throw new DOMException('Request aborted', 'AbortError')
@@ -18,7 +18,7 @@ export function createPresenceProvider(base = '/data/presence/', fetcher = globa
   const provider = {
     async getCatalog(signal) {
       const catalog = await read('catalog.json', signal)
-      if (catalog.schemaVersion !== 1 || !Array.isArray(catalog.days) || !catalog.days.length) throw new Error('No supported presence catalog is available. Run the import again, then retry.')
+      if (catalog.schemaVersion !== 1 || !Array.isArray(catalog.days) || !catalog.days.length) throw new Error('No supported presence catalog is available. Ask your data administrator to update the imported observations, then retry.')
       if (revision !== catalog.revision) { observations.clear(); summaries.clear(); revision = catalog.revision }
       return catalog
     },

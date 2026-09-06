@@ -13,6 +13,7 @@ dependencies = [
   "pandas>=2.2,<3",
   "pyarrow>=16,<22",
   "shapely>=2.0,<3",
+  "zstandard>=0.22,<1",
 ]
 
 [project.optional-dependencies]

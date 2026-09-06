@@ -282,6 +282,41 @@ export interface ShipSuspicionPayload {
   [key: string]: unknown
 }
 
+/** Static inspection-queue contract shared by the queue and its detail view. */
+export interface QueueModelScore {
+  id: string
+  version: string
+  score: number
+  [key: string]: unknown
+}
+
+export interface QueueItem {
+  id: string
+  vesselId: string
+  mmsi: string | null
+  vesselType: string
+  score: number
+  modelScores: QueueModelScore[]
+  [key: string]: unknown
+}
+
+export interface QueueBatch {
+  asOf: string
+  windowStart: string
+  windowEnd: string
+  scoredVessels: number
+  items: QueueItem[]
+  [key: string]: unknown
+}
+
+export interface InvestigationQueue {
+  schemaVersion: number
+  batches: QueueBatch[]
+  ensemble: { threshold: number; [key: string]: unknown }
+  models: { id: string; scoreMeaning: string; [key: string]: unknown }[]
+  [key: string]: unknown
+}
+
 export type CaseStatus = 'not-created' | 'open' | 'ready'
 
 export interface CaseRecord {

@@ -6,13 +6,28 @@ import { circularBounds } from './geometry.mjs'
 
 const backend = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const dayOf = timestamp => new Date(timestamp).toISOString().slice(0, 10)
+const defaultInputs = [
+  path.resolve(backend, '../../data/bronze/gfw_presence'),
+  path.resolve(backend, '../../data/bronze/gfw_presence_global_demo'),
+]
 
 /** Prepare immutable daily assets and atomically publish their catalog. */
 export async function exportPresence({
-  input = path.resolve(backend, '../../data/bronze/gfw_presence'),
+  input,
+  inputs,
   output = path.resolve(backend, '../frontend/public/data/presence'),
 } = {}) {
-  const { observations, coverages } = await readPresence(input)
+  const roots = inputs ?? (input ? [input] : defaultInputs)
+  if (!Array.isArray(roots) || !roots.length) throw new Error('At least one Presence input directory is required')
+  const observations = new Map(), coverages = new Map()
+  for (const root of roots) {
+    const source = await readPresence(root)
+    for (const [id, record] of source.observations) {
+      const previous = observations.get(id)
+      if (!previous || previous.rank < record.rank) observations.set(id, record)
+    }
+    for (const [id, coverage] of source.coverages) coverages.set(id, coverage)
+  }
   const days = new Map()
   function day(date) { if (!days.has(date)) days.set(date, { date, covered: new Set(), observations: [], vessels: new Map() }); return days.get(date) }
   const coverage = [...coverages.values()].sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)))

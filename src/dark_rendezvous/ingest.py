@@ -30,11 +30,15 @@ def ingest_noaa_day(
     bronze_root: Path,
     silver_root: Path,
     bbox: tuple[float, float, float, float] | None = None,
+    request_id: str | None = None,
 ) -> Path:
     provider = NoaaMarineCadastreProvider()
     raw = provider.download(day, bronze_root)
-    positions = _clip_to_bbox(provider.normalize(raw), bbox)
-    output = silver_root / "ais_positions" / f"event_date={day.isoformat()}" / "positions.parquet"
+    positions = _clip_to_bbox(provider.normalize(raw, bbox=bbox), bbox)
+    output_root = silver_root / "ais_positions"
+    if request_id:
+        output_root = output_root / "source=noaa_marine_cadastre" / f"request_id={request_id}"
+    output = output_root / f"event_date={day.isoformat()}" / "positions.parquet"
     write_parquet(positions, output)
     write_manifest(
         output.with_name("manifest.json"),
@@ -47,6 +51,7 @@ def ingest_noaa_day(
             "row_count": len(positions),
             "valid_position_count": int(positions["is_valid_position"].sum()),
             "bbox": bbox,
+            "request_id": request_id,
         },
     )
     return output
@@ -84,4 +89,3 @@ def normalize_file(
         },
     )
     return output
-

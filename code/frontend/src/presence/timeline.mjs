@@ -1,5 +1,6 @@
 export const HOUR = 3_600_000
 export const DAY = 24 * HOUR
+export const TRAIL_HOURS = 4
 export const dayOf = (timestamp) => new Date(timestamp).toISOString().slice(0, 10)
 
 export function dateRange(startDate, endDate) {
@@ -36,6 +37,21 @@ export function latestPositionedHour(catalog, range) {
   return latestPosition ?? latestCovered
 }
 
+export function earliestPositionedHour(catalog, range) {
+  let earliestPosition = null
+  let earliestCovered = null
+  for (const day of catalog.days) {
+    const midnight = Date.parse(`${day.date}T00:00:00Z`)
+    for (const hour of day.coveredHours) {
+      const timestamp = midnight + hour * HOUR
+      if (timestamp < range.start || timestamp >= range.end) continue
+      if (earliestCovered === null || timestamp < earliestCovered) earliestCovered = timestamp
+      if (day.hourlyCounts[hour] > 0 && (earliestPosition === null || timestamp < earliestPosition)) earliestPosition = timestamp
+    }
+  }
+  return earliestPosition ?? earliestCovered
+}
+
 export function nextCovered(hours, cursor, direction = 1) {
   // Binary search keeps stepping independent of the size of the archive.
   let lo = 0, hi = hours.length
@@ -46,7 +62,7 @@ export function nextCovered(hours, cursor, direction = 1) {
 }
 
 export function requiredDays(cursor, rangeStart, catalog) {
-  const dates = new Set([dayOf(cursor), dayOf(Math.max(rangeStart, cursor - 6 * HOUR))])
+  const dates = new Set([dayOf(cursor), dayOf(cursor + HOUR), dayOf(Math.max(rangeStart, cursor - TRAIL_HOURS * HOUR))])
   return catalog.days.filter(day => dates.has(day.date))
 }
 
@@ -54,9 +70,53 @@ export function currentObservations(observations, cursor) {
   return observations.filter(row => Date.parse(row.ts) === cursor)
 }
 
+// Blend consecutive hourly reports into animation frames. Vessels with a
+// report at only one end of the interval fade in/out, avoiding a distracting
+// pop when the set of reporting vessels changes.
+export function createObservationInterpolator(current, next) {
+  // Match reports once per interval, rather than rebuilding indexes every frame.
+  const currentCounts = new Map(), nextCounts = new Map(), nextByVessel = new Map()
+  for (const row of current) currentCounts.set(row.vesselId, (currentCounts.get(row.vesselId) ?? 0) + 1)
+  for (const row of next) {
+    nextCounts.set(row.vesselId, (nextCounts.get(row.vesselId) ?? 0) + 1)
+    nextByVessel.set(row.vesselId, row)
+  }
+  const matched = new Set()
+  const pairs = current.map(row => {
+    const target = nextByVessel.get(row.vesselId)
+    if (!target || currentCounts.get(row.vesselId) !== 1 || nextCounts.get(row.vesselId) !== 1) return { row }
+    matched.add(row.vesselId)
+    let longitudeDelta = target.lon - row.lon
+    if (longitudeDelta > 180) longitudeDelta -= 360
+    if (longitudeDelta < -180) longitudeDelta += 360
+    return { row, target, longitudeDelta }
+  })
+  const joining = next.filter(row => !matched.has(row.vesselId))
+  return progress => {
+    if (progress <= 0) return current.map(row => ({ ...row, opacity: 1 }))
+    if (progress >= 1) return next.map(row => ({ ...row, opacity: 1 }))
+    // Constant speed avoids braking and accelerating at every hourly report.
+    const t = progress
+    const fade = t * t * (3 - 2 * t)
+    const frames = pairs.map(({ row, target, longitudeDelta }) => {
+      if (!target) return { ...row, opacity: 1 - fade }
+      let lon = row.lon + longitudeDelta * t
+      if (lon > 180) lon -= 360
+      if (lon < -180) lon += 360
+      return { ...row, lat: row.lat + (target.lat - row.lat) * t, lon, opacity: 1 }
+    })
+    for (const row of joining) frames.push({ ...row, opacity: fade })
+    return frames
+  }
+}
+
+export function interpolateObservations(current, next, progress) {
+  return createObservationInterpolator(current, next)(progress)
+}
+
 export function trailFeatures(observations, vesselId, cursor, rangeStart) {
   if (!vesselId) return { type: 'FeatureCollection', features: [] }
-  const start = Math.max(rangeStart, cursor - 6 * HOUR)
+  const start = Math.max(rangeStart, cursor - TRAIL_HOURS * HOUR)
   const buckets = new Map()
   for (const row of observations) {
     if (row.vesselId !== vesselId) continue
@@ -80,9 +140,50 @@ export function trailFeatures(observations, vesselId, cursor, rangeStart) {
         lines.push([a, [edge, lat]], [[-edge, lat], b])
       }
     }
-    for (const coordinates of lines) features.push({ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates } })
+    const ageHours = (cursor - (ts + HOUR)) / HOUR
+    const opacity = Math.max(0.25, 1 - ageHours * 0.25)
+    for (const coordinates of lines) features.push({ type: 'Feature', properties: { ageHours, opacity }, geometry: { type: 'LineString', coordinates } })
   }
   return { type: 'FeatureCollection', features }
+}
+
+function distanceKm(a, b) {
+  const radians = Math.PI / 180
+  const lat1 = a[1] * radians, lat2 = b[1] * radians
+  const deltaLat = (b[1] - a[1]) * radians
+  const deltaLon = (b[0] - a[0]) * radians
+  const value = Math.sin(deltaLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(deltaLon / 2) ** 2
+  return 6371 * 2 * Math.atan2(Math.sqrt(value), Math.sqrt(1 - value))
+}
+
+function bearingDegrees(a, b) {
+  const radians = Math.PI / 180
+  const lat1 = a[1] * radians, lat2 = b[1] * radians
+  const deltaLon = (b[0] - a[0]) * radians
+  const y = Math.sin(deltaLon) * Math.cos(lat2)
+  const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(deltaLon)
+  return (Math.atan2(y, x) / radians + 360) % 360
+}
+
+/**
+ * The presence feed has no AIS course or heading. This marks only the
+ * direction implied by the final pair of unambiguous hourly grid centers.
+ */
+export function directionFeature(observations, vesselId, cursor, rangeStart) {
+  if (!vesselId || cursor - HOUR < rangeStart) return { type: 'FeatureCollection', features: [] }
+  const previous = [], current = []
+  for (const row of observations) {
+    if (row.vesselId !== vesselId) continue
+    const ts = Date.parse(row.ts)
+    if (ts === cursor - HOUR) previous.push(row)
+    else if (ts === cursor) current.push(row)
+  }
+  if (previous.length !== 1 || current.length !== 1) return { type: 'FeatureCollection', features: [] }
+  const from = [previous[0].lon, previous[0].lat], to = [current[0].lon, current[0].lat]
+  const kilometers = distanceKm(from, to)
+  const minimumDistance = Math.max(previous[0].gridResolution ?? 0, current[0].gridResolution ?? 0) * 111
+  if (!Number.isFinite(kilometers) || kilometers < minimumDistance) return { type: 'FeatureCollection', features: [] }
+  return { type: 'FeatureCollection', features: [{ type: 'Feature', properties: { bearing: bearingDegrees(from, to), distanceKm: kilometers }, geometry: { type: 'Point', coordinates: to } }] }
 }
 
 export function mergeVessels(summaries) {

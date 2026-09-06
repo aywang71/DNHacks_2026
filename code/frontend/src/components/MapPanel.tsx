@@ -3,21 +3,35 @@ import * as maplibregl from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import { land } from '../data/land'
 import { portFeatures, ports } from '../data/ports'
+import { createObservationInterpolator } from '../presence/timeline.mjs'
+import { formatTime } from '../presence/format'
+import type { Observation, PresenceVessel } from '../presence/types'
 import type { GeoPosition, RiskEvent } from '../types'
-import type { Observation } from '../presence/types'
 import './MapPanel.css'
 
 const empty = { type: 'FeatureCollection', features: [] }
+const noObservations: Observation[] = []
 const isFinitePosition = (value: unknown): value is GeoPosition => Array.isArray(value) && value.length === 2 && value.every((item) => typeof item === 'number' && Number.isFinite(item))
+
+interface PopupTarget { vesselId: string; observationId: string; coordinates: [number, number] }
 
 export interface MapPanelProps {
   mode?: 'presence' | 'risk'
   positions?: Observation[]
+  nextPositions?: Observation[]
+  playing?: boolean
+  transitionDuration?: number
+  onTransitionEnd?: () => void
   trail?: unknown
   history?: Observation[]
+  direction?: unknown
+  cursor?: number
+  movementEnabled?: boolean
+  vessels?: PresenceVessel[]
+  metadataReady?: boolean
   selectedId?: string | null
   initialBounds?: [number, number, number, number] | null
-  onSelect?: (id: string) => void
+  onSelect?: (id: string | null) => void
   riskEvent?: RiskEvent | null
   status: string
 }
@@ -114,17 +128,64 @@ function fitRiskEvent(map: any, event: RiskEvent) {
   map.fitBounds([[west, south], [east, north]], { padding: 54, maxZoom: 7, duration: 350 })
 }
 
+const vesselLabel = (vessel: PresenceVessel | undefined, observation: Observation) => vessel?.name ?? vessel?.mmsi ?? observation.vesselId
+function addText(parent: HTMLElement, tag: string, value: string, className = '') {
+  const element = document.createElement(tag)
+  if (className) element.className = className
+  element.textContent = value
+  parent.append(element)
+  return element
+}
+function popupContent(observation: Observation, vessel: PresenceVessel | undefined, metadataReady: boolean) {
+  const root = document.createElement('section')
+  root.className = 'vessel-popup'
+  addText(root, 'p', 'Recorded vessel presence', 'vessel-popup-eyebrow')
+  addText(root, 'h2', vesselLabel(vessel, observation))
+  if (!metadataReady) addText(root, 'p', 'Loading vessel metadata…', 'vessel-popup-loading')
+  else if (!vessel) addText(root, 'p', 'Vessel profile was not available for this imported range.', 'vessel-popup-loading')
+  else {
+    const summary = [vessel.flag, vessel.vesselType].filter(Boolean).join(' · ')
+    if (summary) addText(root, 'p', summary, 'vessel-popup-summary')
+    const fields: Array<[string, string | null]> = [['MMSI', vessel.mmsi], ['IMO', vessel.imo], ['Callsign', vessel.callsign]]
+    if (fields.some(([, value]) => value)) {
+      const details = document.createElement('dl')
+      for (const [label, value] of fields) if (value) { addText(details, 'dt', label); addText(details, 'dd', value) }
+      root.append(details)
+    }
+  }
+  const recorded = document.createElement('p')
+  recorded.className = 'vessel-popup-observation'
+  recorded.append(document.createTextNode(`${formatTime(observation.ts)}\n`))
+  recorded.append(document.createTextNode(`${observation.lat.toFixed(4)}°, ${observation.lon.toFixed(4)}°\n`))
+  recorded.append(document.createTextNode(`${observation.gridResolution}° grid-centre observation · ${observation.presenceHours.toFixed(2)} h present`))
+  root.append(recorded)
+  addText(root, 'p', 'Global Fishing Watch presence data; this is not a live or exact AIS position.', 'vessel-popup-caveat')
+  return root
+}
+
 export function MapPanel(props: MapPanelProps) {
   const element = useRef<HTMLDivElement>(null)
   const map = useRef<any>(null)
+  const popup = useRef<any>(null)
+  const closingPopup = useRef(false)
   const latest = useRef(props)
   const presenceFitDone = useRef(false)
   const riskFitId = useRef<string | null>(null)
+  const playback = useRef({ positions: props.positions ?? noObservations, nextPositions: props.nextPositions ?? noObservations, elapsed: 0 })
+  const [reducedMotion, setReducedMotion] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+  const [popupTarget, setPopupTarget] = useState<PopupTarget | null>(null)
   const [ready, setReady] = useState(false)
   const [mapError, setMapError] = useState('')
   const isRisk = props.mode === 'risk'
+  const positions = props.positions ?? noObservations
   latest.current = props
 
+  useEffect(() => {
+    const media = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const update = () => setReducedMotion(media.matches)
+    media.addEventListener('change', update)
+    return () => media.removeEventListener('change', update)
+  }, [])
   useEffect(() => {
     if (!element.current) return
     let instance: any
@@ -132,7 +193,7 @@ export function MapPanel(props: MapPanelProps) {
     try {
       instance = new maplibregl.Map({ container: element.current, style: { version: 8, sources: {}, layers: [{ id: 'ocean', type: 'background', paint: { 'background-color': '#0c0a09' } }] }, center: [12, 15], zoom: 1.25, minZoom: 0.6, maxZoom: 15, renderWorldCopies: true })
     } catch {
-      setMapError('The map needs WebGL. The analytical record remains available below.')
+      setMapError('The map needs WebGL. Vessel search and analytical records remain available.')
       return
     }
     map.current = instance
@@ -144,7 +205,7 @@ export function MapPanel(props: MapPanelProps) {
       instance.addLayer({ id: 'ports', type: 'circle', source: 'ports', minzoom: 2.5, paint: { 'circle-radius': ['interpolate', ['linear'], ['zoom'], 2.5, 3.5, 6, 5.5], 'circle-color': '#d946ef', 'circle-stroke-color': '#f5d0fe', 'circle-stroke-width': 1.5 } })
       const setPortLabelVisibility = () => {
         const visible = instance.getZoom() >= 4
-        portMarkers.forEach((marker) => marker.getElement().classList.toggle('is-visible', visible))
+        portMarkers.forEach(marker => marker.getElement().classList.toggle('is-visible', visible))
       }
       ports.forEach(([name, lon, lat]) => {
         const label = document.createElement('span')
@@ -155,14 +216,14 @@ export function MapPanel(props: MapPanelProps) {
       })
       instance.on('zoom', setPortLabelVisibility)
       setPortLabelVisibility()
-
-      for (const source of ['presence-trail', 'presence-history', 'presence', 'risk-observed', 'risk-projections', 'risk-meeting', 'risk-reachable']) {
-        instance.addSource(source, { type: 'geojson', data: empty })
-      }
-      instance.addLayer({ id: 'presence-trail', type: 'line', source: 'presence-trail', paint: { 'line-color': '#a7f3c0', 'line-width': 2, 'line-opacity': 0.75 } })
-      instance.addLayer({ id: 'presence-history', type: 'circle', source: 'presence-history', paint: { 'circle-radius': 3, 'circle-color': '#a7f3c0', 'circle-opacity': 0.55, 'circle-stroke-width': 1, 'circle-stroke-color': '#0c0a09' } })
-      instance.addLayer({ id: 'presence', type: 'circle', source: 'presence', paint: { 'circle-radius': ['interpolate', ['linear'], ['zoom'], 1, 3, 7, 5], 'circle-color': '#3ebd78', 'circle-opacity': 0.9, 'circle-stroke-color': '#102a1b', 'circle-stroke-width': 0.7 } })
-      instance.addLayer({ id: 'presence-selected', type: 'circle', source: 'presence', filter: ['==', ['get', 'vesselId'], ''], paint: { 'circle-radius': 7, 'circle-color': '#d9ffe5', 'circle-stroke-color': '#3ebd78', 'circle-stroke-width': 3 } })
+      // Keep the base map deliberately quiet: geographic reference outlines can
+      // read as latitude/longitude guides and compete with vessel movement.
+      for (const source of ['presence-trail', 'presence-history', 'presence-direction', 'presence', 'risk-observed', 'risk-projections', 'risk-meeting', 'risk-reachable']) instance.addSource(source, { type: 'geojson', data: empty })
+      instance.addLayer({ id: 'presence', type: 'circle', source: 'presence', paint: { 'circle-radius': ['interpolate', ['linear'], ['zoom'], 1, 3, 7, 5], 'circle-color': '#3ebd78', 'circle-opacity': ['*', 0.9, ['coalesce', ['get', 'opacity'], 1]], 'circle-stroke-color': '#102a1b', 'circle-stroke-width': 0.7 } })
+      instance.addLayer({ id: 'presence-trail', type: 'line', source: 'presence-trail', layout: { 'line-cap': 'round', 'line-join': 'round' }, paint: { 'line-color': '#a7f3c0', 'line-width': 2.5, 'line-opacity': ['get', 'opacity'] } })
+      instance.addLayer({ id: 'presence-history', type: 'circle', source: 'presence-history', paint: { 'circle-radius': 3, 'circle-color': '#a7f3c0', 'circle-opacity': ['get', 'opacity'], 'circle-stroke-width': 1, 'circle-stroke-opacity': ['get', 'opacity'], 'circle-stroke-color': '#0c0a09' } })
+      instance.addLayer({ id: 'presence-selected', type: 'circle', source: 'presence', filter: ['==', ['get', 'vesselId'], ''], paint: { 'circle-radius': 7, 'circle-color': '#d9ffe5', 'circle-opacity': ['coalesce', ['get', 'opacity'], 1], 'circle-stroke-color': '#3ebd78', 'circle-stroke-width': 3 } })
+      instance.addLayer({ id: 'presence-direction', type: 'symbol', source: 'presence-direction', layout: { 'text-field': '▲', 'text-size': 17, 'text-anchor': 'bottom', 'text-rotate': ['get', 'bearing'], 'text-rotation-alignment': 'map', 'text-keep-upright': false, 'text-allow-overlap': true, 'text-ignore-placement': true }, paint: { 'text-color': '#f0fdf4', 'text-halo-color': '#102a1b', 'text-halo-width': 1.3 } })
 
       instance.addLayer({ id: 'risk-reachable-fill', type: 'fill', source: 'risk-reachable', paint: { 'fill-color': ['match', ['get', 'vessel'], 'A', '#60a5fa', 'B', '#f4b860', '#a8a29e'], 'fill-opacity': 0.13 } })
       instance.addLayer({ id: 'risk-reachable-outline', type: 'line', source: 'risk-reachable', paint: { 'line-color': ['match', ['get', 'vessel'], 'A', '#60a5fa', 'B', '#f4b860', '#a8a29e'], 'line-width': 1.3, 'line-opacity': 0.72, 'line-dasharray': [1, 2] } })
@@ -171,8 +232,13 @@ export function MapPanel(props: MapPanelProps) {
       instance.addLayer({ id: 'risk-meeting', type: 'circle', source: 'risk-meeting', paint: { 'circle-radius': 6.5, 'circle-color': '#57534e', 'circle-opacity': 0.8, 'circle-stroke-color': '#f4b860', 'circle-stroke-width': 2 } })
 
       instance.on('click', 'presence', (event: any) => {
-        const id = event.features?.[0]?.properties?.vesselId
-        if (id) latest.current.onSelect?.(id)
+        if (latest.current.mode === 'risk') return
+        const feature = event.features?.[0]
+        const vesselId = feature?.properties?.vesselId
+        const observationId = feature?.properties?.observationId
+        if (!vesselId || !observationId) return
+        setPopupTarget({ vesselId, observationId, coordinates: [event.lngLat.lng, event.lngLat.lat] })
+        latest.current.onSelect?.(vesselId)
       })
       instance.on('mouseenter', 'presence', () => { instance.getCanvas().style.cursor = 'pointer' })
       instance.on('mouseleave', 'presence', () => { instance.getCanvas().style.cursor = '' })
@@ -183,7 +249,8 @@ export function MapPanel(props: MapPanelProps) {
     observer.observe(element.current)
     return () => {
       observer.disconnect()
-      portMarkers.forEach((marker) => marker.remove())
+      closingPopup.current = true; popup.current?.remove(); popup.current = null; closingPopup.current = false
+      portMarkers.forEach(marker => marker.remove())
       instance.remove()
       map.current = null
       presenceFitDone.current = false
@@ -194,21 +261,89 @@ export function MapPanel(props: MapPanelProps) {
 
   useEffect(() => {
     if (!ready || !map.current) return
-    const toGeoJSON = (rows: Observation[]) => ({ type: 'FeatureCollection', features: rows.map((row) => ({ type: 'Feature', properties: { vesselId: row.vesselId, observationId: row.id }, geometry: { type: 'Point', coordinates: [row.lon, row.lat] } })) })
-    map.current.getSource('presence').setData(toGeoJSON(isRisk ? [] : props.positions ?? []))
-    map.current.getSource('presence-trail').setData(isRisk ? empty : props.trail ?? empty)
-    map.current.getSource('presence-history').setData(toGeoJSON(isRisk ? [] : props.history ?? []))
+    if (isRisk) {
+      map.current.getSource('presence')?.setData(empty)
+      return
+    }
+    let frame = 0
+    const currentPositions = props.positions ?? noObservations
+    const nextPositions = props.nextPositions ?? noObservations
+    const segment = playback.current
+    if (segment.positions !== currentPositions || segment.nextPositions !== nextPositions) {
+      segment.positions = currentPositions
+      segment.nextPositions = nextPositions
+      segment.elapsed = 0
+    }
+    const interpolate = createObservationInterpolator(currentPositions, nextPositions)
+    const transitionDuration = Math.max(props.transitionDuration ?? 0, 1)
+    let previousTime = performance.now()
+    const toGeoJSON = (rows: Array<Observation & { opacity?: number }>) => ({ type: 'FeatureCollection', features: rows.map(row => ({ type: 'Feature', properties: { vesselId: row.vesselId, observationId: row.id, opacity: row.opacity ?? 1 }, geometry: { type: 'Point', coordinates: [row.lon, row.lat] } })) })
+    if (reducedMotion) {
+      map.current.getSource('presence')?.setData(toGeoJSON(currentPositions))
+      if (!props.playing) return
+      const timer = window.setTimeout(() => latest.current.onTransitionEnd?.(), transitionDuration)
+      return () => window.clearTimeout(timer)
+    }
+    const draw = (now: number) => {
+      // Preserve the displayed position while paused; ignore time spent in a
+      // background tab so returning to playback cannot produce a sudden jump.
+      if (props.playing && !document.hidden) segment.elapsed += Math.min(now - previousTime, 64)
+      previousTime = now
+      const progress = Math.min(segment.elapsed / transitionDuration, 1)
+      map.current?.getSource('presence')?.setData(toGeoJSON(interpolate(progress)))
+      if (props.playing) {
+        if (progress < 1) frame = requestAnimationFrame(draw)
+        else latest.current.onTransitionEnd?.()
+      }
+    }
+    draw(previousTime)
+    return () => cancelAnimationFrame(frame)
+  }, [ready, isRisk, props.positions, props.nextPositions, props.playing, props.transitionDuration, reducedMotion])
+
+  useEffect(() => {
+    if (!ready || !map.current) return
+    const history = props.history ?? noObservations
+    const cursor = props.cursor ?? 0
+    const toGeoJSON = (rows: Observation[], withAgeOpacity = false) => ({ type: 'FeatureCollection', features: rows.map(row => {
+      const ageHours = Math.round((cursor - Date.parse(row.ts)) / 3_600_000)
+      return { type: 'Feature', properties: { vesselId: row.vesselId, observationId: row.id, opacity: withAgeOpacity ? Math.max(0.15, 1 - ageHours * 0.25) : 1 }, geometry: { type: 'Point', coordinates: [row.lon, row.lat] } }
+    }) })
+    map.current.getSource('presence-trail')?.setData(isRisk ? empty : props.trail ?? empty)
+    map.current.getSource('presence-history')?.setData(isRisk ? empty : toGeoJSON(history, true))
+    map.current.getSource('presence-direction')?.setData(isRisk ? empty : props.direction ?? empty)
     map.current.setFilter('presence-selected', ['==', ['get', 'vesselId'], isRisk ? '' : props.selectedId ?? ''])
-  }, [ready, isRisk, props.positions, props.trail, props.history, props.selectedId])
+  }, [ready, isRisk, props.trail, props.history, props.direction, props.cursor, props.selectedId])
 
   useEffect(() => {
     if (!ready || !map.current) return
     const layers = isRisk ? riskLayers(props.riskEvent) : riskLayers(null)
-    map.current.getSource('risk-observed').setData(layers.observed)
-    map.current.getSource('risk-projections').setData(layers.projections)
-    map.current.getSource('risk-meeting').setData(layers.meeting)
-    map.current.getSource('risk-reachable').setData(layers.reachable)
+    map.current.getSource('risk-observed')?.setData(layers.observed)
+    map.current.getSource('risk-projections')?.setData(layers.projections)
+    map.current.getSource('risk-meeting')?.setData(layers.meeting)
+    map.current.getSource('risk-reachable')?.setData(layers.reachable)
   }, [ready, isRisk, props.riskEvent])
+
+  useEffect(() => {
+    if (popupTarget && (isRisk || props.selectedId !== popupTarget.vesselId)) setPopupTarget(null)
+  }, [isRisk, popupTarget, props.selectedId])
+  useEffect(() => {
+    const remove = () => {
+      if (!popup.current) return
+      closingPopup.current = true; popup.current.remove(); popup.current = null; closingPopup.current = false
+    }
+    if (isRisk || !ready || !map.current || !popupTarget) { remove(); return }
+    const observation = positions.find(row => row.id === popupTarget.observationId && row.vesselId === popupTarget.vesselId)
+    if (!observation) { setPopupTarget(null); return }
+    const vessel = (props.vessels ?? []).find(entry => entry.id === observation.vesselId)
+    if (!popup.current) {
+      popup.current = new maplibregl.Popup({ closeButton: true, closeOnClick: false, focusAfterOpen: false, maxWidth: '290px', offset: 12 })
+      popup.current.on('close', () => {
+        popup.current = null
+        if (!closingPopup.current) { setPopupTarget(null); latest.current.onSelect?.(null) }
+      })
+    }
+    popup.current.setLngLat(popupTarget.coordinates).setDOMContent(popupContent(observation, vessel, Boolean(props.metadataReady))).addTo(map.current)
+  }, [ready, isRisk, popupTarget, positions, props.vessels, props.metadataReady])
 
   useEffect(() => {
     if (!ready || isRisk || !props.initialBounds || presenceFitDone.current) return
@@ -216,20 +351,18 @@ export function MapPanel(props: MapPanelProps) {
     map.current.fitBounds([[west, Math.max(-85, south)], [east, Math.min(85, north)]], { padding: 55, maxZoom: 7, duration: 0 })
     presenceFitDone.current = true
   }, [ready, isRisk, props.initialBounds])
-
   useEffect(() => {
     if (!ready || !isRisk || !props.riskEvent || riskFitId.current === props.riskEvent.id) return
     fitRiskEvent(map.current, props.riskEvent)
     riskFitId.current = props.riskEvent.id
   }, [ready, isRisk, props.riskEvent])
 
-  const count = props.positions?.length ?? 0
   const ariaLabel = isRisk
     ? `GapPair geometry for ${props.riskEvent?.name ?? 'the selected candidate'}. Solid points are observed AIS endpoints; dashed lines and reachable areas are estimated.`
-    : `${count.toLocaleString()} recorded vessel positions. Use the vessel list to select a vessel with the keyboard.`
+    : `${positions.length.toLocaleString()} recorded vessel positions. ${props.movementEnabled ? props.selectedId ? 'The selected vessel movement trail is visible.' : 'Movement trail is enabled; select a vessel to view it.' : 'Movement trail is off.'} Use the vessel list to select a vessel with the keyboard.`
   return <section className={`presence-map ${isRisk ? 'risk-map' : ''}`} aria-label={isRisk ? 'GapPair reachable-set map' : 'Vessel presence map'}>
     <div ref={element} className="world-map" role="img" aria-label={ariaLabel} />
-    {isRisk ? <div className="map-key risk-map-key"><span><i className="observed-key" /> Observed AIS endpoints</span><span><i className="projection-key" /> Estimated gap projection</span><span><i className="reachable-key" /> Reachable set (inferred, not a track)</span><span><i className="meeting-key" /> Estimated meeting point</span></div> : <div className="map-key"><span><i /> Recorded positions</span><span><i className="port-key" /> Major ports</span><span className="map-key-detail">Global Fishing Watch · Hourly grid centers</span></div>}
+    {isRisk ? <div className="map-key risk-map-key"><span><i className="observed-key" /> Observed AIS endpoints</span><span><i className="projection-key" /> Estimated gap projection</span><span><i className="reachable-key" /> Reachable set (inferred, not a track)</span><span><i className="meeting-key" /> Estimated meeting point</span></div> : <div className="map-key"><span><i /> Recorded positions</span><span><i className="port-key" /> Major ports</span>{props.movementEnabled && <span className="movement-key">Selected movement · last 4 h</span>}<span className="map-key-detail">Global Fishing Watch · Hourly grid centers</span></div>}
     {isRisk && <p className="risk-map-caption">The point and dashed routes are inferred from endpoint constraints. {props.riskEvent?.track.properties.dateline ? 'Dateline geometry is split and reachable-set rings are omitted to avoid a misleading world-spanning polygon.' : 'Reachable-set ellipses show feasible area, not observed movement.'}</p>}
     {(props.status || mapError) && <div className="map-message" role="status">{mapError || props.status}</div>}
   </section>

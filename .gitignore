@@ -1,19 +1,25 @@
-# local environment
+.env
 .venv/
 .venv*/
 __pycache__/
 *.py[cod]
 .pytest_cache/
-.env
 .DS_Store
+src/*.egg-info/
 
-# data: commit the 4 MB zip, not the 12 MB CSV or derived parquet
+# Reproducible local process output
+*.stdout.log
+*.stderr.log
+
+# Legacy corpus expansion and locally derived tables
 data/raw/*.csv
 data/derived/*.parquet
 
 # 15 MB paper PDF; text extraction and page PNGs are committed.
 # Source: https://users.ox.ac.uk/~wadh4073/research_files/Dark_Shipping.pdf
 tmp/pdfs/Dark_Shipping.pdf
+/code/frontend/node_modules/.bin
+/code/frontend/node_modules
 
 # iCloud Desktop-sync conflict copies ("name 2.ext"). The repo lives under
 # ~/Desktop, which iCloud syncs; it regenerates these on every conflict.

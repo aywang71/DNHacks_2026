@@ -4,6 +4,8 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
+    "dev": "node --watch src/server.mjs",
+    "start": "node src/server.mjs",
     "export:investigations": "node scripts/export-investigations.mjs",
     "import:presence": "python3 scripts/export-presence.py",
     "test": "node --test tests/*.test.mjs"

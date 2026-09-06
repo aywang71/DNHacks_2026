@@ -23,7 +23,7 @@ test('aborted responses are discarded and cannot warm the cache', async () => {
   await provider.getDay(days[0]); assert.equal(calls, 2)
 })
 test('missing catalog, HTML fallback, and failed day fetch expose retryable errors', async () => {
-  await assert.rejects(createPresenceProvider('/', async () => new Response('', { status: 404 })).getCatalog(), /npm run import:presence/)
+  await assert.rejects(createPresenceProvider('/', async () => new Response('', { status: 404 })).getCatalog(), /Retry to reconnect/)
   await assert.rejects(createPresenceProvider('/', async () => new Response('<html>')).getCatalog(), /import again/)
   let calls = 0
   const provider = createPresenceProvider('/', async () => ++calls === 1 ? new Response('', { status: 503 }) : Response.json({ observations: [] }))
