@@ -12,6 +12,12 @@ npm run build
 npm run export
 ```
 
+To export directly to `rendered/wake-ai-pitch-deck.pdf`, run:
+
+```bash
+npm run render:pdf
+```
+
 `npm run export` is defined in `package.json` and runs Slidev export.
 
 The deck is not wired to repository data. Its language reflects the current
