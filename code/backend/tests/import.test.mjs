@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { readFile, rm, stat, writeFile } from 'node:fs/promises'
+import { mkdir, readFile, rm, stat, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { execFileSync } from 'node:child_process'
@@ -71,14 +71,16 @@ test('partitioned report files are reassembled and validated against their compl
   assert.equal(catalog.coverage[0].regionId, 8469)
 })
 
-test('multiple input roots merge coverage and retain distinct cells', async t => {
+test('default-style multi-root imports merge coverage while preserving distinct observations', async t => {
   const paths = await workspace(t)
-  const secondInput = path.join(path.dirname(paths.input), 'second-input')
+  const secondInput = path.join(path.dirname(paths.input), 'input-second')
+  await mkdir(secondInput)
   await fixture(paths.input, 'first-region', [row()])
   await fixture(secondInput, 'second-region', [row(undefined, { lon: 159 })], { request: { 'region-id': 8469 } })
   const catalog = await exportPresence({ inputs: [paths.input, secondInput], output: paths.output })
   assert.equal(catalog.observationCount, 2)
   assert.equal(catalog.coverage.length, 2)
+  assert.equal(catalog.days[0].observationCount, 2)
 })
 
 test('imported empty hours preserve coverage; missing hours stay uncovered', async t => {

@@ -69,11 +69,6 @@ evidence.
 
 Source details: [NOAA Marine Cadastre broadcast-point documentation](https://github.com/ocm-marinecadastre/ais-vessel-traffic/blob/main/data/ais-broadcast-points-2024-readme.md).
 
-Use the [targeted raw-AIS acquisition plan](targeted-raw-ais-plan.md) to
-select narrow time/area candidate windows rather than attempting a global
-NOAA download. It also defines the separate, non-evidentiary role of synthetic
-trajectories.
-
 ### Global Fishing Watch: implemented gap and identity enrichment
 
 The gfw-gaps command calls the official Events API and saves each raw response

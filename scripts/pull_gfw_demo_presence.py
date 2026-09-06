@@ -100,6 +100,11 @@ def main() -> None:
         action="store_true",
         help="Do not retain the raw Bronze response; write only normalized Silver and its manifest.",
     )
+    parser.add_argument(
+        "--reuse-last-report",
+        action="store_true",
+        help="Recover the account's last completed 4Wings report without submitting a new one.",
+    )
     args = parser.parse_args()
 
     config = json.loads(args.config.read_text(encoding="utf-8"))
@@ -111,7 +116,9 @@ def main() -> None:
         raise ValueError("--start must be earlier than --end")
     path_segments, location = _target_location(target)
     client = GfwClient(_token(), timeout_seconds=args.timeout_seconds)
-    if location["kind"] == "eez":
+    if args.reuse_last_report:
+        response = client.last_presence_report()
+    elif location["kind"] == "eez":
         response = client.presence_report(
             start=start,
             end=end,
@@ -164,6 +171,7 @@ def main() -> None:
         },
         "raw_response_sha256": raw_hash,
         "raw_response_stored": bool(raw_paths),
+        "reused_last_report": args.reuse_last_report,
         "normalized_path": str(output_path.relative_to(ROOT)),
         "row_count": len(positions),
         "valid_position_count": int(positions["is_valid_position"].sum()),
