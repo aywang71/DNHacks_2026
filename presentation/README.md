@@ -1,6 +1,7 @@
 # wake.ai presentation
 
-This is the wake.ai pitch deck. It is a Slidev deck with eight slides.
+This is the wake.ai pitch deck. It is a Slidev deck with five slides, including
+one live-demo slide.
 
 From this directory:
 
@@ -13,6 +14,8 @@ npm run export
 
 `npm run export` is defined in `package.json` and runs Slidev export.
 
-The deck is not wired to repository data. Slide 7 contains a `DETAIL TO BE ADDED` placeholder. Its tanker and sanctions framing predates the fishing-vessel corpus and needs reconciliation with the current product evidence.
+The deck is not wired to repository data. Its language reflects the current
+presence viewer and its static model queue: GFW presence is hourly gridded
+coverage, and the queue supplies review leads rather than findings.
 
 The deck loads Google Fonts remotely. An offline demo may render with fallback fonts.
