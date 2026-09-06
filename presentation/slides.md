@@ -58,15 +58,15 @@ class: unified-type
 <div class="kicker">A massive Blind Spot</div>
 <h2>Left in the wake.</h2>
 
-<div class="stat-grid quad-stats">
+<div class="stat-grid quad-stats" style="grid-template-columns:repeat(4,minmax(0,1fr))">
   <div class="stat accent"><strong>43%</strong><span>est. global seaborne crude exports,<br>'17-'23</span></div>
   <div class="stat"><strong>558</strong><span>avg. suspected dark tankers/year,<br>~25% of global fleet</span></div>
   <div class="stat"><strong>7.8M</strong><span>metric tons crude/month,<br>'17-'23</span></div>
-  <div class="stat"><strong>93.6M</strong><span>est. metric tons crude/year,<br>'17-'23</span></div>
+  <div class="stat"><strong>~&#36;334B</strong><span>est. crude value/year,<br>avg. '17-'23 Brent</span></div>
 </div>
 
-<div class="source-strip impact-strip"><span>This 'dark shipping' drives deflationary growth, allowing adversaries to leverage discounted oil and boost industrial output.</span></div>
-<div class="citation">Source: <a href="https://ora.ox.ac.uk/bookmarks/uuid%3Af1ae5ac6-f011-415b-be03-fa2f210829a3">Fernandez-Villaverde, Li, Xu &amp; Zanetti (2025), "Charting the Uncharted," Oxford Discussion Paper 1070.</a></div>
+<div class="source-strip impact-strip" style="position:absolute;left:72px;right:72px;bottom:82px;margin:0"><span>This 'dark shipping' drives deflationary growth, allowing adversaries to leverage discounted oil and boost industrial output.</span></div>
+<div class="citation">Sources: <a href="https://ora.ox.ac.uk/bookmarks/uuid%3Af1ae5ac6-f011-415b-be03-fa2f210829a3">Fernandez-Villaverde, Li, Xu &amp; Zanetti (2025)</a>; <a href="https://www.eia.gov/dnav/pet/hist/LeafHandler.ashx?f=a&amp;n=pet&amp;s=rbrte">U.S. EIA Brent history.</a></div>
 <div class="footer"><span></span><span>03</span></div>
 
 ---
@@ -163,5 +163,5 @@ class: closing
 ---
 
 <div class="kicker"><span class="signal"></span> WAKE AI</div>
-<h1>When ships go dark<br><em class="closing-emphasis">intelligence should not.</em></h1>
+<h1>When ships go dark<br><em class="closing-emphasis"><a href="https://www.youtube.com/watch?v=D41PvJn7wOc" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:10px">intelligence</a> should not.</em></h1>
 <div class="closing-tagline"><p>Making dark shipping visible.</p></div>
