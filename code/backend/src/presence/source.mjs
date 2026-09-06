@@ -37,12 +37,34 @@ function sourceCanonicalJSON(raw) {
 
 async function discover(directory) {
   const found = []
-  for (const entry of (await readdir(directory, { withFileTypes: true })).sort((a, b) => a.name.localeCompare(b.name))) {
+  const entries = (await readdir(directory, { withFileTypes: true })).sort((a, b) => a.name.localeCompare(b.name))
+  const report = entries.find(entry => entry.isFile() && entry.name === 'report.json')
+  const parts = entries.filter(entry => entry.isFile() && /^report(?:\.json)?\.part(?:-\d+|\d+)\.json$/.test(entry.name))
+  if (report) found.push([path.join(directory, report.name)])
+  else if (parts.length) found.push(parts.map(entry => path.join(directory, entry.name)))
+  for (const entry of entries) {
     const target = path.join(directory, entry.name)
     if (entry.isDirectory()) found.push(...await discover(target))
-    else if (entry.name === 'report.json') found.push(target)
   }
   return found
+}
+
+function combineParts(payloads) {
+  if (payloads.length === 1) return payloads[0]
+  const datasets = new Map()
+  for (const payload of payloads) {
+    assert(payload && Array.isArray(payload.entries), 'Missing report entries array')
+    for (const entry of payload.entries) {
+      assert(entry && typeof entry === 'object' && !Array.isArray(entry), 'Invalid dataset envelope')
+      for (const [dataset, values] of Object.entries(entry)) {
+        assert(values === null || Array.isArray(values), 'Invalid partitioned dataset envelope')
+        const records = datasets.get(dataset) ?? []
+        if (values) records.push(...values)
+        datasets.set(dataset, records)
+      }
+    }
+  }
+  return { ...payloads[0], entries: [Object.fromEntries(datasets)], total: 1, nextOffset: null, offset: null }
 }
 
 function assert(condition, message) { if (!condition) throw new Error(message) }
@@ -75,19 +97,23 @@ function readRows(payload, expectedDataset) {
 }
 
 export async function readPresence(input) {
-  const files = await discover(input)
-  assert(files.length > 0, `No presence report.json files found in ${input}`)
+  const bundles = await discover(input)
+  assert(bundles.length > 0, `No Presence report files found in ${input}`)
   const observations = new Map(), coverages = new Map(), parsedPayloads = new Map()
-  for (const file of files) {
+  for (const files of bundles) {
+    const file = files[0]
     try {
-      const raw = await readFile(file, 'utf8')
-      const payload = JSON.parse(raw)
+      const raws = await Promise.all(files.map(candidate => readFile(candidate, 'utf8')))
+      const payload = combineParts(raws.map(raw => JSON.parse(raw)))
       const manifest = JSON.parse(await readFile(path.join(path.dirname(file), 'manifest.json'), 'utf8'))
       const request = manifest.request ?? {}
+      const target = manifest.target ?? {}
+      const regionDataset = request['region-dataset'] ?? target.region_dataset
+      const regionId = request['region-id'] ?? target.region_id
       assert(request['temporal-resolution'] === 'HOURLY' && request['spatial-aggregation'] === false && request['group-by'] === 'VESSEL_ID', 'Requires unaggregated HOURLY VESSEL_ID presence report')
       const gridResolution = { HIGH: 0.01, LOW: 0.1 }[request['spatial-resolution']]
       assert(gridResolution, 'Unsupported spatial resolution')
-      assert(typeof request['region-dataset'] === 'string' && Number.isInteger(request['region-id']), 'Missing region identity')
+      assert(typeof regionDataset === 'string' && Number.isInteger(regionId), 'Missing region identity')
       const range = request['date-range']?.split(',')
       assert(range?.length === 2, 'Missing requested date range')
       const start = utcHour(range[0]), end = utcHour(range[1])
@@ -99,16 +125,28 @@ export async function readPresence(input) {
       // Compute our own canonical fingerprint. Upstream hashes use Python JSON
       // number formatting and must not be compared to raw file bytes or JS JSON.
       const fingerprint = hash(canonical(payload))
+      if (manifest.raw_response_part_sha256 != null) {
+        assert(Array.isArray(manifest.raw_response_part_sha256) && manifest.raw_response_part_sha256.length === raws.length, 'Invalid manifest part hashes')
+        for (let index = 0; index < raws.length; index++) {
+          const expected = manifest.raw_response_part_sha256[index]
+          // Git can transparently convert LF JSON fixtures to CRLF on Windows.
+          // Accept that byte-for-byte equivalent checkout transformation while
+          // retaining the upstream per-part integrity check.
+          const sourceHash = hash(raws[index])
+          const lfNormalizedHash = hash(raws[index].replace(/\r\n/g, '\n'))
+          assert(/^[a-f0-9]{64}$/.test(expected) && (expected === sourceHash || expected === lfNormalizedHash), 'Manifest part hash does not match report contents')
+        }
+      }
       if (manifest.raw_response_sha256 != null) {
         assert(/^[a-f0-9]{64}$/.test(manifest.raw_response_sha256), 'Invalid manifest payload hash')
-        assert(manifest.raw_response_sha256 === fingerprint || manifest.raw_response_sha256 === hash(sourceCanonicalJSON(raw)), 'Manifest payload hash does not match report contents')
+        assert(manifest.raw_response_sha256 === fingerprint || (raws.length === 1 && manifest.raw_response_sha256 === hash(sourceCanonicalJSON(raws[0]))), 'Manifest payload hash does not match report contents')
       }
       let rows = parsedPayloads.get(fingerprint)
       if (!rows) { rows = readRows(payload, manifest.dataset_version); parsedPayloads.set(fingerprint, rows) }
       else readRows(payload, manifest.dataset_version)
       assert(Number.isInteger(manifest.row_count) && manifest.row_count === rows.length, 'Manifest row_count does not match report')
       assert(manifest.valid_position_count == null || manifest.valid_position_count === rows.length, 'Manifest reports invalid positions')
-      const coverage = { start: new Date(start).toISOString(), end: new Date(end).toISOString(), regionDataset: request['region-dataset'], regionId: request['region-id'], datasetVersion: manifest.dataset_version, gridResolution }
+      const coverage = { start: new Date(start).toISOString(), end: new Date(end).toISOString(), regionDataset, regionId, datasetVersion: manifest.dataset_version, gridResolution }
       coverages.set(JSON.stringify(coverage), coverage)
       for (const { datasetVersion, row } of rows) {
         const timestamp = utcHour(row.date)
