@@ -24,6 +24,28 @@ npm --prefix code/frontend ci
 npm --prefix code/frontend run dev
 ```
 
+### AI reports and ship chat
+
+Both the investigation queue and selected ship details include **Ship intelligence**. Generate a plain-English evidence report, ask follow-up questions, add analyst context, preview the source records, and download or print the resulting report. AI reports include source references, limitations, and suggested next checks. The original data-only brief remains available in the queue.
+
+Create a repository-root `.env` (already ignored by Git) with your server-side Gemini credentials:
+
+```dotenv
+GEMINI_API_KEY=your_gemini_api_key
+GEMINI_MODEL=gemini-3.6-flash
+AI_PORT=3001
+```
+
+Run the backend in a second terminal alongside Vite (Node 22+):
+
+```bash
+npm --prefix code/backend run dev
+```
+
+Vite proxies `/api` to `127.0.0.1:3001`. Restart the backend after changing `.env`. To run the built portal, use `npm --prefix code/frontend run build` followed by `npm --prefix code/backend start`, then open `http://127.0.0.1:3001`. If you change `AI_PORT`, update the Vite proxy target too.
+
+The key never enters browser code. The backend reads local exported records for the selected ship and sends only that context, the supplied notes, and recent conversation turns to Gemini. Context covers at most 90 UTC days and includes at most 24 sampled positions; these are hourly grid-cell centres, not a complete track. Without a configured key, context previews and data-only briefs still work, and AI generation shows setup instructions. See [backend AI details](code/backend/README.md#gemini-ai-service).
+
 The verified checks are:
 
 ```bash

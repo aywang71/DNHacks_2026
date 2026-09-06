@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { createPresenceProvider } from '../presence/provider.mjs'
 import type { PresenceVessel } from '../presence/types'
 import type { QueueBatch, QueueItem } from './ModelQueue'
+import { ShipAssistant } from './ShipAssistant'
 
 const provider = createPresenceProvider(`${import.meta.env.BASE_URL}data/presence/`)
 const date = (value: string) => new Date(value).toLocaleString('en-GB', { timeZone: 'UTC' }) + ' UTC'
@@ -62,9 +63,10 @@ export function QueueInvestigation({ item, batch, demo, displayName, onClose, on
     <dl className="identity-grid">{fields.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value ?? (loading ? 'Loading…' : 'Not provided')}</dd></div>)}</dl>
     <h3>Model scores</h3><ul className="model-scores">{item.modelScores.map(model => <li key={model.id}><span>{model.id} <small>v{model.version}</small></span><strong>{(model.score * 100).toFixed(1)} <small>/ 100</small></strong></li>)}</ul>
     <button className="map-action" onClick={onMap}>View ship on presence map</button>
-    <label className="queue-notes">Analyst notes<textarea aria-describedby="notes-status" rows={4} value={notes} onChange={event => saveNotes(event.target.value)} placeholder="Record observations and follow-up inspection steps." /></label>
+    <label className="queue-notes">Analyst notes<textarea aria-describedby="notes-status" rows={4} maxLength={8000} value={notes} onChange={event => saveNotes(event.target.value)} placeholder="Record observations, add background context, or describe what the AI should help you investigate." /></label>
     <p id="notes-status" className={`queue-note-status ${saveError ? 'save-error' : ''}`} role="status">{saveError || (notes ? 'Saved on this device for this vessel and scoring window.' : 'Notes save automatically on this device.')}</p>
-    <button className="primary-button" disabled={loading} aria-expanded={reportReady} onClick={() => { setReportReady(true); if (reportReady) preview.current?.focus() }}>{reportReady ? 'View evidence brief' : 'Create evidence brief'}</button>
+    <ShipAssistant target={{ vesselId: item.vesselId, caseId: item.id }} notes={notes} />
+    <details className="data-only-brief"><summary>Export source fields without AI</summary><button disabled={loading} aria-expanded={reportReady} onClick={() => { setReportReady(true); if (reportReady) preview.current?.focus() }}>{reportReady ? 'View data-only brief' : 'Create data-only brief'}</button></details>
     {reportReady && <div ref={preview} tabIndex={-1} className="queue-report-preview"><div className="queue-report-actions"><p role="status">Evidence brief ready</p><button onClick={download}>Download document</button><button onClick={() => window.print()}>Print / Save PDF</button></div>
       <section ref={report} tabIndex={-1} className="queue-print-report" aria-label="Evidence brief">
         <h1>Vessel evidence brief</h1><h2>{name}</h2><p>To be inspected · Priority {(item.score * 100).toFixed(1)} / 100</p>

@@ -23,6 +23,25 @@ backend/
   tests/                       Import, publication, and bounds checks
 ```
 
+## Gemini AI service
+
+`npm run dev` runs the local AI server with file watching; `npm start` serves the built portal and API at `http://127.0.0.1:3001`. Node 22+ is required. The entrypoint loads the repository-root `.env`; existing environment variables take precedence. Set `GEMINI_API_KEY` and optionally `GEMINI_MODEL` (default `gemini-3.6-flash`). Never prefix secrets with `VITE_`. No extra runtime packages are required.
+
+| Endpoint | Purpose |
+| --- | --- |
+| `GET /api/ai/status` | Return whether credentials are configured and the model name, never the key. |
+| `POST /api/ai/context` | Preview the authoritative ship context without calling Gemini. |
+| `POST /api/ai/report` | Generate a structured, readable vessel evidence brief. |
+| `POST /api/ai/chat` | Answer a ship question with recent conversation history. |
+
+POST bodies contain `vesselId`, optional `caseId`, `start`/`end` for presence-mode requests, optional `notes`, and `messages` for chat. Date boundaries are UTC midnight, start inclusive and end exclusive, with a 90-day maximum. For a queue case, the server looks up the matching vessel and scoring window and disregards client-supplied dates, scores, identity, or demo flags. Notes are limited to 8,000 characters. Chat accepts alternating user/assistant messages with a final user question; the frontend sends the latest five exchanges plus that question.
+
+Context is assembled from `code/frontend/public/data`: source-reported identity, exact record counts, imported and missing coverage, up to 24 evenly sampled positions, queue score meanings, and separately labelled analyst notes. Missing files fail visibly; missing data is never silently treated as zero activity. Source references in generated output must match the provided source IDs. Output is rendered as escaped text, including in downloadable and printable report snapshots. Editing notes marks an existing report stale until regenerated. Chat and report state reset when switching ships or presence date ranges.
+
+The service uses Gemini's [generateContent API](https://ai.google.dev/api/generate-content) with a JSON output schema and a server-side `x-goog-api-key` header. It has a 60-second provider timeout, a 64 KiB request limit, two concurrent requests, and a shared limit of 20 context/generation requests per minute. Abandoned browser requests cancel the provider call. Provider errors are mapped to actionable messages without exposing upstream request contents or credentials. Tests mock Gemini and require no key.
+
+This is a local, single-user server bound to loopback. For a hosted deployment, put it behind your authenticated application gateway and configure `AI_ALLOWED_ORIGINS` as a comma-separated list of exact frontend origins. This service does not implement user accounts or per-user billing limits.
+
 ## Model registry and investigation queue
 
 The active viewer now consumes the exported model queue. Models are stored in

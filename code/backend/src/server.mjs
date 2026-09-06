@@ -23,7 +23,7 @@ async function readBody(req) {
   catch { throw new HttpError(400, 'Send valid JSON.') }
 }
 
-export function createApp({ apiKey = process.env.OPENAI_API_KEY, model = process.env.OPENAI_MODEL || 'gpt-5.4-mini',
+export function createApp({ apiKey = process.env.GEMINI_API_KEY, model = process.env.GEMINI_MODEL || 'gemini-3.6-flash',
   loadContext = createContextLoader(dataRoot), generateResponse = generate, frontendRoot = distRoot,
   allowedOrigins = (process.env.AI_ALLOWED_ORIGINS || 'http://localhost:5173,http://127.0.0.1:5173,http://localhost:4173,http://127.0.0.1:4173').split(','),
   now = Date.now, maxRequests = 20 } = {}) {
@@ -41,7 +41,7 @@ export function createApp({ apiKey = process.env.OPENAI_API_KEY, model = process
         const body = validateRequest(await readBody(req))
         const mode = url.pathname.split('/').at(-1)
         if (mode === 'chat' && (!body.messages.length || body.messages.at(-1).role !== 'user')) throw new HttpError(400, 'Enter a question about this ship.')
-        if (mode !== 'context' && !apiKey) throw new HttpError(503, 'AI is not configured. Add OPENAI_API_KEY to the server environment and restart the backend.')
+        if (mode !== 'context' && !apiKey) throw new HttpError(503, 'AI is not configured. Add GEMINI_API_KEY to the server environment and restart the backend.')
         requests = requests.filter(time => time > now() - 60000)
         if (requests.length >= maxRequests || active >= 2) throw new HttpError(429, 'Too many AI requests. Wait a moment and try again.')
         requests.push(now()); active++
@@ -72,5 +72,5 @@ export function createApp({ apiKey = process.env.OPENAI_API_KEY, model = process
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   try { process.loadEnvFile(path.join(root, '.env')) } catch (error) { if (error.code !== 'ENOENT') throw error }
   const port = Number(process.env.AI_PORT || 3001)
-  createApp().listen(port, '127.0.0.1', () => console.log(`Wake AI portal: http://127.0.0.1:${port} — AI ${process.env.OPENAI_API_KEY ? 'configured' : 'needs OPENAI_API_KEY'}`))
+  createApp().listen(port, '127.0.0.1', () => console.log(`Wake AI portal: http://127.0.0.1:${port} — Gemini ${process.env.GEMINI_API_KEY ? 'configured' : 'needs GEMINI_API_KEY'}`))
 }

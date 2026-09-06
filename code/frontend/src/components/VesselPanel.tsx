@@ -1,14 +1,16 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { Observation, PresenceVessel } from '../presence/types'
 import { formatTime } from '../presence/format'
+import { ShipAssistant } from './ShipAssistant'
 
 const label = (vessel: PresenceVessel) => vessel.name ?? vessel.mmsi ?? vessel.id
 interface Props {
   vessels: PresenceVessel[]; selectedId: string | null; positions: Observation[]; visibleIds: Set<string>
   ready: boolean; validRange: boolean; indexReady: boolean; indexError: string; rangeKey: string
+  rangeStart?: string; rangeEnd?: string
   onSelect: (id: string | null) => void; onRetry: () => void; onJump: (cursor: number) => void
 }
-export function VesselPanel({ vessels, selectedId, positions, visibleIds, ready, validRange, indexReady, indexError, rangeKey, onSelect, onRetry, onJump }: Props) {
+export function VesselPanel({ vessels, selectedId, positions, visibleIds, ready, validRange, indexReady, indexError, rangeKey, rangeStart, rangeEnd, onSelect, onRetry, onJump }: Props) {
   const [query, setQuery] = useState(''), [limit, setLimit] = useState(100)
   const search = useRef<HTMLInputElement>(null)
   const selectedHeading = useRef<HTMLHeadingElement>(null)
@@ -26,6 +28,7 @@ export function VesselPanel({ vessels, selectedId, positions, visibleIds, ready,
       {selectedPositions.map(row => <p className="position-detail" key={row.id}>{row.lat.toFixed(4)}°, {row.lon.toFixed(4)}°<br /><small>{formatTime(row.ts)} · {row.gridResolution}° grid<br />{row.datasetVersion}</small></p>)}
       <button className="jump-button" onClick={() => onJump(Date.parse(selected.firstObservedAt))}>Jump to first observation</button>
       <p className="detail-source">Global Fishing Watch grid-center observations. Trail shows the preceding six hours; breaks indicate missing or ambiguous observations.</p><details><summary>Source identity</summary><p className="source-id">{selected.id}</p><p>First in range: {formatTime(selected.firstObservedAt)}<br />Last in range: {formatTime(selected.lastObservedAt)}</p></details>
+      <ShipAssistant key={`${selected.id}:${rangeKey}`} target={{ vesselId: selected.id, start: rangeStart, end: rangeEnd }} disabled={!validRange || !indexReady} />
     </> : <p>{indexReady ? 'This vessel has no observations in the selected dates.' : 'Loading vessel details…'}</p>}</section>}
     {!validRange ? <p className="list-state">Choose a valid date range.</p> : indexError ? <div className="list-state" role="alert"><p>{indexError}</p><button onClick={onRetry}>Retry vessel list</button></div> : !indexReady ? <p className="list-state" role="status">Loading vessels…</p> : <><div className="list-caption"><span aria-live="polite">{matching.length.toLocaleString()} {query ? 'matches' : 'vessels'}</span><span>● Present this hour</span></div><div className="vessel-list">{matching.slice(0, limit).map(vessel => <button className={`vessel-row ${vessel.id === selectedId ? 'selected' : ''}`} key={vessel.id} aria-pressed={vessel.id === selectedId} onClick={() => onSelect(vessel.id)}><i className={visibleIds.has(vessel.id) ? 'is-present' : ''} aria-label={visibleIds.has(vessel.id) ? 'Present this hour' : 'Absent this hour'} /><span><strong>{label(vessel)}</strong><small>{vessel.mmsi ?? vessel.imo ?? vessel.id} · {vessel.flag ?? 'Flag unavailable'}</small></span></button>)}{!matching.length && <div className="list-state"><h2>{query ? 'No matching vessels' : 'No vessels in this range'}</h2><p>{query ? 'Try a different name, MMSI, IMO, or GFW ID.' : 'Choose another date range to explore imported observations.'}</p>{query && <button onClick={() => { setQuery(''); search.current?.focus() }}>Clear search</button>}</div>}{matching.length > limit && <button className="show-more" onClick={() => setLimit(value => value + 100)}>Show 100 more ({(matching.length - limit).toLocaleString()} remaining)</button>}</div></>}
   </aside>
