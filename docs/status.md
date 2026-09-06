@@ -147,7 +147,6 @@ viewer, but its loader and bridge are not implemented.
 | Severity | Issue | Owner to decide |
 | --- | --- | --- |
 | Medium | The null-model timing test exceeds its 10 s bound (17.9 s and 20.2 s in the current full run). A staged duplicate path makes the same failure run twice. | Tanner Shah and repository maintainer |
-| High | `tests/test_pipeline_reference.py` still asserts a three-record P0 fixture after S8 intentionally replaced it with 434 real reference records; its staged duplicate also fails. | Tanner Shah and repository maintainer |
 | High | A large staged set of filename-suffixed duplicate files (` 2`/` 3`) includes collected test files and duplicates data/code paths. It requires a reviewed target list; do not bulk-delete or unstage it during feature work. | Repository maintainer |
 | High | `pyproject.toml` and `requirements.txt` pin Python `<3.14`, pandas `<3`, and PyArrow `<22`, while the working venv is Python 3.14.2, pandas 3.0.5, and PyArrow 25.0.1. | Tanner Shah and Andrew Wang |
 | Medium | The static `risk-events.json` reference export is about 11.3 MB before its 434 separate track files. Establish a release-size budget before deploying it broadly. | User and Will Pallan |

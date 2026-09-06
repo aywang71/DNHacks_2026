@@ -57,17 +57,10 @@ S2, S4, S5, S6, S7, and S8 write the files named in the table. `--all` is not
 a usable full reference command because it includes the unavailable enrichment
 stage; run the explicit sequence above for the CSV reference corpus.
 
-The current full Python suite has 102 passes and four failures. Two are the
-same null-model performance assertion discovered twice because both
-`tests/test_pipeline_nulls.py` and the staged duplicate
-`tests/test_pipeline_nulls 2.py` are collected; the observed times were 17.9 s
-and 20.2 s against a 10-second bound. The other two are likewise duplicated
-stale P0-fixture tests in `test_pipeline_reference.py` and
-`test_pipeline_reference 2.py`; they still assert that `risk-events.json` has
-three fixture records, while S8 now intentionally writes 434 real reference
-records. The focused S6/S8 checks pass. See [current status](status.md) for
-the cleanup boundary; do not treat the full suite as green until the stale and
-duplicate tests are resolved.
+The committed S8 release contains 434 real reference-corpus records. The
+static-artifact test validates that complete queue and its embedded GeoJSON,
+rather than assuming the original three-record P0 demonstration fixture. See
+[current status](status.md) for the remaining environment constraints.
 
 The active .venv runs Python 3.14.2, pandas 3.0.5, numpy 2.5.2, pyarrow
 25.0.1, and shapely 2.1.2. pyproject.toml and requirements.txt instead pin

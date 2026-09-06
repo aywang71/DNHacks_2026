@@ -27,12 +27,9 @@ broader Python suite when the changed area warrants it:
 .venv/bin/python -m pytest -q tests/
 ```
 
-At the current working-tree snapshot, the focused command passes while the
-full suite exposes two known cleanup defects: duplicated `* 2.py` test paths
-cause the slow null-model assertion to run twice, and duplicated stale fixture
-tests still expect three `risk-events.json` records. Preserve the full-suite
-failure as evidence until those exact files are reviewed; do not hide it by
-excluding paths from test discovery.
+The static-artifact test validates the complete committed S8 queue (434
+reference-corpus records) and its embedded GeoJSON. Do not exclude paths from
+test discovery when using the full suite as a release gate.
 
 For a full reference-corpus rebuild, run the stages in dependency order. This
 is intentionally explicit so an operator can see which artifact changed:

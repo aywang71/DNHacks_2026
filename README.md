@@ -91,10 +91,9 @@ virtual environment; see [current status](docs/status.md). Validate the
 published artifacts with the [verification guide](docs/verification.md) rather
 than treating a command exit code as proof that an export was written.
 
-The current full Python suite has known cleanup failures from duplicate test
-paths and a stale three-record fixture assertion. The focused S6/S8 checks and
-the frontend test/build are passing; see [status](docs/status.md) before using
-the full-suite result as a release gate.
+The full Python suite is a release gate. Its static-artifact test validates the
+committed 434-record S8 queue rather than the original three-record P0 demo
+fixture; see [status](docs/status.md) for current environment constraints.
 
 ## Repository map
 

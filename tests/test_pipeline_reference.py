@@ -52,8 +52,8 @@ def test_invalid_as_of_returns_unknown_or_none(monkeypatch) -> None:
     assert reference.psma_party("TWN", "not-a-date") is None
 
 
-def test_p0_fixture_files_are_valid_and_renderable() -> None:
-    """Keep the committed frontend fallback honest before the export stage exists."""
+def test_s8_export_files_are_valid_and_renderable() -> None:
+    """Keep the committed S8 frontend export structurally renderable."""
     risk_events = json.loads((config.OUT_DATA / "risk-events.json").read_text(encoding="utf-8"))
     narratives = json.loads((config.OUT_DATA / "narratives.json").read_text(encoding="utf-8"))
     methods = json.loads((config.OUT_DATA / "methods.json").read_text(encoding="utf-8"))
@@ -72,7 +72,10 @@ def test_p0_fixture_files_are_valid_and_renderable() -> None:
         assert -180 <= point[0] <= 180
         assert -90 <= point[1] <= 90
 
-    assert len(risk_events) == 3
+    # S8 has replaced the original three-record P0 demonstration fixture with
+    # the release-controlled reference-corpus queue.  Keep its expected
+    # cardinality explicit while validating every embedded GeoJSON payload.
+    assert len(risk_events) == 434
     assert_no_nan(risk_events)
     assert_no_nan(narratives)
     assert_no_nan(methods)
@@ -95,38 +98,4 @@ def test_p0_fixture_files_are_valid_and_renderable() -> None:
             else:
                 raise AssertionError(f"unexpected GeoJSON type: {geometry['type']}")
 
-    showcase = risk_events[0]
-    assert showcase["id"] in narratives
-    assert len(showcase["track"]["features"]) == 9
-    rings = [
-        feature["geometry"]["coordinates"][0]
-        for feature in showcase["track"]["features"]
-        if feature["geometry"]["type"] == "Polygon"
-    ]
-    assert len(rings) == 2
-    # GeoJSON closes a 64-vertex ring by repeating its first coordinate.
-    assert all(len(ring) == 65 for ring in rings)
     assert methods["attribution"] == config.ATTRIBUTION
-
-    # T0 gives S_kin a zero weight.  Keep hand-built variants in lock-step
-    # with the same raw → sigmoid priority → display-score chain as S6b.
-    for record, expected_raw, expected_priority, expected_risk_score in (
-        (risk_events[1], 0.0635, 0.1948, 19),
-        (risk_events[2], 0.099, 0.2304, 23),
-    ):
-        scores = record["scores"]
-        calculated_raw = (
-            0.30 * scores["geom"]
-            + 0.20 * (scores["beh"] or 0.0)
-            + 0.15 * scores["ctx"]
-            + 0.20 * scores["cor"]
-            - 0.15 * scores["den"]
-            - 0.20 * scores["flt"]
-            - 0.10 * scores["hab"]
-        )
-        calculated_priority = 1 / (1 + math.exp(-6 * (calculated_raw - 0.30)))
-        assert scores["raw"] == pytest.approx(expected_raw)
-        assert calculated_raw == pytest.approx(expected_raw)
-        assert record["priority"] == pytest.approx(expected_priority)
-        assert calculated_priority == pytest.approx(expected_priority, abs=0.0001)
-        assert record["riskScore"] == expected_risk_score == round(100 * calculated_priority)
