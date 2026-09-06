@@ -46,8 +46,8 @@ layout: default
     <div class="route-times"><span>01:20</span><strong>AIS OFF</strong><span>16:45</span></div>
   </div>
   <div class="problem-copy">
-    <p>Vessels can disable AIS—the system that broadcasts their location, speed, and heading.</p>
-    <p class="muted">That blackout can hide sanctioned oil movements and ship-to-ship cargo transfers.</p>
+    <p>When AIS transmission stops, investigators lose the vessel’s reported position, speed, and heading.</p>
+    <p class="muted">A gap is not proof. It is a lead that needs context, coverage, and transparent uncertainty.</p>
   </div>
 </div>
 
@@ -57,103 +57,50 @@ layout: default
 layout: default
 ---
 
-<div class="kicker">02 / THE SIZE OF THE BLIND SPOT</div>
-<h2>Not a fringe problem.</h2>
+<div class="kicker">02 / THE PROBLEM SPACE</div>
+<h2>Dark shipping is<br>measurable at scale.</h2>
 
 <div class="stat-grid">
-  <div class="stat"><strong>558</strong><span>average suspected<br>dark tankers</span></div>
-  <div class="stat"><strong>~25%</strong><span>of the global crude<br>tanker fleet</span></div>
-  <div class="stat accent"><strong>7.8M</strong><span>metric tons of crude<br>moved per month</span></div>
+  <div class="stat accent"><strong>≈&#36;4B</strong><span>gross monthly cargo value<br>at the 2017–23 avg. Brent price</span></div>
+  <div class="stat"><strong>558</strong><span>tankers classified as dark,<br>on average each year</span></div>
+  <div class="stat"><strong>43%</strong><span>of recorded global seaborne crude<br>exports in the UN Comtrade comparison</span></div>
 </div>
 
-<div class="source-strip"><b>43%</b><span>of <em>officially recorded</em> global seaborne crude exports in the study comparison</span></div>
-<div class="footer"><span>OXFORD / PENN RESEARCH · 2017–2023 ESTIMATES</span><span>03</span></div>
-
-<!--
-The 43% comparison is to officially recorded exports. The paper estimates potential volume using qualifying vessel capacity; present the figure as an estimate.
--->
+<div class="source-strip"><b>7.8M t/mo</b><span>Crude attributed to dark-shipping flows from <em>Iran, Syria, Venezuela, and Russia</em>, 2017–2023.</span></div>
+<div class="paper-citation">The dollar lens: 7.8M t/mo × 7.3 bbl/t × &#36;69.43/bbl average Brent = &#36;4.0B/mo (≈&#36;48B/yr). Sources: <a href="https://users.ox.ac.uk/~wadh4073/research_files/Dark_Shipping.pdf">Fernández-Villaverde et al. (2025)</a> · <a href="https://www.eia.gov/dnav/pet/hist/LeafHandler.ashx?f=a&amp;n=pet&amp;s=rbrte">U.S. EIA</a>.</div>
+<div class="footer"><span>THE ECONOMIC SCALE OF THE BLIND SPOT</span><span>03</span></div>
 
 ---
 layout: default
 ---
 
-<div class="kicker">03 / WHY THE STATUS QUO BREAKS</div>
-<h2>One signal is never<br>enough.</h2>
+<div class="kicker"><span class="signal"></span> 03 / ARCHITECTURE</div>
+<h2>Built for evidence,<br>not just alerts.</h2>
 
-<div class="signals">
-  <div><span class="icon">⌁</span><b>AIS gaps</b><small>When & where a vessel disappears</small></div>
-  <div><span class="icon">⌖</span><b>Geography</b><small>Risky routes & sanctioned-port proximity</small></div>
-  <div><span class="icon">↝</span><b>Behavior</b><small>Speed, heading & voyage anomalies</small></div>
-  <div><span class="icon">⟷</span><b>Proximity</b><small>Potential ship-to-ship transfers</small></div>
+<div class="architecture">
+  <div><span>01</span><b>Auditable ingestion</b><small>GFW and NOAA retrievals retain raw provenance before normalization.</small></div>
+  <div><span>02</span><b>Million-point replay</b><small>Validated hourly Presence data becomes compact daily browser shards.</small></div>
+  <div><span>03</span><b>Honest inference</b><small>Observed positions, coverage gaps, and estimated geometry stay distinct.</small></div>
+  <div><span>04</span><b>Review-ready queue</b><small>Static scoring batches prioritize leads without fabricating a finding.</small></div>
 </div>
 
-<p class="claim"><span>KEY PRINCIPLE</span> An AIS gap is not proof. Context turns a gap into a lead.</p>
-<div class="footer"><span>FRAGMENTED SIGNALS → EXPLAINABLE RISK</span><span>04</span></div>
+<p class="architecture-note">BRONZE PROVENANCE → SILVER NORMALIZATION → STATIC MAP REPLAY → ANALYST REVIEW</p>
+<div class="footer"><span>FAST IN THE BROWSER. TRACEABLE BACK TO THE SOURCE.</span><span>04</span></div>
 
 ---
 layout: default
 ---
 
-<div class="kicker"><span class="signal"></span> 04 / THE PRODUCT</div>
-<h2>Wake AI finds the<br>signals worth waking up to.</h2>
-
-<div class="pipeline">
-  <div class="pipe-input"><span>AIS</span><span>VESSEL</span><span>ROUTE</span></div>
-  <div class="pipe-line"></div>
-  <div class="ai-core">WAKE<br><b>AI</b></div>
-  <div class="pipe-line"></div>
-  <div class="case-card"><small>PRIORITY CASE</small><b>Suspicious dark gap</b><span>Evidence · route · risk</span></div>
-</div>
-
-<div class="feature-row"><span>DETECT</span><span>CONNECT</span><span>EXPLAIN</span><span>PRIORITIZE</span></div>
-<div class="footer"><span>FROM RAW SIGNALS TO INVESTIGATOR-READY CASES</span><span>05</span></div>
-
----
-layout: default
----
-
-<div class="kicker">05 / LIVE DEMO</div>
-<h2>Watch a blackout<br>become a case.</h2>
+<div class="kicker">04 / LIVE DEMO</div>
+<h2>Explore presence,<br>then inspect the queue.</h2>
 
 <div class="demo-grid">
   <div class="demo-map"><div class="map-grid"></div><span class="vessel a">●</span><span class="vessel b">●</span><div class="blackout">AIS GAP<br><b>14h 22m</b></div></div>
   <div class="demo-steps">
-    <div><b>01</b><span>Normal voyage begins</span></div>
-    <div><b>02</b><span>AIS signal disappears</span></div>
-    <div><b>03</b><span>Wake AI finds correlated risk signals</span></div>
-    <div><b>04</b><span>Analyst receives the evidence-backed case</span></div>
+    <div><b>01</b><span>Choose a covered day and replay hourly presence</span></div>
+    <div><b>02</b><span>Search a vessel and inspect its observed history</span></div>
+    <div><b>03</b><span>Open the scored investigation queue</span></div>
+    <div><b>04</b><span>Use each result as a review lead—not a finding</span></div>
   </div>
 </div>
-<div class="footer"><span>LIVE PRODUCT WALKTHROUGH</span><span>06</span></div>
-
----
-layout: default
----
-
-<div class="kicker">06 / ARCHITECTURE</div>
-<h2>How Wake AI works.</h2>
-
-<div class="architecture">
-  <div><span>01</span><b>Data ingestion</b><small>AIS + vessel + geospatial data</small></div>
-  <div><span>02</span><b>Event engine</b><small>Gaps, routes, and proximity</small></div>
-  <div><span>03</span><b>Risk model</b><small>Signals become explainable scores</small></div>
-  <div><span>04</span><b>Analyst workflow</b><small>Alerts, cases, and evidence</small></div>
-</div>
-
-<p class="architecture-note">DETAIL TO BE ADDED: data sources, model logic, and analyst interface.</p>
-<div class="footer"><span>ARCHITECTURE BREAKDOWN</span><span>07</span></div>
-
----
-layout: center
-class: closing
----
-
-<div class="kicker"><span class="signal"></span> WAKE AI</div>
-<h1>When ships go dark,<br><em>risk should not.</em></h1>
-<p>Make maritime activity visible, explainable, and actionable.</p>
-<div class="closing-line"></div>
-<div class="research-credit">BUILT BY A PENN TEAM · INSPIRED BY DARK-SHIPPING RESEARCH COAUTHORED BY PENN PROFESSOR JESÚS FERNÁNDEZ-VILLAVERDE</div>
-
-<!--
-Research reference: Fernández-Villaverde, Li, Xu & Zanetti (2025), Charting the Uncharted: The (Un)Intended Consequences of Oil Sanctions and Dark Shipping. Oxford Department of Economics Discussion Paper 1070.
--->
+<div class="footer"><span>LIVE PRODUCT WALKTHROUGH</span><span>05</span></div>
