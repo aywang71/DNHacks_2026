@@ -1,7 +1,10 @@
 {
-  "name": "maritime-presence-data",
+  "name": "wake-ai-presence-tools",
   "private": true,
   "version": "0.1.0",
+  "engines": {
+    "node": ">=22 <25"
+  },
   "type": "module",
   "scripts": {
     "dev": "node --watch src/server.mjs",

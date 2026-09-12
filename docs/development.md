@@ -4,6 +4,10 @@ This guide is the starting point for a change that crosses the ingestion,
 candidate-pipeline, or viewer boundary. It identifies the canonical owners of
 each concern and the artifacts that must be regenerated rather than edited.
 
+> **Archive note:** this is a final public archive. Acquisition, normalized
+> data, Presence replay, and model outputs are local-only by policy; do not add
+> them back to Git as part of a reproduction attempt.
+
 ## Repository responsibilities
 
 | Area | Canonical path | Responsibility | Do not use it for |
@@ -22,11 +26,11 @@ area's internal helper is not a substitute for that contract.
 
 | Category | Locations | Rule |
 | --- | --- | --- |
-| Source/provenance | `data/raw/`, `data/bronze/` | Preserve exactly as acquired. Do not edit API pages, manifests, or source archives in place. |
-| Normalized data | `data/silver/` | Regenerate through the ingestion command that produced it. Retain the source semantics in the normalized fields. |
+| Source/provenance | `data/raw/`, local `data/bronze/` | The compact source archive is committed; API pages stay local and must not be edited in place. |
+| Normalized data | local `data/silver/` | Regenerate through the ingestion command that produced it. Retain the source semantics in the normalized fields. |
 | Pipeline intermediates | `data/derived/` | Treat Parquet and checkpoint files as stage outputs. Rerun the producing stage after changing a stage contract. |
 | Published static assets | `code/frontend/public/data/` | Generate through the appropriate exporter. The browser consumes these assets; it is not their source of truth. |
-| Model experiment outputs | `output/models/` | Keep training/evaluation artifacts separate from the published viewer contract until an explicit exporter promotes them. |
+| Model experiment outputs | local `output/models/` | Keep training/evaluation artifacts out of this public archive; only the published static snapshot is retained. |
 
 Presence coordinates are hourly grid-cell centres, not raw AIS fixes. Gap
 endpoints and estimated meeting geometry are likewise not observations during a

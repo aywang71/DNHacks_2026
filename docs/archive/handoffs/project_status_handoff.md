@@ -3,7 +3,7 @@
 # GapPair / Dark Rendezvous — whole-project status handoff
 
 Snapshot: 2026-09-05 18:19:10 EDT  
-Workspace: `/Users/Tanner/Desktop/DN_Hacks_2026/DNHacks_2026`  
+Workspace: `<repository-root>`
 Branch / HEAD: `Tanner-dev` / `2960871`  
 Purpose: give a new agent an accurate status of the **entire current project**, not merely its branch history.
 

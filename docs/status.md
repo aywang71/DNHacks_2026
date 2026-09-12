@@ -1,197 +1,38 @@
-# wake.ai status
+# Final archive snapshot
 
-## Snapshot
+This is the completed 2026 DNHacks repository, preserved as a research
+prototype rather than an active product.
 
-**As of 2026-09-05.** Commit: `304745b`. `origin/main` and `Tanner-dev`
-point to that commit. `will-dev` and `andrew-dev` are merged. Local
-`main` is fast-forwarded.
+## Included and verified
 
-| Contributor in `git shortlog -sn --all` | Area |
-| --- | --- |
-| Andrew Wang (`aywang71`) — 27 commits | Dark Rendezvous ingestion, GFW pulls, Bronze and Silver data. |
-| Tanner Shah (`tannershah`) — 16 commits | GapPair pipeline scaffolding and derived candidate work. |
-| Will Pallan (`gurubazawada`) — 11 commits; William Pallan — 3 commits | Presence viewer and Node importer. |
+- The React/Vite frontend contains the frozen 434-record GapPair queue,
+  candidate geometry, methods metadata, and the independent ship-suspicion
+  snapshot.
+- The Node backend tests passed: 32 tests. The frontend tests passed: 16 tests.
+  The frontend production build completed successfully on Node 24.18.0.
+- Python ingestion, pipeline, and model source remain available for review.
+  On Python 3.13, the archive suite passes 45 tests and skips 15 tests that
+  explicitly require local source/derived data.
 
-The product is **wake.ai**. Its current product surface has a Presence replay
-workspace and a separate static GapPair investigation workspace. The CSV
-reference candidates do not yet bridge into the Presence replay by GFW vessel
-identity.
+## Intentionally not included
 
-### Active working-tree integration update
+Raw GFW API retrievals, normalized Parquet tables, operator logs, model-training
+artifacts, temporary research captures, and Presence replay shards are excluded
+from the archive tip. This makes the final tree a practical source-and-demo
+archive and avoids redistributing bulk upstream material. Existing Git history
+still contains the former bulk blobs; reducing clone size or removing that
+history requires a separate, owner-approved history rewrite.
 
-The following reflects the current uncommitted integration work, not the
-commit snapshot above:
+## Known boundaries
 
-- S6 and S8 materialize a 434-record, contract-valid 2017–2019 CSV reference
-  export, 434 GeoJSON tracks, methods metadata, and a 2,170-row evidence
-  ledger.
-- The frontend static provider reads that export and the investigation
-  workspace distinguishes observed endpoints from estimated projections,
-  meeting points, and reachable sets.
-- `ship-suspicion.json` publishes a separate top-200 individual-vessel model
-  snapshot. It is experimental and does not change a GapPair label or record.
+- The GapPair queue is an analytical triage surface, not an allegation engine.
+- It is based on a 2017-2019 fishing-vessel corpus and cannot establish a
+  rendezvous, transfer, intent, or crime.
+- The optional Presence workspace has no committed dataset; it visibly reports
+  unavailable data in a fresh clone.
+- The ship-suspicion snapshot is experimental and has no deployment claim.
+- Historic plans and handoffs are retained under `docs/archive/` for context;
+  they are not current instructions.
 
-## What runs today
-
-| Command | Result | Evidence |
-| --- | --- | --- |
-| `.venv/bin/python -m pytest -q tests/` | Partial | 102 passed and 4 failed in 124.81 s. Two duplicate null-model timing tests took 17.9 s and 20.2 s against a 10 s bound; two duplicated stale fixture tests expect 3 records after S8 intentionally wrote 434. |
-| `.venv/bin/python -m pytest -q tests/test_pipeline_features.py tests/test_pipeline_score.py tests/test_pipeline_export.py` | Done | 8 passed in 1.13 s against the materialized S6/S8 reference artifacts. |
-| `npm --prefix code/backend test` | Done | 21 of 21 tests pass. |
-| `npm --prefix code/frontend test` | Done | 13 of 13 tests pass after the static-investigation integration. |
-| `npm --prefix code/frontend run build` | Done | TypeScript and Vite build succeeded after the static GapPair and ship-suspicion UI integration. |
-| `npm --prefix code/backend run import:presence` | Done | Exports 1,019,256 observations across 817 covered hours and 35 UTC days. It writes ignored assets under `code/frontend/public/data/presence/`. All coverage is for `public-eez-areas` region 5690, the Russian EEZ. |
-
-The focused check `.venv/bin/python -m pytest -q tests/test_pipeline_geo.py`
-also passes: 5 tests pass.
-
-## Subsystem status
-
-Markers: **Done** means the named behavior works. **Partial** means only part
-of the intended behavior works. **Missing** means no implementation exists.
-
-### Presence and investigation viewer — **Partial**
-
-- **Done:** The Vite, React, and MapLibre app reads the static presence catalog,
-  daily observation shards, and vessel indexes produced by the Node importer.
-  It renders positions and trails, supports date ranges and hourly playback,
-  and provides vessel search and details. The region-5690 presence data works
-  end to end. See [the viewer data flow](../code/backend/DATA_FLOW.md).
-- **Done:** The investigation workspace fetches the S8 static
-  `risk-events.json` asset, shows the 434 candidate queue, and keeps an
-  explicit error/retry state instead of falling back to mock candidates.
-- **Done:** The candidate map renders solid observed endpoint points separately
-  from dashed estimated projections, inferred meeting points, and feasible
-  reachable areas. Dateline rings are omitted rather than drawn as misleading
-  world-spanning polygons.
-- **Done:** Analyst weight sliders re-rank the local queue using the exported
-  component values and provenance. They do not overwrite the pipeline score,
-  label, evidence tier, or source record.
-- **Partial:** The ship-suspicion surface reads its independent static top-200
-  snapshot. The snapshot currently has no safely extracted feature
-  contributions because of model-artifact/runtime compatibility; it presents
-  that absence rather than inventing an explanation.
-- **Partial:** The current CSV candidates have no GFW vessel IDs and cannot be
-  replayed through the Presence catalog. Raw tracks remain unavailable; the
-  candidate geometry is inferred from endpoints.
-- **Partial:** The product name is wake.ai, while the frontend still displays
-  “Maritime Risk Intelligence” and the HTML title says “Vessel presence ·
-  Maritime Risk Intelligence.” This is a naming inconsistency to resolve in a
-  later code change.
-
-### Dark Rendezvous ingestion — **Partial**
-
-- **Done:** `src/dark_rendezvous` implements the documented `ingest-noaa`,
-  `normalize-file`, `gfw-gaps`, `gfw-gaps-pull`, `gfw-presence`,
-  `gfw-identity`, and `gfw-track` commands. The canonical raw-AIS contract
-  and coverage boundary are documented in [AIS ingestion](ais-ingestion.md).
-- **Done:** GFW GAP Bronze includes the January 2017 probe, complete 2021,
-  partial 2022, partial early 2026, and complete August 2026 retrievals.
-
-  | Retrieval | Coverage and state |
-  | --- | --- |
-  | `20260905T193330Z` | January 2017 probe. 4,658 events and 20 files. No pull manifest. Andrew's notes mark the window complete. |
-  | `20260905T200519Z` | Complete 2021. 343,857 events, 695 pages, and 1,391 files. |
-  | `20260905T202100Z` | Partial 2022. Complete windows end at 2022-10-07. No manifest. |
-  | `20260905T210211Z` | Partial 2026. Complete windows end at 2026-03-04. No manifest. |
-  | `20260905T210748Z` | Complete August 2026. 29,538 events, 60 pages, and 121 files. |
-
-  No Bronze covers February 2017 through December 2019.
-- **Partial:** GFW Presence Bronze has 72 report and manifest files. It is
-  `public-global-presence:v4.0` at HIGH 0.01° resolution for region 5690.
-  It is one hourly grid-cell-centre position per vessel-hour. It is not raw
-  AIS and it is not rendezvous evidence. The 56 identity batches cover the
-  2026 presence population, not the 2021 candidate population.
-- **Missing:** The GFW per-vessel track route returns 404 for the configured
-  token because the application lacks the tracks permission. Raw AIS vectors
-  are not in the repository.
-- **Partial:** Andrew holds the only `GFW_API_TOKEN` on a Windows Python 3.13
-  environment. The repository venv is Python 3.14.2. The package pins do not
-  match that venv; see known issues.
-
-### GapPair pipeline — **Partial**
-
-Run stages with `.venv/bin/python -m pipeline.run --stage <name>`.
-
-| Stage | State | Current result |
-| --- | --- | --- |
-| S0 `reference.py` | Done | Static references load. |
-| S1 `load.py` | Done | The CSV run normalizes 55,368 rows; 54,553 MMSIs are valid. |
-| S1′ `enrich_api.py` | Missing | No module. It needs complete 2017–2019 GFW GAP Bronze. |
-| S2 `feasibility.py` | Done | 433 of 434 operating pairs are feasible. |
-| S3 `pair_t0.py` | Done | 434 operating pairs, 26 cross-flag pairs, and 212 queue MMSIs. |
-| S4 `context.py` | Done | 237 bilateral, 183 strict identity twins, and 173 sequential pairs. The methods figures are corrected in [decisions](decisions.md). |
-| S5 `nulls.py` | Partial | A 20-draw run is materialized: null mean 12.4 and lift 35.0x. The written design calls for 200 draws. |
-| S6 `features.py` and `score.py` | Done | 434 one-to-one feature rows and 434 score rows. `beh` is null for every CSV-reference record; unavailable behavior was not fabricated. |
-| S7 `corroborate.py` | Done | 434 default `no_coverage` rows. No VIIRS data is present. |
-| S8 `export.py` | Done | 434 validated records, 434 tracks, methods metadata, a 2,170-row evidence ledger, and summary are materialized. |
-| S9 `narrate.py` and `verify.py` | Missing | No files. Narration also needs a selected LLM and a key. |
-
-`scripts/pull_queue_events.py` is implemented and has seven mocked tests. It
-has not run against live GFW. The 2017–2019 CSV remains the verified validation
-corpus. The complete 2021 API corpus has the GFW vessel IDs required by the
-viewer, but its loader and bridge are not implemented.
-
-### Presentation — **Partial**
-
-- **Done:** [The Slidev deck](../presentation/slides.md) contains eight slides
-  titled “Wake AI — Making dark shipping visible.”
-- **Partial:** It is not wired to repository data. It uses oil-tanker and
-  sanctions framing while the verified corpus and GapPair fixture concern
-  fishing vessels.
-- **Partial:** Slide 7 says “DETAIL TO BE ADDED.” The deck imports Google
-  Fonts remotely.
-
-## Known issues
-
-| Severity | Issue | Owner to decide |
-| --- | --- | --- |
-| Medium | The null-model timing test exceeds its 10 s bound (17.9 s and 20.2 s in the current full run). A staged duplicate path makes the same failure run twice. | Tanner Shah and repository maintainer |
-| High | A large staged set of filename-suffixed duplicate files (` 2`/` 3`) includes collected test files and duplicates data/code paths. It requires a reviewed target list; do not bulk-delete or unstage it during feature work. | Repository maintainer |
-| High | `pyproject.toml` and `requirements.txt` pin Python `<3.14`, pandas `<3`, and PyArrow `<22`, while the working venv is Python 3.14.2, pandas 3.0.5, and PyArrow 25.0.1. | Tanner Shah and Andrew Wang |
-| Medium | The static `risk-events.json` reference export is about 11.3 MB before its 434 separate track files. Establish a release-size budget before deploying it broadly. | User and Will Pallan |
-| Medium | The ship-suspicion model does not meet a useful deployment threshold: calibration is worse than a constant-prevalence baseline and the top-1% held-out review set finds no positives. | User and model owner |
-| Low | The current ship-suspicion static export has empty feature-contribution lists because the saved model cannot be safely loaded by the export runtime. | Model owner |
-| Medium | wake.ai and the frontend's Maritime Risk Intelligence strings differ. | User and Will Pallan |
-| Low | About 2 GB of Bronze data remains tracked in Git. This is accepted; no history rewrite is planned. | User |
-| Medium | `data/reference/psma_parties.csv` has only its header row. | Tanner Shah |
-| Medium | S4's explicit union neighbor definition produces 7 / 35 / 16 for median / p90 / zeros, and its strict twin rule produces 183 pairs. Older asserted figures describe a different count or exclude two valid pairs. | Tanner Shah |
-| Medium | The deck's oil-tanker and sanctions framing does not match the fishing-pair corpus. | Will Pallan and user |
-| Low | The deck depends on remote Google Fonts. | Will Pallan |
-| High | Complete 2017–2019 GAP Bronze is absent. | Andrew Wang |
-| High | Presence coverage is only for Russian-EEZ region 5690, not the 2021 candidate windows. | Andrew Wang |
-| High | Existing identity batches target the 2026 presence population, not the 2021 candidates or queue. | Andrew Wang |
-| Medium | `data/derived/candidate_windows_probe.json` has 28 in-EEZ and 12 high-seas windows, but it is unscored. | Tanner Shah |
-
-## Integration work not started
-
-- `pipeline/load_api.py` for the 2021 corpus is not implemented. See [the candidate-pipeline reference](candidate-pipeline.md) and [archived handoff prompts §14](archive/plan/handoff-prompts.md).
-- `pipeline/presence_bridge.py` and `candidates.json` are not implemented. See [archived handoff prompts §14](archive/plan/handoff-prompts.md).
-- Presence acquisition per candidate window is not done. See [data needs](data.md) and [archived handoff prompts §14](archive/plan/handoff-prompts.md).
-- S9 narration and verification are not implemented. See [the candidate-pipeline reference](candidate-pipeline.md) and [data needs](data.md).
-
-## Reproduce this snapshot
-
-Run these commands from the repository root. The importer replaces ignored
-viewer assets. It does not modify Bronze inputs.
-
-```bash
-git status --short
-.venv/bin/python -m pytest -q tests/
-.venv/bin/python -m pytest -q tests/test_pipeline_features.py tests/test_pipeline_score.py tests/test_pipeline_export.py
-.venv/bin/python -m pipeline.run --stage reference --stage load --stage pair \
-  --stage feasibility --stage context --stage null --draws 20 \
-  --stage corroborate --stage features --stage score --stage export
-.venv/bin/python scripts/export_ship_suspicion.py
-npm --prefix code/backend test
-npm --prefix code/frontend ci
-npm --prefix code/frontend test
-npm --prefix code/frontend run build
-npm --prefix code/backend run import:presence
-```
-
-For a fast environment check, run:
-
-```bash
-.venv/bin/python -m pytest -q tests/test_pipeline_geo.py
-```
+See [ARCHIVE.md](../ARCHIVE.md) for release and GitHub-finalization steps, and
+[data policy](data.md) for source and licensing boundaries.

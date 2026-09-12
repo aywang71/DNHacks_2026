@@ -10,6 +10,11 @@ They share a shell, but not an identity bridge. A CSV-reference GapPair record
 is keyed by MMSI and does not become a GFW Presence replay simply because it is
 shown in the same application.
 
+> **Archive note:** the public repository includes the GapPair and
+> ship-suspicion static snapshots, but not the large Presence assets. In a
+> fresh clone, use the GapPair workspace; the Presence workspace visibly
+> reports that its optional catalog is unavailable.
+
 ## Run locally
 
 From the repository root:
@@ -31,7 +36,7 @@ npm --prefix code/backend run import:presence
 
 | Asset | Producer | Frontend consumer | Semantics |
 | --- | --- | --- | --- |
-| `public/data/presence/catalog.json` and daily shards | `code/backend` Presence importer | `src/presence/` and the Presence workspace | GFW hourly grid-cell centres, not raw AIS fixes. |
+| `public/data/presence/catalog.json` and daily shards | `code/backend` Presence importer; local-only | `src/presence/` and the Presence workspace | GFW hourly grid-cell centres, not raw AIS fixes. Not committed in the archive. |
 | `public/data/risk-events.json` | S8 `pipeline.export` | `src/data/provider.ts`, `InvestigationPanel` | Ranked paired dark-gap screening records. The browser does not silently fall back to mock candidates. |
 | `public/data/tracks/<id>.geojson` | S8 `pipeline.export` | Embedded track is used by the candidate map; files are audit artifacts | Observed endpoints and estimated projections/rings are distinguished by `observationStatus`. |
 | `public/data/ship-suspicion.json` | `scripts/export_ship_suspicion.py` | `ShipSuspicionPanel` | Experimental top-200 individual-vessel scores, separate from GapPair. |

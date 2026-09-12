@@ -1,5 +1,9 @@
 # Architecture
 
+> **Archive note:** the diagram describes the prototype's source-data flow.
+> `data/bronze`, `data/silver`, Presence shards, and model outputs are
+> intentionally local-only in the final public archive.
+
 ## Subsystem overview
 
 ```mermaid
@@ -46,7 +50,7 @@ Estimated geometry carries `observationStatus: "estimated"` and is never present
 | Name | Meaning | Current state |
 | --- | --- | --- |
 | `wake.ai` | Product name. | Current product name. |
-| Presence viewer / `Maritime Risk Intelligence` | Will's browser viewer and its current frontend brand string. | The string remains in the frontend and should be renamed later. |
+| Presence viewer / `wake.ai` | The browser viewer and its product brand. | The archive aligns the browser title and printed brief with wake.ai. |
 | GapPair | Tanner's paired-dark-gap candidate pipeline. | The CSV reference path is materialized through S8 and feeds the investigation workspace; 2021 bridge and S9 remain missing. |
 | Ship-suspicion model | Experimental individual-vessel model from Presence features. | Separate static top-200 snapshot; it does not alter the GapPair record or label. |
 | Dark Rendezvous | Andrew's ingestion package and `dark-rendezvous` CLI. | Used for NOAA and GFW ingestion. |

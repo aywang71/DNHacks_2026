@@ -1,60 +1,46 @@
 # wake.ai
 
-wake.ai has two browser workspaces: a replay of Global Fishing Watch (GFW)
-vessel-presence data and a static GapPair screening queue. The replay loads
-hourly GFW Presence assets for positions, trails, time controls, search, and
-vessel details. Presence coordinates are hourly grid-cell centres, not raw AIS
-fixes.
+> Final public archive of the 2026 DNHacks project. This repository is a
+> research prototype and is no longer under active development.
 
-GapPair materializes 434 paired dark-gap candidates from the 2017–2019 CSV
-reference corpus into a static investigation export with score provenance and
-observed-versus-estimated geometry. The two workspaces are deliberately not a
-vessel-identity bridge: the CSV candidates have MMSIs but no GFW vessel IDs,
-and the locally available Presence export covers a different population.
+wake.ai is an evidence-conscious maritime-analysis demonstration with two
+separate browser workspaces:
 
-## Three subsystems
+- **GapPair candidates**: a static, inspectable queue of 434 paired AIS-gap
+  candidates from the 2017-2019 Global Fishing Watch AIS-disabling corpus.
+- **Presence replay**: a viewer for optional, locally generated Global Fishing
+  Watch Presence exports. Those large inputs and exports are deliberately not
+  included in this public archive.
 
-| Subsystem | Path | Owner | Language/runtime | Status | Docs |
-| --- | --- | --- | --- | --- | --- |
-| Presence and investigation viewer | `code/frontend`, `code/backend` | Will Pallan (`gurubazawada`) | React, Vite, MapLibre, Node | Presence replay plus static GapPair investigation workspace; a future identity/presence bridge is separate | [viewer data flow](code/backend/DATA_FLOW.md) |
-| Dark Rendezvous ingestion | `src/dark_rendezvous`, `scripts/*.ps1` | Andrew Wang (`aywang71`) | Python CLI; Windows Python 3.13 venv | Ingests NOAA and retrieves GFW products; token stays on Andrew's machine | [ingestion docs](docs/ais-ingestion.md) |
-| GapPair candidate pipeline | `pipeline`, `tests/test_pipeline_*`, `data/reference`, `data/derived` | Tanner Shah (`tannershah`) | Python | CSV reference path is materialized through score and static export; 2021 bridge and narration remain unbuilt | [pipeline reference](docs/candidate-pipeline.md) |
+The workspaces do not form an identity bridge. A GapPair MMSI must not be
+treated as a Presence vessel merely because both appear in the same UI.
 
-## Quick start
+## Run the archived demo
 
-### Presence viewer
-
-From the repository root, build the static presence assets and start Vite:
+Use Node 22-24. The dependency lockfile is part of the archive.
 
 ```bash
-npm --prefix code/backend run import:presence
 npm --prefix code/frontend ci
 npm --prefix code/frontend run dev
 ```
 
-### AI reports and ship chat
+Open the **GapPair candidates** workspace. It uses the committed static export
+and works without credentials or the omitted Presence data. The Presence tab
+correctly reports missing data in a fresh clone; it can only be recreated from
+locally acquired GFW source material.
 
-Both the investigation queue and selected ship details include **Ship intelligence**. Generate a plain-English evidence report, ask follow-up questions, add analyst context, preview the source records, and download or print the resulting report. AI reports include source references, limitations, and suggested next checks. The original data-only brief remains available in the queue.
-
-Create a repository-root `.env` (already ignored by Git) with your server-side Gemini credentials:
-
-```dotenv
-GEMINI_API_KEY=your_gemini_api_key
-GEMINI_MODEL=gemini-3.6-flash
-AI_PORT=3001
-```
-
-Run the backend in a second terminal alongside Vite (Node 22+):
+To run the optional local AI service, copy `.env.example` to an ignored `.env`,
+set only your own server-side Gemini credentials, then run:
 
 ```bash
 npm --prefix code/backend run dev
 ```
 
-Vite proxies `/api` to `127.0.0.1:3001`. Restart the backend after changing `.env`. To run the built portal, use `npm --prefix code/frontend run build` followed by `npm --prefix code/backend start`, then open `http://127.0.0.1:3001`. If you change `AI_PORT`, update the Vite proxy target too.
+Never commit `.env`, provider tokens, or generated reports containing them.
 
-The key never enters browser code. The backend reads local exported records for the selected ship and sends only that context, the supplied notes, and recent conversation turns to Gemini. Context covers at most 90 UTC days and includes at most 24 sampled positions; these are hourly grid-cell centres, not a complete track. Without a configured key, context previews and data-only briefs still work, and AI generation shows setup instructions. See [backend AI details](code/backend/README.md#gemini-ai-service).
+## Verification
 
-The verified checks are:
+The release checks that do not require locally acquired data are:
 
 ```bash
 npm --prefix code/backend test
@@ -62,94 +48,44 @@ npm --prefix code/frontend test
 npm --prefix code/frontend run build
 ```
 
-### Dark Rendezvous ingestion
+The Python tooling targets Python 3.11-3.13. Its complete pipeline needs the
+source corpus plus local acquisition output; see [the data policy](docs/data.md)
+before attempting a rebuild.
 
-Andrew's Windows PowerShell setup:
+## What is retained
 
-```powershell
-py -3.13 -m venv .venv
-.venv\Scripts\Activate.ps1
-python -m pip install -e .[dev]
-dark-rendezvous ingest-noaa --date 2024-01-01
-$env:GFW_API_TOKEN = "<token kept outside the repository>"
-dark-rendezvous gfw-gaps --start-date 2024-01-01 --end-date 2024-01-31
-dark-rendezvous gfw-gaps-pull --start-date 2017-01-01 --end-date 2017-02-01
-dark-rendezvous gfw-presence --start 2022-01-01T00:00:00Z --end 2022-01-01T01:00:00Z --region-id 5690
-dark-rendezvous gfw-track --vessel-id <gfw-vessel-id> --start-date 2017-01-01 --end-date 2017-02-01
-dark-rendezvous gfw-identity --query 9175717
-```
-
-The macOS/Linux equivalent is:
-
-```bash
-python3.13 -m venv .venv
-source .venv/bin/activate
-python -m pip install -e '.[dev]'
-dark-rendezvous ingest-noaa --date 2024-01-01
-export GFW_API_TOKEN='<token kept outside the repository>'
-dark-rendezvous gfw-gaps --start-date 2024-01-01 --end-date 2024-01-31
-dark-rendezvous gfw-gaps-pull --start-date 2017-01-01 --end-date 2017-02-01
-dark-rendezvous gfw-presence --start 2022-01-01T00:00:00Z --end 2022-01-01T01:00:00Z --region-id 5690
-dark-rendezvous gfw-track --vessel-id <gfw-vessel-id> --start-date 2017-01-01 --end-date 2017-02-01
-dark-rendezvous gfw-identity --query 9175717
-```
-
-`gfw-track` currently returns 404 for the configured application. Do not commit `GFW_API_TOKEN`. See [AIS ingestion](docs/ais-ingestion.md) for source limits and output semantics.
-
-### GapPair pipeline
-
-Run the verified CSV-corpus stages from the repository root:
-
-```bash
-.venv/bin/python -m pytest -q tests/
-.venv/bin/python -m pipeline.run --stage reference --stage load --stage pair \
-  --stage feasibility --stage context --stage null --draws 20 \
-  --stage corroborate --stage features --stage score --stage export
-```
-
-The explicit stage list intentionally excludes unavailable enrichment and
-narration. The declared Python package bounds conflict with the installed 3.14
-virtual environment; see [current status](docs/status.md). Validate the
-published artifacts with the [verification guide](docs/verification.md) rather
-than treating a command exit code as proof that an export was written.
-
-The full Python suite is a release gate. Its static-artifact test validates the
-committed 434-record S8 queue rather than the original three-record P0 demo
-fixture; see [status](docs/status.md) for current environment constraints.
-
-## Repository map
-
-| Path | Purpose |
+| Path | Contents |
 | --- | --- |
-| `background/` | Background research and experiment logs. |
-| `code/` | Will's frontend viewer and Node presence importer. |
-| `data/` | Data root; see its `bronze/`, `silver/`, `raw/`, `derived/`, `reference/`, and `logs/` subdirectories. |
-| `data/bronze/` | Retained raw GFW API retrievals and manifests. |
-| `data/silver/` | Normalized ingestion outputs. |
-| `data/raw/` | Source archives and ingestion configuration. |
-| `data/derived/` | GapPair outputs and candidate-window probes. |
-| `data/reference/` | Static reference tables and geography. |
-| `data/logs/` | Presence-backfill log and state. |
-| `docs/` | Live project, data, architecture, pipeline, and ingestion documentation. |
-| `ideas/` | Earlier ideas and source material. |
-| `output/` | Generated reference output. |
-| `pipeline/` | Tanner's GapPair Python stages and configuration. |
-| `presentation/` | Slidev pitch deck. |
-| `scripts/` | Acquisition and experiment helpers. |
-| `src/` | Andrew's `dark_rendezvous` package. |
-| `tests/` | Ingestion and GapPair tests. |
-| `tmp/` | Local reference images and extracted PDFs. |
-| `pyproject.toml` | Python project metadata and declared dependency bounds. |
-| `requirements.txt` | Python dependency constraints. |
-| `.env.example` | Example environment variable names; no live token. |
-| `LICENSE` | Repository license. |
+| `code/frontend/` | Vite/React browser application and its frozen GapPair/static-model assets. |
+| `code/backend/` | Local-only static exporter and optional AI service. |
+| `pipeline/`, `src/`, `scripts/` | GapPair, ingestion, and experiment source code. |
+| `data/raw/`, `data/reference/`, `data/derived/*.json` | Compact source archive, reference inputs, and reproducible summary checkpoints. |
+| `docs/` | Architecture, methods, source limits, and historical project context. |
+| `presentation/` and `submission/` | Pitch-deck source/final PDF and hackathon-submission screenshots. |
 
-The former `plan/` and `research/` directories and the root `report-source.md` were archived under [`docs/archive/`](docs/archive/README.md).
+## Important limits
 
-GFW data is CC BY-NC 4.0 and requires UI attribution. A GFW token is never committed.
+- A paired AIS gap is a screening signal, not proof of a rendezvous, transfer,
+  intentional disabling, or crime.
+- The public queue is retrospective, covers fishing vessels only, and has no
+  coordinate-level ground truth for a transfer.
+- Estimated routes, meeting points, and reachable areas are model outputs;
+  only endpoints are observations.
+- The separate ship-suspicion snapshot is experimental and must not be used as
+  an operational risk score.
 
-The system never asserts a hidden route, an intentional disabling, a transfer, or a crime.
+## Data and rights
 
-## Documentation
+The committed GapPair snapshot attributes the **Global Fishing Watch
+AIS-disabling corpus (Welch et al. 2022), CC BY-NC 4.0**. The full GFW API
+retrievals, normalized tables, model-training outputs, and Presence replay
+assets are intentionally excluded from this archive. See [NOTICE.md](NOTICE.md)
+and [docs/data.md](docs/data.md) for scope and provenance. Original project
+code is MIT-licensed under [LICENSE](LICENSE); third-party material retains
+its own terms.
 
-Start at the [documentation index](docs/README.md). See the [architecture](docs/architecture.md), [status](docs/status.md), [data inventory](docs/data.md), [candidate pipeline](docs/candidate-pipeline.md), [ship-suspicion model](docs/ship-suspicion-model.md), [developer guide](docs/development.md), [verification guide](docs/verification.md), and [viewer data flow](code/backend/DATA_FLOW.md).
+## Archive handoff
+
+[ARCHIVE.md](ARCHIVE.md) records the public-archive boundary and the remaining
+GitHub-side steps. Start with [the documentation index](docs/README.md) for
+architecture and methods.

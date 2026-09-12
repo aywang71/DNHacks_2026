@@ -7,9 +7,10 @@
 | [Root README](../README.md) | wake.ai overview, repository map, and subsystem entry points. |
 | [This index](README.md) | Entry point for current, archive, and reference material. |
 | [Architecture](architecture.md) | Subsystems, data contracts, ownership, and the unbuilt integration boundary. |
-| [Status](status.md) | Verified current state, checks, missing work, and known issues. |
+| [Status](status.md) | Final archive scope, verified checks, and product boundaries. |
+| [Archive handoff](../ARCHIVE.md) | Public release boundary and remaining GitHub-side steps. |
 | [Decisions](decisions.md) | Decision log and accepted boundaries. |
-| [Data](data.md) | Data inventory, provenance, coverage, and missing inputs. |
+| [Data](data.md) | Archive data policy, provenance, and evidence limits. |
 | [Candidate pipeline](candidate-pipeline.md) | GapPair stages, configuration, definitions, outputs, and commands. |
 | [Ship-suspicion model](ship-suspicion-model.md) | Experimental individual-vessel model, evidence limits, and static export. |
 | [Developer guide](development.md) | Subsystem ownership, generated-artifact rules, and safe cross-boundary work. |
@@ -58,12 +59,9 @@ Archived material records earlier plans and handoffs. It is superseded by the li
 
 | Path | Contents |
 | --- | --- |
-| [ideas/](../ideas/) | Earlier ideas, papers, and source material. |
-| [background/](../background/) | Event and research background plus experiment logs. |
-| [tmp/skylight-ref/](../tmp/skylight-ref/) | Local visual reference captures. |
-| [tmp/pdfs/](../tmp/pdfs/) | Extracted reference PDF material. |
-| [output/pdf/](../output/pdf/) | Generated reference PDF output. |
-| [presentation/](../presentation/) | Unwired Slidev pitch deck. |
+| [ideas/](../ideas/) | Earlier retained idea notes; external paper PDFs are local-only. |
+| [background/](../background/) | Event and research background. |
+| [presentation/](../presentation/) | Final Slidev pitch-deck source and PDF. |
 
 ## Documentation rules
 

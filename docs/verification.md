@@ -4,6 +4,10 @@ Use this checklist after changing a pipeline stage, static export, or viewer
 consumer. A zero process exit code is not enough: confirm that the expected
 artifact was written, contains the expected corpus, and satisfies its contract.
 
+> **Archive note:** the full Python/model/Presence checks require local inputs
+> intentionally excluded from this final public archive. The root README's
+> Node checks are the reproducible archive-release gate.
+
 ## 1. Establish the change boundary
 
 ```bash
@@ -30,6 +34,10 @@ broader Python suite when the changed area warrants it:
 The static-artifact test validates the complete committed S8 queue (434
 reference-corpus records) and its embedded GeoJSON. Do not exclude paths from
 test discovery when using the full suite as a release gate.
+
+In a fresh archive clone, tests that need `data/raw/disabling_events.csv` or
+derived Parquet are reported as skipped with an actionable reason. Extract the
+committed ZIP and run the documented stages to exercise those integrations.
 
 For a full reference-corpus rebuild, run the stages in dependency order. This
 is intentionally explicit so an operator can see which artifact changed:

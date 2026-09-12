@@ -279,8 +279,8 @@ insufficient_coverage_evidence, not intentional disabling.
     dark-rendezvous prepare-atlantes-presence --input data/silver/gfw_presence_hourly/.../points.parquet --coastline data/reference/ne_10m_coastline.geojson
     dark-rendezvous gfw-identity --query <IMO-or-MMSI-or-name>
 
-Supported data locations and their observational semantics are catalogued in
-[REPO_MAP.md](../REPO_MAP.md). `data/` is not universally Git-ignored. Each
-supported ingestion records a JSON manifest alongside its normalized output or
-raw GFW response, with source location, hash, row counts, output path, and run
-time.
+Supported data locations and their observational semantics are summarized in
+the [root README](../README.md) and [data policy](data.md). Acquisition output
+is local-only in the final archive. Each supported ingestion records a JSON
+manifest alongside its normalized output or raw GFW response, with source
+location, hash, row counts, output path, and run time.

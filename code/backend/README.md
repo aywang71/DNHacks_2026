@@ -1,6 +1,11 @@
-# Maritime Risk Intelligence backend
+# wake.ai local backend
 
 The backend owns Silver presence validation, deduplication, static export, and the data contracts consumed by the frontend. It runs as an offline Python/Parquet pipeline; no HTTP API is required by the viewer.
+
+> **Archive note:** Silver inputs and generated Presence assets are intentionally
+> absent from the public repository. Import commands are retained for an
+> authorized operator with locally acquired source data; the committed GapPair
+> browser snapshot does not require them.
 
 From this directory:
 

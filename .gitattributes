@@ -1,0 +1,14 @@
+# Keep text portable across contributors and hosting platforms.
+* text=auto eol=lf
+
+# Do not attempt line-ending conversion for published binary assets.
+*.geojson text eol=lf
+*.json text eol=lf
+*.csv text eol=lf
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.pdf binary
+*.zip binary
+*.parquet binary
+*.joblib binary

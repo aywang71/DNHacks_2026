@@ -254,12 +254,10 @@ A reasonable early target would be a measurable lift over baseline and some inde
 
 - GFW [API license and rate-limit terms](https://globalfishingwatch.org/our-apis/documentation/docs/license-rate-limits).
 
-## Existing local artifacts
+## Historical local artifacts
 
-- [Canonical cited research report](/Users/Tanner/Desktop/DN_Hacks_2026/DNHacks_2026/report-source.md)
-- [Five-page due-diligence PDF](/Users/Tanner/Desktop/DN_Hacks_2026/DNHacks_2026/output/pdf/maritime-idea-01-due-diligence.pdf)
-- [Original idea brief](/Users/Tanner/Desktop/DN_Hacks_2026/DNHacks_2026/ideas/idea-01-maritime-dark-rendezvous.md)
-- [Local revised feasibility notes](/Users/Tanner/Desktop/DN_Hacks_2026/DNHacks_2026/ideas/martime.md)
+The workstation-only links that appeared here were removed for the public
+archive. The live documentation and retained source materials supersede them.
 
 ## Recommended prompt for the next model
 

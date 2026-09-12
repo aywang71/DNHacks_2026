@@ -322,13 +322,14 @@ def build_training_examples(
 ) -> pd.DataFrame:
     examples: list[pd.DataFrame] = []
     for anchor in anchors:
-        history_start = anchor - pd.Timedelta(days=config.lookback_days)
+        anchor_timestamp = pd.Timestamp(anchor)
+        history_start = anchor_timestamp - pd.Timedelta(int(config.lookback_days), unit="D")
         history = presence[(presence["ts"] >= history_start) & (presence["ts"] < anchor)]
         if history.empty:
             continue
         feature_rows = [_vessel_window_features(group, config) for _, group in history.groupby("vessel_id", sort=False)]
         frame = pd.DataFrame(feature_rows)
-        future_end = anchor + pd.Timedelta(days=config.horizon_days)
+        future_end = anchor_timestamp + pd.Timedelta(int(config.horizon_days), unit="D")
         future = events[(events["event_start"] >= anchor) & (events["event_start"] < future_end)]
         positive_gfw = set(future["gfw_vessel_id"].dropna().astype(str))
         positive_mmsi = set(future["mmsi"].dropna().astype(str))

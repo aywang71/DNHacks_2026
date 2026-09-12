@@ -1,9 +1,9 @@
 # AIS-first Dark Rendezvous build plan
 
 > **Design reference, not the current checkout layout.** The implementation
-> already has an ingestion CLI, GFW Bronze/Silver data, and a presence viewer.
+> already has an ingestion CLI, local GFW Bronze/Silver data, and a presence viewer.
 > This document specifies the future candidate-detection architecture. Use
-> [REPO_MAP.md](../REPO_MAP.md) for existing code and data locations.
+> the [root README](../README.md) for current code and archive locations.
 
 ## Decision
 
@@ -323,7 +323,7 @@ weights, and cloned external repositories stay outside Git.
       scripts/
         run_local.ps1
         verify_manifest.py
-      data/                           # proposed target layout; see REPO_MAP.md for current paths
+      data/                           # proposed target layout; see the root README for current paths
         raw/
         normalized/
         derived/

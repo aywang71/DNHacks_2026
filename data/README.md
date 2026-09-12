@@ -1,22 +1,26 @@
-# Data
+# Archived data policy
 
-This directory holds wake.ai source archives, immutable GFW API records, normalized tables, GapPair outputs, static reference tables, and backfill logs. The full inventory, evidence limits, coverage gaps, and regeneration notes are in [docs/data.md](../docs/data.md).
+This public repository keeps only compact materials needed to understand the
+prototype and run the frozen GapPair browser demonstration:
 
-| Folder | Contents |
-| --- | --- |
-| `raw/` | The tracked disabling-events ZIP, its ignored extracted CSV, and upstream filter configuration. |
-| `bronze/` | Tracked immutable GFW GAP, Presence, and identity API responses with manifests. |
-| `silver/` | Tracked normalized Parquet outputs and manifests. |
-| `derived/` | GapPair working outputs and checkpoints. |
-| `reference/` | Static lookup tables and Natural Earth coastline geometry. |
-| `logs/` | Presence-backfill log and resumable state. |
+- `raw/disabling_events.zip`: the cited 2017-2019 AIS-disabling event corpus
+  archive; extract it locally when running the Python pipeline.
+- `reference/`: compact lookup tables and Natural Earth coastline geometry.
+- `derived/*.json` and `derived/*.txt`: small, inspectable pipeline
+  checkpoints and the exported-summary evidence.
 
-`data/raw/*.csv` and `data/derived/*.parquet` are ignored. Bronze is tracked by decision. Other files follow their existing tracked status.
+The following are intentionally local and ignored by Git:
 
-Extract the source CSV when needed:
+- `bronze/`: raw GFW API retrievals and manifests;
+- `silver/`: normalized Parquet output;
+- `logs/`: operational pull state and logs;
+- `derived/*.parquet`: regenerable intermediate tables.
 
-```bash
-unzip -o data/raw/disabling_events.zip -d data/raw
-```
+They can be recreated only by an operator with the appropriate upstream access
+and credentials. Do not add them, private tokens, or large result sets to this
+archived repository. The frontend's optional Presence replay assets follow the
+same policy under `code/frontend/public/data/presence/`.
 
-Pandas 3 parses the corpus timestamps as `datetime64[us, UTC]`. Use `Timedelta` arithmetic for durations and retain microsecond precision.
+The retained browser-facing GapPair snapshot includes its own attribution and
+method limits in `code/frontend/public/data/methods.json`. See
+[docs/data.md](../docs/data.md) for provenance and interpretation boundaries.

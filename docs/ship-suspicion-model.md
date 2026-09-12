@@ -1,5 +1,9 @@
 # Ship suspicion model
 
+> **Archive note:** the training inputs and binary artifacts described below
+> are intentionally local-only. The repository retains the static browser
+> snapshot and source code for review, not a reproducible model-training run.
+
 ## Objective
 
 Predict whether a vessel observed in GFW hourly Presence will have a GFW event
@@ -49,9 +53,8 @@ most likely causes are the nine-vessel positive sample, coarse/region-bounded
 Presence data, weak negatives, and the fact that a global future gap need not
 be behaviorally visible in the prior Russian-EEZ window.
 
-The trained artifact is retained as a reproducible baseline and as a working
-training/scoring pipeline. Do not promote it to an alerting system based on
-these metrics.
+The static snapshot is retained as a historical baseline. Do not promote it to
+an alerting system based on these metrics.
 
 ## Deliberate overfit demonstration
 
@@ -95,7 +98,7 @@ Neither score is a probability of wrongdoing or evidence of an event.
 ```bash
 /usr/local/bin/python3.12 -m venv --system-site-packages .venv-model
 .venv-model/bin/python -m pip install 'scikit-learn>=1.6,<1.7' 'joblib>=1.4,<2'
-PYTHONPATH=src .venv-model/bin/python scripts/train_ship_suspicion.py
+PYTHONPATH=src .venv-model/bin/python scripts/train_ship_suspicion.py --ports /path/to/ports.csv
 ```
 
 Score a compatible feature table:

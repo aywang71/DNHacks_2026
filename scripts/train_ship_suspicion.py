@@ -20,7 +20,12 @@ def parser() -> argparse.ArgumentParser:
         default=None,
         help="Complete intentional-only GFW retrieval root; repeat to add periods.",
     )
-    result.add_argument("--ports", type=Path, default=Path("/Users/williampallan/Downloads/UpdatedPub150.csv"))
+    result.add_argument(
+        "--ports",
+        type=Path,
+        required=True,
+        help="Path to the operator-provided port reference CSV.",
+    )
     result.add_argument("--output", type=Path, default=Path("output/models/ship_suspicion"))
     return result
 

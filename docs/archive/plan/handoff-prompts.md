@@ -68,7 +68,7 @@ Give the implementer one attempt plus at most two fix rounds (§0.5). Keep the s
 Spawn a **fresh** reviewer subagent (new context, it must not see the implementer's reasoning) with:
 
 ```
-You are red-teaming a delivered pipeline stage. Repo /Users/Tanner/Desktop/DN_Hacks_2026/DNHacks_2026, branch Tanner-dev,
+You are red-teaming a delivered pipeline stage. Repo <repository-root>, branch Tanner-dev,
 interpreter .venv/bin/python. The task spec is <paste the task block>. The implementer's report is <paste it>.
 Do not trust the report; verify.
 1. Run `.venv/bin/python -m pytest -q tests/test_pipeline_*.py` and `.venv/bin/python -m pipeline.run --stage <stage>`;
@@ -155,7 +155,7 @@ Send T1's `data/derived/queue_mmsis.txt` to Andrew as soon as it exists; his ide
 ## COMMON CONTEXT — paste this block at the top of every terra prompt
 
 ```
-You are working in the git repo at /Users/Tanner/Desktop/DN_Hacks_2026/DNHacks_2026 on branch Tanner-dev.
+You are working in the git repo at <repository-root> on branch Tanner-dev.
 Project: GapPair, a hackathon backend that turns a corpus of 55,368 AIS-disabling events (fishing vessels, 2017-2019)
 into a ranked, explainable queue of "paired-dark" candidates: two vessels whose AIS gaps start together and end together.
 
@@ -452,7 +452,7 @@ parquet columns; --resume skips a batch whose manifest exists. No network in tes
 ### C1 — acceptance gate (Sonnet 5, low effort; run after T1, after T3–T5, after T7)
 
 ```
-In /Users/Tanner/Desktop/DN_Hacks_2026/DNHacks_2026 on Tanner-dev: run `.venv/bin/python -m pytest -q tests/test_pipeline_*.py`
+In <repository-root> on Tanner-dev: run `.venv/bin/python -m pytest -q tests/test_pipeline_*.py`
 and `.venv/bin/python -m pipeline.run --stage <the stages just delivered>`. Compare every printed number with the
 "Acceptance" lines for those stages in plan/backend-implementation-plan.md §4 and with Appendix C. Open
 data/derived/candidates_t0.parquet (or the stage's output) and print the showcase row (config.SHOWCASE). Check the three

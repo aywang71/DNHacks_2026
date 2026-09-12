@@ -23,8 +23,12 @@ boundary. Open questions remain open until an explicit decision replaces them.
 | 2026-09-05 | Live documentation excludes calendar and timing commitments. | The user rejected those commitments. | Snapshot dates are allowed; future live docs do not state timing commitments. | User direction |
 | 2026-09-05 | Current documentation is consolidated under `docs/`; superseded plans and handoffs are archived there. | The live and historical material needs separate locations. | New docs link to the archive for historical specifications. | This documentation pass; [archive](archive/README.md) |
 | 2026-09-05 | Pushes go directly to `origin/main`. | The user selected the integration path. | Documentation records `origin/main` as the direct destination. | User direction |
+| 2026-09-12 | The public repository becomes a final archive. | A compact, attributable source-and-demo snapshot is more appropriate than retaining bulk acquisition output. | Browser branding is aligned to wake.ai; raw retrievals, Parquet, logs, Presence shards, model output, and temporary files leave the current Git index. No history rewrite is performed by this cleanup. | Final archive pass |
 
-## Open decisions
+## Historical open decisions
+
+These are retained as project context only. The final archive makes no roadmap
+or support commitment.
 
 - Select an LLM for S9 narration and decide whether the deterministic verifier is in scope.
 - Decide whether to enrich the CSV corpus. That requires complete 2017–2019 GAP Bronze.

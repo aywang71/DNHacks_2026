@@ -20,7 +20,7 @@ The default keeps GFW events classified as intentional AIS disabling. Add
 
 Give a separate coding agent the following instruction:
 
-> In `C:\Users\hyper\Documents\GitHub\DNHacks_2026`, run the GFW Bronze-only
+> From the repository root, run the GFW Bronze-only
 > backfill from 2017-01-01 through today. The secret is available as the
 > `GFW_API_TOKEN` environment variable; never print it, write it to a file,
 > commit it, or include it in logs. Run `scripts\run_gfw_bronze_backfill.ps1`.
